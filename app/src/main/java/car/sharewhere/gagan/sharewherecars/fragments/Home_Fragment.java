@@ -1,11 +1,8 @@
 package car.sharewhere.gagan.sharewherecars.fragments;
 
 
-import android.app.Fragment;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +99,7 @@ public class Home_Fragment extends FragmentG implements OnMyLocationChangeListen
         }
         catch (Exception e)
         {
-        /* map is already there, just return view as it is */
+        /* map is already there, just return view as it is G */
         }
         setActionBar(rootView,"ShareWhere");
 

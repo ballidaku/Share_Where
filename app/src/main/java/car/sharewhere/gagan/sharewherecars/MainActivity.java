@@ -34,15 +34,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        get_current_location = new GetCurrentLocation(MainActivity.this);
-//
-//        if (get_current_location.checkPlayServices())
-//        {
-//            // Building the GoogleApi client
-//            get_current_location.buildGoogleApiClient();
-//
-//            get_current_location.createLocationRequest();
-//        }
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
