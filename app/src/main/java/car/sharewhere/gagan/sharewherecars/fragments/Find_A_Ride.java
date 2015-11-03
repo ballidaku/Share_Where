@@ -48,7 +48,7 @@ public class Find_A_Ride extends FragmentG
         View view = inflater.inflate(R.layout.fragment_find__a__ride, container, false);
 
 
-        setActionBar(view,"Find a Ride");
+        setActionBar(view, "Find a Ride");
         findViewbyID(view);
 
 
