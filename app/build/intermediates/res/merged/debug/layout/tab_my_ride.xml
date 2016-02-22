@@ -1,0 +1,80 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_backgroundfb"
+    android:orientation="vertical"
+    tools:context="car.sharewhere.gagan.sharewherecars.fragments.Find_A_Ride">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="bottom">
+
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
+                android:id="@+id/relativeLayout">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/txt_no_ride"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:text="Sorry currently you have no ride to offer,Click below to start a new ride!!Happy Riding"/>
+
+            </RelativeLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_ofr_ride"
+                android:textColor="@color/yellow_old"
+                android:layout_alignParentBottom="true"
+                android:text="Offer A Ride"
+                android:textSize="15sp"
+                android:background="@color/black"/>
+            <Button
+                android:id="@+id/line_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/line" />
+            <ListView
+                android:id="@+id/list_home_recent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:scrollbars="none"
+                android:divider="@null" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/reload"
+                android:id="@+id/img_vw_reload"
+                android:layout_above="@+id/btn_ofr_ride"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="57dp" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout><!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/layout/tab_my_ride.xml -->

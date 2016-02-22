@@ -173,7 +173,7 @@ public class RoundedCornersGaganImg extends ImageView
 
 		if(drawable==0)
 		{
-			drawable= R.drawable.ic_logout;
+			drawable= R.mipmap.ic_default_pic_rounded;
 		}
 		options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisc(true).resetViewBeforeLoading(true).showImageForEmptyUri(drawable).showImageOnFail(drawable).showImageOnLoading(drawable).build();
 		imageLoader.init(ImageLoaderConfiguration.createDefault(((ContextWrapper) con).getBaseContext()));

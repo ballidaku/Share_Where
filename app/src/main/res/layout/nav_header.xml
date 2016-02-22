@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,36 +15,40 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="192dp"
-              android:layout_marginBottom="2dp"
-              android:background="@color/yellow2"
-              android:elevation="2dp"
-              android:gravity="bottom"
-              android:orientation="vertical"
-              android:padding="16dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:background="@color/yellow2"
+    android:elevation="2dp"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="16dp">
 
 
     <car.sharewhere.gagan.utills.RoundedCornersGaganImg
+        android:id="@+id/imgProfilePic"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:background="@mipmap/ic_default_pic_rounded"
         android:elevation="2dp"
         android:padding="2dp"
-        android:id="@+id/imgProfilePic"
-        android:transitionName="@string/profile_pic_transition"/>
+        android:transitionName="@string/profile_pic_transition" />
 
 
     <TextView
+        android:id="@+id/txtvUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="7dp"
         android:gravity="center"
-        android:text="Gagan"
+        android:lines="2"
+        android:text="@string/user_name"
+        android:textColor="@color/yellow_old"
         android:textSize="17sp"
         android:textStyle="bold"
-        android:id="@+id/txtvUserName"
-        android:transitionName="@string/profile_pic_transition"/>
+        android:transitionName="@string/profile_pic_transition" />
 
 </LinearLayout>

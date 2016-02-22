@@ -17,8 +17,21 @@
 
 <resources>
     <color name="window_background">#FFF5F5F5</color>
-  <color name="yellow">#f8e300</color>
-  <color name="yellow2">#c7af21</color>
+  <color name="yellow">#000000</color>
+  <color name="yellow2">#000000</color>
   <color name="black">#000</color>
   <color name="white">#FFFF</color>
+  <color name="yellow_old">#f8e300</color>
+  <color name="yellow2_old">#c7af21</color>
+  <color name="colorPrimary">#125688</color>
+  <color name="colorPrimaryDark">#125688</color>
+  <color name="textColorPrimary">#FFFFFF</color>
+  <color name="windowBackground">#FFFFFF</color>
+  <color name="navigationBarColor">#000000</color>
+  <color name="colorAccent">#c8e8ff</color>
+  <color name="blue">#FF53D3FF</color>
+  <color name="dark_gray">#bfbfbf</color>
+  <color name="radio_blue">#00BFFF</color>
+  <color name="gray_backgroundfb">#DCDEE3</color>
+
 </resources>

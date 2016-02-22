@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/midpoint"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/autocmplete_mid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:hint="Enter mid points"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+
+    <ImageView
+        android:id="@+id/img_cros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@mipmap/cross"
+        android:paddingRight="10dp" />
+</LinearLayout>
+<!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/layout/custom_midpnt.xml -->
