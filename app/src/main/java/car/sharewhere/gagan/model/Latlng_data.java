@@ -1,41 +1,34 @@
 package car.sharewhere.gagan.model;
 
-public class Latlng_data
-{
-	
-	
-	String address;
-	double lat,lng;
+public class Latlng_data {
 
-	public String getAddress()
-	{
-		return address;
-	}
 
-	public void setAddress(String address)
-	{
-		this.address = address;
-	}
+    String address;
+    double lat, lng;
 
-	public double getLat()
-	{
-		return lat;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setLat(double lat)
-	{
-		this.lat = lat;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public double getLng()
-	{
-		return lng;
-	}
+    public double getLat() {
+        return lat;
+    }
 
-	public void setLng(double lng)
-	{
-		this.lng = lng;
-	}
-	
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
 
 }

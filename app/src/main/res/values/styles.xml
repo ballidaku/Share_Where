@@ -18,38 +18,76 @@
 <resources>
 
     <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/yellow2</item>
+        <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryDark">@color/yellow2</item>
         <item name="colorAccent">@color/yellow2</item>
         <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:windowIsTranslucent">true</item>
 
 
         <!-- TextInputLayout text color-->
-        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlActivated">@color/radio_blue</item>
 
     </style>
 
     <style name="Widget.CardContent" parent="android:Widget">
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">24dp</item>
+        <!--<item name="android:paddingTop">24dp</item>-->
+        <!--<item name="android:paddingBottom">24dp</item>-->
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
 
+    </style>
 
-
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+    <item name="android:textColor">@color/black</item>
+        <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/black</item>
+</style>
 
     <style name="NavigationDrawerStyle">
         <item name="android:textSize">20sp</item><!-- text size in menu-->
         <item name="android:listPreferredItemHeightSmall">40dp</item><!-- item size in menu-->
+
     </style>
+
+
+    <style name="MyCustomCheckbox">
+        <item name="colorAccent">@color/yellow_old</item>
+    </style>
+
+
+
     <style name="Theme.DesignDemo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Theme.DesignDemo.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="Base.Theme.DesignDemo.AppBarOverlay"
            parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Base.Theme.DesignDemo.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#FFCC00</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:background">#ffffff</item>
+    </style>
+
+    <style name="full_screen_dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@anim/push_down_out</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
 
 </resources>

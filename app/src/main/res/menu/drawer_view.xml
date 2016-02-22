@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,46 +18,39 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
-            android:title="Home"
-            />
+            android:icon="@drawable/home_black"
+            android:title="Offer Ride" />
 
         <item
             android:id="@+id/nav_find_ride"
-            android:icon="@drawable/ic_findride"
-            android:title="Find a Ride"/>
+            android:icon="@drawable/magnifier_black"
+
+            android:title="Find a Ride" />
 
 
         <item
             android:id="@+id/nav_offer_ride"
-            android:icon="@drawable/ic_offer_ride"
-            android:title="Offer a Ride"/>
+            android:icon="@drawable/offer_black"
+
+            android:title="My Rides" />
 
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_setting"
-            android:title="Settings"
-            />
-
+            android:icon="@drawable/setting_yellow"
+            android:title="Settings" />
+       <!-- <item
+            android:id="@+id/nav_notify"
+            android:icon="@drawable/notificatn"
+            android:title="Messages" />-->
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_aboutus"
-            android:title="About us"/>
+            android:icon="@drawable/about_us_black"
+            android:title="About us" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_logout"
-            android:title="Log out"/>
+            android:icon="@drawable/logout_black"
+            android:title="Logout" />
     </group>
 
-    <!--  <item android:title="Sub items">
-          <menu>
-              <item
-                  android:icon="@mipmap/ic_launcher"
-                  android:title="Sub item 1" />
-              <item
-                  android:icon="@drawable/ic_forum"
-                  android:title="Sub item 2" />
-          </menu>
-      </item>-->
 
 </menu>
