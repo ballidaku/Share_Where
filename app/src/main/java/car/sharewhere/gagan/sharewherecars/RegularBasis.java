@@ -54,64 +54,63 @@ import car.sharewhere.gagan.WebServices.Json_AsnycTask;
 import car.sharewhere.gagan.model.Latlng_data;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
 
-
-public class RegularBasis extends AppCompatActivity implements Asnychronus_notifier, View.OnClickListener {
+public class RegularBasis extends AppCompatActivity implements Asnychronus_notifier, View.OnClickListener
+{
 
     AutoCompleteTextView autocompleteTo, autocompleteFrom, autocomplete_new_entry_midpnt;
     Button set, btn_select_ride, btn_cancel_ride, btn_line_select, btn_line_cancel;
     TextView txt_depart_tym, txt_return_tytm, txt_depart_set_tym, txt_return_set_tym, txt_days_data;
-    TextView txt_car_top, txtvwcar_name, tvw_car_ype, txt_vw_txt_carnmbr, btn_single_trip,btn_round_trip;
+    TextView txt_car_top, txtvwcar_name, tvw_car_ype, txt_vw_txt_carnmbr, btn_single_trip, btn_round_trip;
     ImageView img_depart_tym, img_add_days;
     RelativeLayout rel_return;
-    EditText edt_car_name, edt_car_number, txt_number_Seats, txt_rate_per_seat, edt_car_type;
+    EditText       edt_car_name, edt_car_number, txt_number_Seats, txt_rate_per_seat, edt_car_type;
     static String static_string = "";
     private Calendar calendar;
-    private int year, month, day;
+    private int      year, month, day;
     ImageView img_add_mid_pnt, img_clk_depart, img_return_calender, img_return_clk;
     ConnectivityDetector cd;
-    SharedPreferences preferences;
-    String customerID, get_trip_id, tripID;
+    SharedPreferences    preferences;
+    String               customerID, get_trip_id, tripID;
     private TimePicker timePicker;
     private String format = "";
     StringBuilder strng_time_depart, strng_time_return;
-    LinearLayout regulr_return_lnr, lnr_depart_time_regular, lnr_depart_date,
-            lnr_clk_depart, lnr_main_days, lnr_rate, lnr_vw_seat_nmbr;
+    LinearLayout regulr_return_lnr, lnr_depart_time_regular, lnr_depart_date, lnr_clk_depart, lnr_main_days, lnr_rate, lnr_vw_seat_nmbr;
     HashMap<String, String> data_ofer_ride = new HashMap<>();
     StringBuilder date_bulider;
-    private RadioGroup radioGroup;
+    private RadioGroup  radioGroup;
     private RadioButton radioButton;
     ProgressDialog dialog;
     RelativeLayout lnr_vehicle_nmber;
-    ListView list_midpoint;
-    ArrayList<String> array = new ArrayList<>();
-    ArrayList<String> array_midPoints = new ArrayList<>();
-    ArrayList<String> array_midPoints_to_show = new ArrayList<>();
+    ListView       list_midpoint;
+    ArrayList<String> array_midPoints          = new ArrayList<>();
+    ArrayList<String> array_midPoints_to_show  = new ArrayList<>();
     ArrayList<String> array_midPoints_add_city = new ArrayList<>();
     String Points_to_post, auto_from, auto_to, get_intent_depart_time, get_intent_return_time, get_intent_depart_date;
     private CoordinatorLayout coordinatorLayout;
-    Snackbar snackbar;
-    Date  time_return;
+    Snackbar        snackbar;
+    Date            time_return;
     GetCityHelperG_ GET_CITY_G;
-    String strng_lat_from = "0.0";
-    String strng_lat_to = "0.0";
+    String strng_lat_from  = "0.0";
+    String strng_lat_to    = "0.0";
     String strng_long_from = "0.0";
-    String strng_long_to = "0.0";
-    String strngmid_lat = "0.0";
-    String strng_mid_long = "0.0";
+    String strng_long_to   = "0.0";
+    String strngmid_lat    = "0.0";
+    String strng_mid_long  = "0.0";
 
-    String sunday = "";
-    String monday = "";
+    String sunday  = "";
+    String monday  = "";
     String tuesday = "";
-    String wedndy = "";
+    String wedndy  = "";
     String thursdy = "";
-    String fridy = "";
-    String strdy = "";
-    Intent get_intent;
+    String fridy   = "";
+    String strdy   = "";
+    Intent          get_intent;
     MidPointAdapter adater;
-
+    TextView txtv_currency;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.just_once_final);
 
@@ -121,7 +120,8 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
 
         View view = this.getCurrentFocus();
 
-        if (view != null) {
+        if (view != null)
+        {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -135,42 +135,50 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         cd = new ConnectivityDetector(RegularBasis.this);
         adater = new MidPointAdapter();
 
-
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        date_bulider = new StringBuilder()
-                .append(year).append("-").append(month + 1).append("-")
-                .append(day).append(" ");
+        date_bulider = new StringBuilder().append(year).append("-").append(month + 1).append("-").append(day).append(" ");
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
         addListenerOnButton();
 
+        txtv_currency.setText(preferences.getString("currency_symbol", "\u20B9"));
+
     }
 
-    private void setActionBar() {
-        try {
+    private void setActionBar()
+    {
+        try
+        {
             final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             TextView txt_toolbar = (TextView) toolbar.findViewById(R.id.txt_titleTV);
             txt_toolbar.setText("Regular Basis");
             android.support.v7.app.ActionBar actionBar = getSupportActionBar();
             actionBar.setDisplayHomeAsUpEnabled(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
             case android.R.id.home:
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN)
+                {
                     supportFinishAfterTransition();
-                } else {
+                }
+                else
+                {
                     finish();
                 }
                 return true;
@@ -178,18 +186,20 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         return super.onOptionsItemSelected(item);
     }
 
-
     /**
-     * @ViewById
+     @ViewById
      */
-    private void findViewbyID() {
+    private void findViewbyID()
+    {
         autocompleteTo = (AutoCompleteTextView) findViewById(R.id.autocompleteTo_just);
         autocompleteFrom = (AutoCompleteTextView) findViewById(R.id.autocompleteFrom_just);
         autocomplete_new_entry_midpnt = (AutoCompleteTextView) findViewById(R.id.autocomplete_new_mid_point);
         btn_single_trip = (TextView) findViewById(R.id.btn_single_trip);
         btn_round_trip = (TextView) findViewById(R.id.btn_round_trip);
+
         txt_depart_tym = (TextView) findViewById(R.id.txtvw_depart_date);
         txt_return_tytm = (TextView) findViewById(R.id.txtvw_depart_time);
+
         txt_days_data = (TextView) findViewById(R.id.txt_days_data);
         txt_depart_set_tym = (TextView) findViewById(R.id.txt_departure_date);
         txt_return_set_tym = (TextView) findViewById(R.id.txt_departure_time);
@@ -226,25 +236,32 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         txtvwcar_name = (TextView) findViewById(R.id.txtcar_name_info);
         lnr_vehicle_nmber = (RelativeLayout) findViewById(R.id.lnr_vehicle_nmber);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+
+        txtv_currency = (TextView) findViewById(R.id.txtv_currency);
+
         list_midpoint = (ListView) findViewById(R.id.list_mid);
 
-        txt_depart_tym.setText("Departure time");
-        txt_depart_set_tym.setHint("set depart time");
-        txt_return_tytm.setText("Return time");
-        txt_return_set_tym.setHint("set return time");
-        img_depart_tym.setBackgroundResource(R.mipmap.clock);
+        txt_depart_tym.setText("Departure Time");
+        txt_depart_set_tym.setHint("Set time");
+        txt_return_tytm.setText("Return Time");
+        txt_return_set_tym.setHint("Set time");
+        img_depart_tym.setImageResource(R.mipmap.clock);
         rel_return.setVisibility(View.GONE);
 
-        autocompleteFrom.setOnTouchListener(new View.OnTouchListener() {
+        autocompleteFrom.setOnTouchListener(new View.OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                final int DRAWABLE_LEFT   = 0;
+                final int DRAWABLE_TOP    = 1;
+                final int DRAWABLE_RIGHT  = 2;
                 final int DRAWABLE_BOTTOM = 3;
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (autocompleteFrom.getRight() - autocompleteFrom.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    if (event.getRawX() >= (autocompleteFrom.getRight() - autocompleteFrom.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()))
+                    {
                         autocompleteFrom.setText("");
                         strng_lat_from = "0.0";
                         strng_long_from = "0.0";
@@ -255,16 +272,20 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 return false;
             }
         });
-        autocompleteTo.setOnTouchListener(new View.OnTouchListener() {
+        autocompleteTo.setOnTouchListener(new View.OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                final int DRAWABLE_LEFT   = 0;
+                final int DRAWABLE_TOP    = 1;
+                final int DRAWABLE_RIGHT  = 2;
                 final int DRAWABLE_BOTTOM = 3;
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (autocompleteTo.getRight() - autocompleteTo.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    if (event.getRawX() >= (autocompleteTo.getRight() - autocompleteTo.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()))
+                    {
                         autocompleteTo.setText("");
                         strng_lat_to = "0.0";
                         strng_long_to = "0.0";
@@ -280,52 +301,53 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         autocompleteTo.setAdapter(GET_CITY_G);
         autocomplete_new_entry_midpnt.setAdapter(GET_CITY_G);
 
-//
-//        // Setting an item click listener for the AutoCompleteTextView dropdown list
-        autocompleteFrom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //
+        //        // Setting an item click listener for the AutoCompleteTextView dropdown list
+        autocompleteFrom.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int index,
-                                    long id) {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int index, long id)
+            {
 
                 Latlng_data resultList = GET_CITY_G.set_LAT_Lng_value(index);
 
                 strng_lat_from = String.valueOf(resultList.getLat());
                 strng_long_from = String.valueOf(resultList.getLng());
-            //    Log.e("lat long values", "" + resultList.getLat() + "  hgfhjg " + resultList.getLng());
-
+                //    Log.e("lat long values", "" + resultList.getLat() + "  hgfhjg " + resultList.getLng());
 
             }
         });
-        autocompleteTo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autocompleteTo.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int index,
-                                    long id) {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int index, long id)
+            {
 
                 Latlng_data resultList = GET_CITY_G.set_LAT_Lng_value(index);
                 strng_lat_to = String.valueOf(resultList.getLat());
                 strng_long_to = String.valueOf(resultList.getLng());
 
-
-
-
             }
         });
 
-        autocomplete_new_entry_midpnt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autocomplete_new_entry_midpnt.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int index,
-                                    long id) {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int index, long id)
+            {
 
                 Latlng_data resultList = GET_CITY_G.set_LAT_Lng_value(index);
                 strngmid_lat = String.valueOf(resultList.getLat());
                 strng_mid_long = String.valueOf(resultList.getLat());
-                if (((autocomplete_new_entry_midpnt.getText().toString().trim().length() > 0)&&(!(strngmid_lat.equalsIgnoreCase("0.0"))||!(strng_mid_long.equalsIgnoreCase("0.0"))))) {
+                if (((autocomplete_new_entry_midpnt.getText().toString().trim().length() > 0) && (!(strngmid_lat.equalsIgnoreCase("0.0")) || !(strng_mid_long.equalsIgnoreCase("0.0")))))
+                {
                     method_add_mid_pnt();
-                } else {
+                }
+                else
+                {
                     //  snackbar_method("Enter mid points to commit");
                     snackbar_method("Enter specific mid stations to commit");
                 }
-
 
             }
         });
@@ -333,13 +355,14 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         edt_car_type.setFocusable(false);
         edt_car_type.setFocusableInTouchMode(false);
 
-        edt_car_type.setOnClickListener(new View.OnClickListener() {
+        edt_car_type.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showdialogcartype();
             }
         });
-
 
         txt_depart_set_tym.setOnClickListener(this);
         img_add_days.setOnClickListener(this);
@@ -351,13 +374,13 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         lnr_rate.setOnClickListener(this);
         lnr_vw_seat_nmbr.setOnClickListener(this);
 
-
-//        /**
-//         * @DepartTime
-//         */
+        //        /**
+        //         * @DepartTime
+        //         */
 
         /*Return time*/
-        lnr_clk_depart.setOnClickListener(new View.OnClickListener() {
+        lnr_clk_depart.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -374,15 +397,19 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                     int hour = calendar.get(Calendar.HOUR_OF_DAY);
                     int min = calendar.get(Calendar.MINUTE);
 
-                    cancel.setOnClickListener(new View.OnClickListener() {
+                    cancel.setOnClickListener(new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(View v)
+                        {
                             dialog.dismiss();
                         }
                     });
-                    set.setOnClickListener(new View.OnClickListener() {
+                    set.setOnClickListener(new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(View v)
+                        {
                             setTime(v);
                             dialog.dismiss();
                         }
@@ -395,77 +422,103 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 }
             }
 
-            public void setTime(View view) {
+            public void setTime(View view)
+            {
                 int hour = timePicker.getCurrentHour();
-                int min = timePicker.getCurrentMinute();
+                int min  = timePicker.getCurrentMinute();
                 showTime(hour, min);
             }
 
-            public void showTime(int hour, int min) {
-                if (hour == 0) {
+            public void showTime(int hour, int min)
+            {
+                if (hour == 0)
+                {
                     hour += 12;
                     format = "AM";
-                } else if (hour == 12) {
+                }
+                else if (hour == 12)
+                {
                     format = "PM";
-                } else if (hour > 12) {
+                }
+                else if (hour > 12)
+                {
                     hour -= 12;
                     format = "PM";
 
-                } else {
+                }
+                else
+                {
                     format = "AM";
                 }
 
                 int length = (int) (Math.log10(min) + 1);
 
-                if (length == 1) {
-                    strng_time_return = new StringBuilder().append(hour).append(":").append("0" + min)
-                            .append(" ").append(format);
-                } else {
-                    strng_time_return = new StringBuilder().append(hour).append(":").append(min)
-                            .append(" ").append(format);
+                if (length == 1)
+                {
+                    strng_time_return = new StringBuilder().append(hour).append(":").append("0" + min).append(" ").append(format);
                 }
-                if (min == 0) {
-                    strng_time_return = new StringBuilder().append(hour).append(":").append("00")
-                            .append(" ").append(format);
+                else
+                {
+                    strng_time_return = new StringBuilder().append(hour).append(":").append(min).append(" ").append(format);
+                }
+                if (min == 0)
+                {
+                    strng_time_return = new StringBuilder().append(hour).append(":").append("00").append(" ").append(format);
                 }
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
-                try {
+                try
+                {
                     time_return = dateFormat.parse(String.valueOf(strng_time_return));
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
 
                 }
 
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
-                Date timeCompare_depart = null;
-                Date timeCompare_return = null;
-                try {
+                SimpleDateFormat sdf                = new SimpleDateFormat("hh:mm aa");
+                Date             timeCompare_depart = null;
+                Date             timeCompare_return = null;
+                try
+                {
                     timeCompare_depart = sdf.parse(txt_depart_set_tym.getText().toString());
-                } catch (ParseException e) {
+                }
+                catch (ParseException e)
+                {
                     e.printStackTrace();
                 }
-                try {
+                try
+                {
                     timeCompare_return = sdf.parse(strng_time_return.toString());
-                } catch (ParseException e) {
+                }
+                catch (ParseException e)
+                {
                     e.printStackTrace();
                 }
-                try {
-                    if (timeCompare_return.after(timeCompare_depart)) {
-                     //   Log.e("log1 ", ".." + strng_time_return);
+                try
+                {
+                    if (timeCompare_return.after(timeCompare_depart))
+                    {
+                        //   Log.e("log1 ", ".." + strng_time_return);
                         txt_return_set_tym.setText(strng_time_return);
-                    } else {
+                    }
+                    else
+                    {
                         snackbar_method("Return time has to me more than depart time");
                         txt_return_set_tym.setText("");
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
 
-                   // Log.e("Exception ", "" + ex.toString());
+                    // Log.e("Exception ", "" + ex.toString());
                 }
             }
         });
 /*Depart time*/
 
-        lnr_depart_date.setOnClickListener(new View.OnClickListener() {
+        lnr_depart_date.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -478,17 +531,21 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 timePicker = (TimePicker) dialog.findViewById(R.id.timePicker1);
                 calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                int min = calendar.get(Calendar.MINUTE);
+                int min  = calendar.get(Calendar.MINUTE);
 
-                cancel.setOnClickListener(new View.OnClickListener() {
+                cancel.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         dialog.dismiss();
                     }
                 });
-                set.setOnClickListener(new View.OnClickListener() {
+                set.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         setTime(v);
                         dialog.dismiss();
                     }
@@ -496,54 +553,63 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 dialog.show();
             }
 
-            public void setTime(View view) {
+            public void setTime(View view)
+            {
                 int hour = timePicker.getCurrentHour();
-                int min = timePicker.getCurrentMinute();
+                int min  = timePicker.getCurrentMinute();
                 showTime(hour, min);
             }
 
-            public void showTime(int hour, int min) {
+            public void showTime(int hour, int min)
+            {
 
-                if (hour == 0) {
+                if (hour == 0)
+                {
                     hour += 12;
                     format = "AM";
-                } else if (hour == 12) {
+                }
+                else if (hour == 12)
+                {
                     format = "PM";
-                } else if (hour > 12) {
+                }
+                else if (hour > 12)
+                {
                     format = "PM";
                     hour -= 12;
 
-                } else {
+                }
+                else
+                {
                     format = "AM";
                 }
 
                 int length = (int) (Math.log10(min) + 1);
 
-                if (length == 1) {
-                    strng_time_depart = new StringBuilder().append(hour).append(":").append("0" + min)
-                            .append(" ").append(format);
-                } else {
-                    strng_time_depart = new StringBuilder().append(hour).append(":").append(min)
-                            .append(" ").append(format);
+                if (length == 1)
+                {
+                    strng_time_depart = new StringBuilder().append(hour).append(":").append("0" + min).append(" ").append(format);
+                }
+                else
+                {
+                    strng_time_depart = new StringBuilder().append(hour).append(":").append(min).append(" ").append(format);
                 }
 
-                if (min == 0) {
-                    strng_time_depart = new StringBuilder().append(hour).append(":").append("00")
-                            .append(" ").append(format);
+                if (min == 0)
+                {
+                    strng_time_depart = new StringBuilder().append(hour).append(":").append("00").append(" ").append(format);
                 }
-//Log.e("First",""+strng_time_depart.toString());
+                //Log.e("First",""+strng_time_depart.toString());
                 txt_depart_set_tym.setText(strng_time_depart.toString());
             }
         });
 
-
     }
 
-
     /**
-     * @MethodAddMidPoint
+     @MethodAddMidPoint
      */
-    private void method_add_mid_pnt() {
+    private void method_add_mid_pnt()
+    {
         if (autocomplete_new_entry_midpnt.getText().length() <= 0)
         {
             snackbar_method("Enter mid point to add first");
@@ -552,9 +618,10 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         {
             String get_text_midpnt_to_show = autocomplete_new_entry_midpnt.getText().toString();
 
-            String get_text_midpnt = get_text_midpnt_to_show +":" + strngmid_lat + ":" + strng_mid_long;
-            if (get_text_midpnt.contains(",")) {
-//                        get_text_midpnt.replace(",", ";");
+            String get_text_midpnt = get_text_midpnt_to_show + ":" + strngmid_lat + ":" + strng_mid_long;
+            if (get_text_midpnt.contains(","))
+            {
+                //                        get_text_midpnt.replace(",", ";");
             }
 
             if (get_text_midpnt_to_show != null)
@@ -572,15 +639,15 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                         {
                             array_midPoints.add(get_text_midpnt);
                             array_midPoints_to_show.add(get_text_midpnt_to_show);
-                             adater = new MidPointAdapter();
+                            adater = new MidPointAdapter();
                             list_midpoint.setAdapter(adater);
                             adater.notifyDataSetChanged();
                             GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());
                             autocomplete_new_entry_midpnt.setText("");
 
                             //Added
-                            strngmid_lat="0.0";
-                            strng_mid_long="0.0";
+                            strngmid_lat = "0.0";
+                            strng_mid_long = "0.0";
                         }
                     }
                     else
@@ -600,13 +667,13 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         }
     }
 
-
     /**
-     * @MethodCheckValidations
+     @MethodCheckValidations
      */
-    private void method_check_validations() {
-      //  Log.e("log3", ".." + txt_rate_per_seat.getText().toString().trim());
-      //  Log.e("RATEVALIDATION",".."+seat_RateValidation(txt_rate_per_seat.getText().toString().trim()));
+    private void method_check_validations()
+    {
+        //  Log.e("log3", ".." + txt_rate_per_seat.getText().toString().trim());
+        //  Log.e("RATEVALIDATION",".."+seat_RateValidation(txt_rate_per_seat.getText().toString().trim()));
         if (static_string != "round")
         {
             if (autocompleteTo.getText().toString().length() <= 0)
@@ -617,11 +684,11 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             {
                 snackbar_method("Enter departure point");
             }
-            else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0")|| strng_lat_from.equals(""))
+            else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0") || strng_lat_from.equals(""))
             {
                 snackbar_method("Select leaving point from dropdown only");
             }
-            else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0")|| strng_lat_to.equals(""))
+            else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0") || strng_lat_to.equals(""))
             {
                 snackbar_method("Select leaving to from dropdown only");
             }
@@ -662,7 +729,8 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             }
             else if (txt_car_top.getText().toString().equals("Bike Information"))
             {
-                if (txt_number_Seats.getText().toString().equals("1")) {
+                if (txt_number_Seats.getText().toString().equals("1"))
+                {
                     HitService();
                 }
                 else
@@ -685,11 +753,11 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             {
                 snackbar_method("Enter departure point");
             }
-            else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0")|| strng_lat_from.equals(""))
+            else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0") || strng_lat_from.equals(""))
             {
                 snackbar_method("Select leaving point from dropdown only");
             }
-            else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0")|| strng_lat_to.equals(""))
+            else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0") || strng_lat_to.equals(""))
             {
                 snackbar_method("Select leaving to from dropdown only");
             }
@@ -751,11 +819,11 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         }
     }
 
-
     /**
-     * @MethodSelectDays
+     @MethodSelectDays
      */
-    private void method_select_days() {
+    private void method_select_days()
+    {
         final Dialog dialog = new Dialog(RegularBasis.this);
         dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -770,142 +838,204 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         dialog.show();
         dialog.getWindow().setAttributes(lp);
 
-        final CheckBox chk_sunday = (CheckBox) dialog.findViewById(R.id.chk_sunday);
-        final CheckBox chk_monday = (CheckBox) dialog.findViewById(R.id.chk_monday);
-        final CheckBox chk_tuesday = (CheckBox) dialog.findViewById(R.id.chk_tuesday);
+        final CheckBox chk_sunday   = (CheckBox) dialog.findViewById(R.id.chk_sunday);
+        final CheckBox chk_monday   = (CheckBox) dialog.findViewById(R.id.chk_monday);
+        final CheckBox chk_tuesday  = (CheckBox) dialog.findViewById(R.id.chk_tuesday);
         final CheckBox chk_wednsday = (CheckBox) dialog.findViewById(R.id.chk_wednsday);
         final CheckBox chk_thursday = (CheckBox) dialog.findViewById(R.id.chk_thursday);
-        final CheckBox chk_Friday = (CheckBox) dialog.findViewById(R.id.chk_Friday);
+        final CheckBox chk_Friday   = (CheckBox) dialog.findViewById(R.id.chk_Friday);
         final CheckBox chk_saturday = (CheckBox) dialog.findViewById(R.id.chk_saturday);
 
-        if (txt_days_data.getText().toString().contains("Sunday")) {
+        if (txt_days_data.getText().toString().contains("Sunday"))
+        {
             chk_sunday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_sunday.setChecked(false);
         }
-        if (txt_days_data.getText().toString().contains("Monday")) {
+        if (txt_days_data.getText().toString().contains("Monday"))
+        {
             chk_monday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_monday.setChecked(false);
         }
-        if (txt_days_data.getText().toString().contains("Tuesday")) {
+        if (txt_days_data.getText().toString().contains("Tuesday"))
+        {
             chk_tuesday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_tuesday.setChecked(false);
         }
-        if (txt_days_data.getText().toString().contains("Wednesday")) {
+        if (txt_days_data.getText().toString().contains("Wednesday"))
+        {
             chk_wednsday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_wednsday.setChecked(false);
         }
-        if (txt_days_data.getText().toString().contains("Thursday")) {
+        if (txt_days_data.getText().toString().contains("Thursday"))
+        {
             chk_thursday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_thursday.setChecked(false);
         }
-        if (txt_days_data.getText().toString().contains("Friday")) {
+        if (txt_days_data.getText().toString().contains("Friday"))
+        {
             chk_Friday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_Friday.setChecked(false);
         }
-        if (txt_days_data.getText().toString().contains("Saturday")) {
+        if (txt_days_data.getText().toString().contains("Saturday"))
+        {
             chk_saturday.setChecked(true);
-        } else {
+        }
+        else
+        {
             chk_saturday.setChecked(false);
         }
 
         Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-        Button btn_set = (Button) dialog.findViewById(R.id.btn_set);
+        Button btn_set    = (Button) dialog.findViewById(R.id.btn_set);
 
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
+        btn_cancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 dialog.dismiss();
             }
         });
 
-
-        btn_set.setOnClickListener(new View.OnClickListener() {
+        btn_set.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if (chk_sunday.isChecked()) {
+            public void onClick(View v)
+            {
+                if (chk_sunday.isChecked())
+                {
                     sunday = "Sunday";
-                } else {
+                }
+                else
+                {
                     sunday = "";
                 }
-                if (chk_monday.isChecked()) {
-                    if (sunday != "") {
+                if (chk_monday.isChecked())
+                {
+                    if (sunday != "")
+                    {
                         monday = ",Monday";
-                    } else {
+                    }
+                    else
+                    {
                         monday = "Monday";
                     }
 
-                } else {
+                }
+                else
+                {
                     monday = "";
                 }
-                if (chk_tuesday.isChecked()) {
-                    if (sunday != "" || monday != "") {
+                if (chk_tuesday.isChecked())
+                {
+                    if (sunday != "" || monday != "")
+                    {
                         tuesday = ",Tuesday";
-                    } else {
+                    }
+                    else
+                    {
                         tuesday = "Tuesday";
                     }
 
-                } else {
+                }
+                else
+                {
                     tuesday = "";
                 }
-                if (chk_wednsday.isChecked()) {
-                    if (sunday != "" || monday != "" || tuesday != "") {
+                if (chk_wednsday.isChecked())
+                {
+                    if (sunday != "" || monday != "" || tuesday != "")
+                    {
                         wedndy = ",Wednesday";
-                    } else {
+                    }
+                    else
+                    {
                         wedndy = "Wednesday";
                     }
 
-                } else {
+                }
+                else
+                {
                     wedndy = "";
                 }
-                if (chk_thursday.isChecked()) {
-                    if (sunday != "" || monday != "" || wedndy != "" || tuesday != "") {
+                if (chk_thursday.isChecked())
+                {
+                    if (sunday != "" || monday != "" || wedndy != "" || tuesday != "")
+                    {
                         thursdy = ",Thursday";
-                    } else {
+                    }
+                    else
+                    {
                         thursdy = "Thursday";
                     }
 
-                } else {
+                }
+                else
+                {
                     thursdy = "";
                 }
-                if (chk_Friday.isChecked()) {
-                    if (sunday != "" || monday != "" || wedndy != "" || tuesday != "" || thursdy != "") {
+                if (chk_Friday.isChecked())
+                {
+                    if (sunday != "" || monday != "" || wedndy != "" || tuesday != "" || thursdy != "")
+                    {
                         fridy = ",Friday";
-                    } else {
+                    }
+                    else
+                    {
                         fridy = "Friday";
                     }
 
-                } else {
+                }
+                else
+                {
                     fridy = "";
                 }
-                if (chk_saturday.isChecked()) {
-                    if (sunday != "" || monday != "" || wedndy != "" || tuesday != "" || thursdy != "" || fridy != "") {
+                if (chk_saturday.isChecked())
+                {
+                    if (sunday != "" || monday != "" || wedndy != "" || tuesday != "" || thursdy != "" || fridy != "")
+                    {
                         strdy = ",Saturday";
-                    } else {
+                    }
+                    else
+                    {
                         strdy = "Saturday";
                     }
 
-                } else {
+                }
+                else
+                {
                     strdy = "";
                 }
                 txt_days_data.setText(sunday.trim() + monday.trim() + tuesday.trim() +
-                        wedndy.trim() +
-                        thursdy.trim() + fridy.trim() + strdy.trim());
+                          wedndy.trim() +
+                          thursdy.trim() + fridy.trim() + strdy.trim());
                 dialog.dismiss();
             }
         });
 
     }
 
-
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
 
         array_midPoints.clear();
@@ -913,22 +1043,22 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         array_midPoints_add_city.clear();
 
         String from = get_intent.getStringExtra(GlobalConstants.Leaving_From);
-        String to = get_intent.getStringExtra(GlobalConstants.Leaving_To);
+        String to   = get_intent.getStringExtra(GlobalConstants.Leaving_To);
         get_intent_depart_date = get_intent.getStringExtra(GlobalConstants.Leaving_Date);
 
-        String points = get_intent.getStringExtra(GlobalConstants.Points);
-        String vehicle_type = get_intent.getStringExtra("vehicle_type");
-        String vehicle_name = get_intent.getStringExtra("vehicle_name");
+        String points         = get_intent.getStringExtra(GlobalConstants.Points);
+        String vehicle_type   = get_intent.getStringExtra("vehicle_type");
+        String vehicle_name   = get_intent.getStringExtra("vehicle_name");
         String vehicle_select = get_intent.getStringExtra("vehicle_select");
-        String is_round = get_intent.getStringExtra(GlobalConstants.Round_Trip);
+        String is_round       = get_intent.getStringExtra(GlobalConstants.Round_Trip);
         get_intent_return_time = get_intent.getStringExtra(GlobalConstants.Return_Time);
         String available_seat = get_intent.getStringExtra(GlobalConstants.Available_Seats);
-        String rate = get_intent.getStringExtra(GlobalConstants.Rate_seat);
-        get_trip_id = get_intent.getStringExtra(GlobalConstants.Trip_Id);
+        String rate           = get_intent.getStringExtra(GlobalConstants.Rate_seat);
+        get_trip_id = get_intent.getStringExtra(GlobalConstants.KeyNames.TripId.toString());
         get_intent_depart_time = get_intent.getStringExtra(GlobalConstants.Leaving_Time);
         String ragulerDays = get_intent.getStringExtra(GlobalConstants.Regular_Days);
-        String VehicleNo = get_intent.getStringExtra(GlobalConstants.Vehicle_number);
-      //  Log.e("RETURN TIME","^^^^^^^^ "+get_intent_return_time);
+        String VehicleNo   = get_intent.getStringExtra(GlobalConstants.Vehicle_number);
+        //  Log.e("RETURN TIME","^^^^^^^^ "+get_intent_return_time);
         if (from != null)
         {
             autocompleteFrom.setText(from);
@@ -944,20 +1074,20 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         }
         if (get_intent_depart_time != null)
         {
-         //   Log.e("log5",""+get_intent_depart_time);
+            //   Log.e("log5",""+get_intent_depart_time);
             txt_depart_set_tym.setText(get_intent_depart_time);
         }
 
-        if ((get_intent_return_time != null)&&!get_intent_return_time.equalsIgnoreCase(""))
+        if ((get_intent_return_time != null) && !get_intent_return_time.equalsIgnoreCase(""))
         {
-            if (!get_intent_return_time.equalsIgnoreCase("null")&&!get_intent_return_time.equalsIgnoreCase(""))
+            if (!get_intent_return_time.equalsIgnoreCase("null") && !get_intent_return_time.equalsIgnoreCase(""))
             {
-               // Log.e("log2", ".." + get_intent_return_time);
+                // Log.e("log2", ".." + get_intent_return_time);
                 txt_return_set_tym.setText(get_intent_return_time);
             }
             else
             {
-              //  txt_return_set_tym.setText("Return Time");
+                //  txt_return_set_tym.setText("Return Time");
             }
         }
         if (to != null)
@@ -1028,83 +1158,80 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             }
         }
 
-
         //=========Added For Midpoints============
-     //   Log.e("Regular points",""+points);
-        if(points != null)
+        //   Log.e("Regular points",""+points);
+        if (points != null)
         {
             String[] mid_stationsArray = points.split(";");
             int sizeMid_stations = mid_stationsArray.length;
-           // Log.e("Reg sizeMid_stations",""+sizeMid_stations);
-            if (mid_stationsArray.length == 2)
-            {
-               // Log.e("Reg 222",""+sizeMid_stations);
-            }
-            else
-            {
-//                     for (int i = 0; i < (sizeMid_stations - 1); i++)
-                for (int i = 0; i < sizeMid_stations; i++)
-                {
-                    if (i == 0)
-                    {
-                       // Log.e("Reg Else",""+sizeMid_stations);
-                        String[]  stationsName_= mid_stationsNames(mid_stationsArray[i]);
-                        strng_lat_from=stationsName_[1];
-                        strng_long_from=stationsName_[2];
-                     //   Log.e("Reg strng_lat_from",""+strng_lat_from);
-                     //   Log.e("Reg strng_long_from",""+strng_long_from);
-                    }
-                    else if(i==(sizeMid_stations-1))
-                    {
-                        String[]  stationsName_= mid_stationsNames(mid_stationsArray[i]);
-                        strng_lat_to=stationsName_[1];
-                        strng_long_to=stationsName_[2];
-                       // Log.e("Reg strng_lat_to",""+strng_lat_to);
-                       // Log.e("Reg strng_long_to",""+strng_long_to);
-                    }
-                    else {
-                        array_midPoints.add(mid_stationsArray[i]);
-                       // Log.e("Reg array_midPoints", "" + array_midPoints);
-                        String[]  stationsName_= mid_stationsNames(mid_stationsArray[i]);
-                        array_midPoints_to_show.add(stationsName_[0]);
-                    }
-                }
 
-              //  Log.e("Regular BasisMidpoints",""+array_midPoints_to_show);
-                list_midpoint.setAdapter(adater);
-                GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());
+            //                     for (int i = 0; i < (sizeMid_stations - 1); i++)
+            for (int i = 0; i < sizeMid_stations; i++)
+            {
+                if (i == 0)
+                {
+                    // Log.e("Reg Else",""+sizeMid_stations);
+                    String[] stationsName_ = mid_stationsNames(mid_stationsArray[i]);
+                    strng_lat_from = stationsName_[1];
+                    strng_long_from = stationsName_[2];
+                    //   Log.e("Reg strng_lat_from",""+strng_lat_from);
+                    //   Log.e("Reg strng_long_from",""+strng_long_from);
+                }
+                else if (i == (sizeMid_stations - 1))
+                {
+                    String[] stationsName_ = mid_stationsNames(mid_stationsArray[i]);
+                    strng_lat_to = stationsName_[1];
+                    strng_long_to = stationsName_[2];
+                    // Log.e("Reg strng_lat_to",""+strng_lat_to);
+                    // Log.e("Reg strng_long_to",""+strng_long_to);
+                }
+                else
+                {
+                    array_midPoints.add(mid_stationsArray[i]);
+                    // Log.e("Reg array_midPoints", "" + array_midPoints);
+                    String[] stationsName_ = mid_stationsNames(mid_stationsArray[i]);
+                    array_midPoints_to_show.add(stationsName_[0]);
+                }
             }
+
+            //  Log.e("Regular BasisMidpoints",""+array_midPoints_to_show);
+            list_midpoint.setAdapter(adater);
+            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());
+
         }
 
         //=======Added Above============================
 
-        if (from == null) {
-        String current_city = preferences.getString("current_city", null);
-        String current_lat = preferences.getString("current_lat", null);
-        String current_long = preferences.getString("current_long", null);
-            if (current_city != null) {
-                if (current_city.length() > 0) {
+        if (from == null)
+        {
+            String current_city = preferences.getString("current_city", null);
+            String current_lat = preferences.getString("current_lat", null);
+            String current_long = preferences.getString("current_long", null);
+            if (current_city != null)
+            {
+                if (current_city.length() > 0)
+                {
                     autocompleteFrom.setText(current_city);
                     strng_lat_from = current_lat;
                     strng_long_from = current_long;
                     autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
                 }
 
-        }}
-
+            }
+        }
 
         if (static_string.equals("round"))
         {
             btn_round_trip.setBackgroundResource(R.mipmap.return_yellow);
-            btn_single_trip.setBackgroundResource(R.mipmap.singletripbtn);
+            btn_single_trip.setBackgroundResource(R.drawable.grey_border);
             txt_return_tytm.setVisibility(View.VISIBLE);
-          //  Log.e("log3",""+txt_return_set_tym.getText().toString());
+            //  Log.e("log3",""+txt_return_set_tym.getText().toString());
             txt_return_set_tym.setHint("set return time");
         }
         else if (static_string.equals("single"))
         {
             btn_single_trip.setBackgroundResource(R.mipmap.return_yellow);
-            btn_round_trip.setBackgroundResource(R.mipmap.singletripbtn);
+            btn_round_trip.setBackgroundResource(R.drawable.grey_border);
             txt_return_tytm.setVisibility(View.GONE);
             regulr_return_lnr.setVisibility(View.GONE);
         }
@@ -1112,7 +1239,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         {
             static_string = "single";
             btn_single_trip.setBackgroundResource(R.mipmap.return_yellow);
-            btn_round_trip.setBackgroundResource(R.mipmap.singletripbtn);
+            btn_round_trip.setBackgroundResource(R.drawable.grey_border);
             txt_return_tytm.setVisibility(View.GONE);
             regulr_return_lnr.setVisibility(View.GONE);
         }
@@ -1120,11 +1247,11 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         data_ofer_ride.put("VehicleType", "Car");
     }
 
-
     /**
-     * @HitService(Delete)
+     @HitService(Delete)
      */
-    private void HitService_DeleteItem() {
+    private void HitService_DeleteItem()
+    {
 
         HashMap<String, String> data_home = new HashMap<>();
         data_home.put("CustomerId", customerID);
@@ -1135,26 +1262,23 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(RegularBasis.this,
-                    "http://112.196.34.42:9091/Trip/DeleteTrip?TripId=" + get_trip_id,
-                    GlobalConstants.GET_SERVICE_METHOD1, null);
+            Json_AsnycTask task = new Json_AsnycTask(RegularBasis.this, "http://112.196.34.42:9091/Trip/DeleteTrip?TripId=" + get_trip_id, GlobalConstants.GET_SERVICE_METHOD1, null);
             task.setOnResultsListener(this);
             task.execute();
-            dialog = ProgressDialog.show(RegularBasis.this, "",
-                    "Deleting. Please wait...", true);
+            dialog = ProgressDialog.show(RegularBasis.this, "", "Deleting. Please wait...", true);
             dialog.setCancelable(true);
             dialog.show();
 
         }
     }
 
-
     /**
-     * @HitServiceSaveDrive
+     @HitServiceSaveDrive
      */
-    public void HitService() {
+    public void HitService()
+    {
 
-      //  Log.e("HitService ","hithithi t "+array_midPoints);
+        //  Log.e("HitService ","hithithi t "+array_midPoints);
         if (array_midPoints != null)
         {
             if (array_midPoints.size() > 0)
@@ -1176,18 +1300,18 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 data_ofer_ride.put("Points", Points_to_post);
             }
         }
-      //  Log.e("HitService ","Points_to_post t "+Points_to_post);
-       // Log.e("HitService ","Points_to_post t "+data_ofer_ride.get("Points"));
+        //  Log.e("HitService ","Points_to_post t "+Points_to_post);
+        // Log.e("HitService ","Points_to_post t "+data_ofer_ride.get("Points"));
         auto_from = autocompleteFrom.getText().toString();
         auto_to = autocompleteTo.getText().toString();
 
         data_ofer_ride.put("CustomerId", customerID);
-        data_ofer_ride.put("LeavingFrom", autocompleteFrom.getText().toString()+ ":" + strng_lat_from + ":" + strng_long_from);
+        data_ofer_ride.put("LeavingFrom", autocompleteFrom.getText().toString() + ":" + strng_lat_from + ":" + strng_long_from);
         data_ofer_ride.put("LeavingDate", String.valueOf(date_bulider).trim());
         data_ofer_ride.put("LeavingTime", txt_depart_set_tym.getText().toString());
 
-
-        if (get_intent_depart_date != null) {
+        if (get_intent_depart_date != null)
+        {
             data_ofer_ride.put("DepartureDate", get_intent_depart_date);
         }
         else
@@ -1195,7 +1319,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             data_ofer_ride.put("DepartureDate", String.valueOf(date_bulider).trim());
         }
         data_ofer_ride.put("DepartureTime", txt_depart_set_tym.getText().toString());
-        data_ofer_ride.put("LeavingTo", autocompleteTo.getText().toString()+ ":" + strng_lat_to + ":" + strng_long_to);
+        data_ofer_ride.put("LeavingTo", autocompleteTo.getText().toString() + ":" + strng_lat_to + ":" + strng_long_to);
         data_ofer_ride.put("RatePerSeat", txt_rate_per_seat.getText().toString());
         data_ofer_ride.put("NoOfSeats", txt_number_Seats.getText().toString());
         data_ofer_ride.put("VehicleName", edt_car_name.getText().toString());
@@ -1232,10 +1356,9 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             data_ofer_ride.put("RegulerDays", "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday");
         }
 
-
         data_ofer_ride.put("ReturnDate", String.valueOf(date_bulider));
         data_ofer_ride.put("ReturnTime", txt_return_set_tym.getText().toString());
-     //   Log.e("log4",""+txt_return_set_tym.getText().toString());
+        //   Log.e("log4",""+txt_return_set_tym.getText().toString());
 
         if (txt_car_top.getText().toString().equals("Car Information"))
         {
@@ -1245,7 +1368,6 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         {
             data_ofer_ride.put("VehicleType", "Bike");
         }
-
 
         if (!cd.isConnectingToInternet())
         {
@@ -1257,29 +1379,24 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             if (btn_select_ride.getText().toString().equals("SAVE CHANGES"))
             {
 
-                Log.e("data_ofer_ride ","Update"+data_ofer_ride);
+                Log.e("data_ofer_ride ", "Update" + data_ofer_ride);
                 data_ofer_ride.put("TripID", get_trip_id);
-                final Json_AsnycTask tsk = new Json_AsnycTask(RegularBasis.this,
-                        "http://112.196.34.42:9091/Trip/UpdateTrip",
-                        GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
+                final Json_AsnycTask tsk = new Json_AsnycTask(RegularBasis.this, "http://112.196.34.42:9091/Trip/UpdateTrip", GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
                 tsk.setOnResultsListener(this);
                 tsk.execute();
-                dialog = ProgressDialog.show(RegularBasis.this, "",
-                        "Loading. Please wait...", true);
+                dialog = ProgressDialog.show(RegularBasis.this, "", "Loading. Please wait...", true);
                 dialog.setCancelable(false);
                 dialog.show();
             }
             else
             {
 
-                Log.e("data_ofer_ride ","((((("+data_ofer_ride);
-                final Json_AsnycTask tsk = new Json_AsnycTask(RegularBasis.this,
-                        GlobalConstants.OFFER_RIDE, GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
+                Log.e("data_ofer_ride ", "(((((" + data_ofer_ride);
+                final Json_AsnycTask tsk = new Json_AsnycTask(RegularBasis.this, GlobalConstants.OFFER_RIDE, GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
                 tsk.setOnResultsListener(this);
                 tsk.execute();
 
-                dialog = ProgressDialog.show(RegularBasis.this, "",
-                        "Loading. Please wait...", true);
+                dialog = ProgressDialog.show(RegularBasis.this, "", "Loading. Please wait...", true);
                 dialog.setCancelable(false);
                 dialog.show();
             }
@@ -1288,7 +1405,8 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
     }
 
     @Override
-    public void onResultsSucceeded_Get_Method1(JSONObject result) {
+    public void onResultsSucceeded_Get_Method1(JSONObject result)
+    {
         dialog.dismiss();
         Log.e("response 1", "Login==" + result);
         if (result != null)
@@ -1302,7 +1420,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             {
                 Log.e("response 1", "Login==" + result);
                 RegularBasis.this.finish();
-                Toast.makeText(getApplicationContext(),"Trip successfully saved",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Trip successfully saved", Toast.LENGTH_LONG).show();
 
             }
         }
@@ -1314,12 +1432,14 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
     }
 
     @Override
-    public void onResultsSucceeded_Get_Method2(JSONObject result) {
+    public void onResultsSucceeded_Get_Method2(JSONObject result)
+    {
 
     }
 
     @Override
-    public void onResultsSucceeded_Post_Method1(JSONObject result) {
+    public void onResultsSucceeded_Post_Method1(JSONObject result)
+    {
         dialog.dismiss();
         Log.e("response 1", "Login==" + result);
         if (result != null)
@@ -1338,16 +1458,14 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 RegularBasis.this.finish();
                 if (btn_select_ride.getText().toString().equals("SAVE CHANGES"))
                 {
-                  //  snackbar_method("Changes saved successfully");
-                    Toast.makeText(getApplicationContext(),
-                            "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                    //  snackbar_method("Changes saved successfully");
+                    Toast.makeText(getApplicationContext(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                   // snackbar_method("Trip successfully saved");
-                    Toast.makeText(getApplicationContext(),"Trip successfully saved",Toast.LENGTH_LONG).show();
+                    // snackbar_method("Trip successfully saved");
+                    Toast.makeText(getApplicationContext(), "Trip successfully saved", Toast.LENGTH_LONG).show();
                 }
-
 
             }
             else
@@ -1363,23 +1481,39 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
     }
 
     @Override
-    public void onResultsSucceeded_Post_Method2(JSONObject result) {
+    public void onResultsSucceeded_Post_Method2(JSONObject result)
+    {
     }
 
     @Override
-    public void onResultsSucceeded_Post_Method3(JSONObject result) {
+    public void onResultsSucceeded_Post_Method3(JSONObject result)
+    {
     }
 
+    @Override
+    public void onResultsSucceeded_Post_Method4(JSONObject result)
+    {
+
+    }
+
+    @Override
+    public void onResultsSucceeded_Post_Method5(JSONObject result)
+    {
+
+    }
 
     /**
-     * @CarBike(SelectionRadio_Button)
+     @CarBike(SelectionRadio_Button)
      */
 
-    public void addListenerOnButton() {
+    public void addListenerOnButton()
+    {
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 radioButton = (RadioButton) findViewById(selectedId);
 
@@ -1393,7 +1527,8 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                     selectedId = R.id.radiocar;
                 }
 
-                if (selectedId == R.id.radiocar) {
+                if (selectedId == R.id.radiocar)
+                {
                     tvw_car_ype.setVisibility(View.VISIBLE);
                     edt_car_type.setVisibility(View.VISIBLE);
                     txt_car_top.setText("Car Information");
@@ -1433,9 +1568,8 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         });
     }
 
-
     /***
-     * car type dialog
+     car type dialog
      */
 
     public void showdialogcartype()
@@ -1455,64 +1589,25 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         dialog.getWindow().setAttributes(lp);
 
         Button cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-        Button set = (Button) dialog.findViewById(R.id.btn_set);
+        Button set    = (Button) dialog.findViewById(R.id.btn_set);
         radioGroup = (RadioGroup) dialog.findViewById(R.id.radiogrp);
-        if (edt_car_type.getText().toString().equals(""))
-        {
-            radioGroup.check(R.id.radio_sedan);
-        }
-        else if (edt_car_type.getText().toString().equals("Sedan"))
-        {
-            radioGroup.check(R.id.radio_sedan);
-        }
-        else if (edt_car_type.getText().toString().equals("Audi"))
-        {
-            radioGroup.check(R.id.radio_audi);
-        }
-        else if (edt_car_type.getText().toString().equals("Mini Cab"))
-        {
-            radioGroup.check(R.id.radio_minicab);
-        }
-        else if (edt_car_type.getText().toString().equals("MUV"))
-        {
-            radioGroup.check(R.id.radio_muv);
-        }
-        else if (edt_car_type.getText().toString().equals("SUV"))
-        {
-            radioGroup.check(R.id.radio_suv);
-        }
-        else if (edt_car_type.getText().toString().equals("Roadster"))
-        {
-            radioGroup.check(R.id.radio_roadster);
-        }
-        else if (edt_car_type.getText().toString().equals("Estate"))
-        {
-            radioGroup.check(R.id.radio_estate);
-        }
-        else if (edt_car_type.getText().toString().equals("Coupe"))
-        {
-            radioGroup.check(R.id.radio_coupe);
-        }
-        else if (edt_car_type.getText().toString().equals("HatchBack"))
-        {
-            radioGroup.check(R.id.radio_hatchback);
-        }
-        else if (edt_car_type.getText().toString().equals("Cross Over"))
-        {
-            radioGroup.check(R.id.radio_cross);
-        }
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+
+        cancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 dialog.dismiss();
             }
         });
 
-        set.setOnClickListener(new View.OnClickListener() {
+        set.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
+            public void onClick(View v)
+            {
+                int         selectedId  = radioGroup.getCheckedRadioButtonId();
                 RadioButton radioButton = (RadioButton) dialog.findViewById(selectedId);
                 edt_car_type.setText(radioButton.getText());
                 dialog.dismiss();
@@ -1521,55 +1616,63 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         dialog.show();
     }
 
-
     /**
-     * @MidPointAdapter
+     @MidPointAdapter
      */
-    private class MidPointAdapter extends BaseAdapter {
+    private class MidPointAdapter extends BaseAdapter
+    {
 
-        public MidPointAdapter() {
+        public MidPointAdapter()
+        {
             super();
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+        {
 
-           // Log.e("Get COunt","CCCCCCC"+array_midPoints_to_show.size());
+            // Log.e("Get COunt","CCCCCCC"+array_midPoints_to_show.size());
             return array_midPoints_to_show.size();
         }
 
         @Override
-        public Object getItem(int position) {
+        public Object getItem(int position)
+        {
             return null;
         }
 
         @Override
-        public long getItemId(int position) {
+        public long getItemId(int position)
+        {
             return 0;
         }
 
         @Override
-        public boolean hasStableIds() {
+        public boolean hasStableIds()
+        {
             return super.hasStableIds();
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent)
+        {
             LayoutInflater inflater = LayoutInflater.from(RegularBasis.this);
-            View v = inflater.inflate(R.layout.custom_midpnt, parent, false);
+            View           v        = inflater.inflate(R.layout.custom_midpnt, parent, false);
 
-            TextView add_txt_tolist = (TextView) v.findViewById(R.id.autocmplete_mid);
-            ImageView img_cros = (ImageView) v.findViewById(R.id.img_cros);
+            TextView  add_txt_tolist = (TextView) v.findViewById(R.id.autocmplete_mid);
+            ImageView img_cros       = (ImageView) v.findViewById(R.id.img_cros);
 
-           // Log.e("Midpoint","****" +array_midPoints_to_show);
+            // Log.e("Midpoint","****" +array_midPoints_to_show);
             if (array_midPoints_to_show != null)
             {
                 add_txt_tolist.setText(array_midPoints_to_show.get(position));
             }
 
-            img_cros.setOnClickListener(new View.OnClickListener() {
+            img_cros.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
 
                     array_midPoints.remove(position);
                     array_midPoints_to_show.remove(position);
@@ -1582,51 +1685,55 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         }
 
         @Override
-        public void notifyDataSetChanged() {
+        public void notifyDataSetChanged()
+        {
             super.notifyDataSetChanged();
         }
 
         @Override
-        public void notifyDataSetInvalidated() {
+        public void notifyDataSetInvalidated()
+        {
             super.notifyDataSetInvalidated();
         }
-
 
     }
 
     /**
-     * @snackbarMethod
+     @snackbarMethod
      */
-    private void snackbar_method(String text) {
-        snackbar = Snackbar
-                .make(coordinatorLayout, text, Snackbar.LENGTH_LONG)
-                .setAction("Ok", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        snackbar.dismiss();
-                    }
-                });
+    private void snackbar_method(String text)
+    {
+        snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG).setAction("Ok", new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                snackbar.dismiss();
+            }
+        });
         snackbar.setActionTextColor(Color.RED);
-        View sbView = snackbar.getView();
+        View     sbView   = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
     }
 
-    private void btn_round_trip_method(){
+    private void btn_round_trip_method()
+    {
         btn_round_trip.setBackgroundResource(R.mipmap.return_yellow);
-        btn_single_trip.setBackgroundResource(R.mipmap.singletripbtn);
+        btn_single_trip.setBackgroundResource(R.drawable.grey_border);
         txt_return_tytm.setVisibility(View.VISIBLE);
         regulr_return_lnr.setVisibility(View.VISIBLE);
         static_string = "round";
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v)
+    {
 
-
-        int id=v.getId();
-        switch(id){
+        int id = v.getId();
+        switch (id)
+        {
 
             case R.id.img_add_days:
                 method_select_days();
@@ -1634,125 +1741,41 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             case R.id.btn_round_trip:
                 btn_round_trip_method();
                 break;
-        case R.id.btn_cancel:
+            case R.id.btn_cancel:
                 btn_cancel_ride_method();
                 break;
-        case R.id.btn_single_trip:
-        btn_singletrip();
-        break;
-        case R.id.btn_select:
-        method_check_validations();
-        break;
-        case R.id.lnr_vw_seat_nmbr:
-        txt_number_Seats.requestFocus();
-        break;
-        case R.id.lnr_rate:
-        txt_rate_per_seat.requestFocus();
-        break;
-        default:
-        break;
+            case R.id.btn_single_trip:
+                btn_singletrip();
+                break;
+            case R.id.btn_select:
+                method_check_validations();
+                break;
+            case R.id.lnr_vw_seat_nmbr:
+                txt_number_Seats.requestFocus();
+                break;
+            case R.id.lnr_rate:
+                txt_rate_per_seat.requestFocus();
+                break;
+            default:
+                break;
         }
         //================
 
-//        if (v == img_add_days) {
-//            method_select_days();
-//
-//
-//        }
-//
-//        if (v == btn_round_trip) {
-//            btn_round_trip.setBackgroundResource(R.mipmap.return_yellow);
-//            btn_single_trip.setBackgroundResource(R.mipmap.singletripbtn);
-//            txt_return_tytm.setVisibility(View.VISIBLE);
-//            regulr_return_lnr.setVisibility(View.VISIBLE);
-//            static_string = "round";
-//        }
-//        if (v == btn_single_trip) {
-//            btn_round_trip.setBackgroundResource(R.mipmap.singletripbtn);
-//            btn_single_trip.setBackgroundResource(R.mipmap.return_yellow);
-//            txt_return_tytm.setVisibility(View.GONE);
-//            regulr_return_lnr.setVisibility(View.GONE);
-//            static_string = "single";
-//        }
-//        if (v == img_add_mid_pnt) {
-//
-//            if (((autocomplete_new_entry_midpnt.getText().toString().trim().length() > 0)&&(!(strngmid_lat.equalsIgnoreCase("0.0"))||!(strng_mid_long.equalsIgnoreCase("0.0"))))) {
-//                method_add_mid_pnt();
-//            } else {
-//                //  snackbar_method("Enter mid points to commit");
-//                snackbar_method("Enter specific mid stations to commit");
-//            }
-//        }
-//        if (v == btn_select_ride) {
-//            method_check_validations();
-//        }
-//        if (v == lnr_vw_seat_nmbr) {
-//            txt_number_Seats.requestFocus();
-//
-//        }
-//        if (v == lnr_rate) {
-//            txt_rate_per_seat.requestFocus();
-//
-//        }
-//        if (v == btn_cancel_ride) {
-//            if (btn_cancel_ride.getText().toString().equals("DELETE RIDE")) {
-//                final Dialog dialog = new Dialog(RegularBasis.this);
-//                dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
-//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                dialog.setContentView(R.layout.mobile_custom_verify);
-//                dialog.setCancelable(false);
-//
-//                TextView text = (TextView) dialog.findViewById(R.id.text);
-//                Button ok = (Button) dialog.findViewById(R.id.ok);
-//                Button cancel = (Button) dialog.findViewById(R.id.cancel);
-//                final EditText edt_mobile = (EditText) dialog.findViewById(R.id.text_mobile);
-//                edt_mobile.setVisibility(View.GONE);
-//                text.setText("Do you really want to delete your trip");
-//
-//
-//                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//                lp.copyFrom(dialog.getWindow().getAttributes());
-//                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//
-//                dialog.show();
-//                dialog.getWindow().setAttributes(lp);
-//
-//                ok.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        dialog.dismiss();
-//
-//                        HitService_DeleteItem();
-//                    }
-//                });
-//                cancel.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        dialog.dismiss();
-//
-//                    }
-//                });
-//
-//                dialog.show();
-//            } else {
-//                RegularBasis.this.finish();
-//            }
- //       }
     }
 
-    private void btn_singletrip(){
-        btn_round_trip.setBackgroundResource(R.mipmap.singletripbtn);
+    private void btn_singletrip()
+    {
+        btn_round_trip.setBackgroundResource(R.drawable.grey_border);
         btn_single_trip.setBackgroundResource(R.mipmap.return_yellow);
         txt_return_tytm.setVisibility(View.GONE);
         regulr_return_lnr.setVisibility(View.GONE);
         static_string = "single";
     }
 
-    private void btn_cancel_ride_method(){
-        if (btn_cancel_ride.getText().toString().equals("DELETE RIDE")) {
+    private void btn_cancel_ride_method()
+    {
+        if (btn_cancel_ride.getText().toString().equals("DELETE RIDE"))
+        {
             final Dialog dialog = new Dialog(RegularBasis.this);
             dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1766,7 +1789,6 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             edt_mobile.setVisibility(View.GONE);
             text.setText("Do you really want to delete your trip");
 
-
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             lp.copyFrom(dialog.getWindow().getAttributes());
             lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -1775,18 +1797,22 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             dialog.show();
             dialog.getWindow().setAttributes(lp);
 
-            ok.setOnClickListener(new View.OnClickListener() {
+            ok.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
 
                     dialog.dismiss();
 
                     HitService_DeleteItem();
                 }
             });
-            cancel.setOnClickListener(new View.OnClickListener() {
+            cancel.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
 
                     dialog.dismiss();
 
@@ -1794,60 +1820,62 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             });
 
             dialog.show();
-        } else {
+        }
+        else
+        {
             RegularBasis.this.finish();
         }
     }
-
 
     //Added Validations for Seat Rate
     private boolean seat_RateValidation(String seat_Rate)
     {
 
-        if(seat_Rate.contains("."))
+        if (seat_Rate.contains("."))
         {
-            return  decmalNumber(seat_Rate);
+            return decmalNumber(seat_Rate);
         }
-        else{
-          return  without_decimalNumber(seat_Rate);
+        else
+        {
+            return without_decimalNumber(seat_Rate);
         }
 
     }
 
-    private boolean without_decimalNumber(String seat_Rate){
+    private boolean without_decimalNumber(String seat_Rate)
+    {
 
-        char char_array[]=seat_Rate.toCharArray();
+        char char_array[] = seat_Rate.toCharArray();
 
-        for(int i=0;i<char_array.length;i++)
+        for (int i = 0; i < char_array.length; i++)
         {
-            if(char_array[i]!='0')
+            if (char_array[i] != '0')
             {
                 return true;
             }
 
         }
-      return false;
+        return false;
     }
 
     private boolean decmalNumber(String seat_Rate)
     {
-        String st="";
-        String[] array=seat_Rate.split("\\.");
+        String   st    = "";
+        String[] array = seat_Rate.split("\\.");
 
-        for(int i=0;i<array.length;i++)
+        for (int i = 0; i < array.length; i++)
         {
-            st=st+array[i];
+            st = st + array[i];
         }
 
         return without_decimalNumber(st);
 
-
     }
-//=========MidStations Name==============
+    //=========MidStations Name==============
 
     private String[] mid_stationsNames(String midStations)
     {
-        String[] stationsName_=midStations.split(":");
+        String[] stationsName_ = midStations.split(":");
 
         return stationsName_;
     }

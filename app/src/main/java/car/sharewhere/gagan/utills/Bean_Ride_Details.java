@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
 
 /**
@@ -280,14 +281,14 @@ public class Bean_Ride_Details
 
                 HashMap<String, String> map = new HashMap<>();
 
-                map.put("TripId", object.getString("TripId"));
-                map.put("CustomerId", object.getString("CustomerId"));
-                map.put("DriverId", object.getString("DriverId"));
-                map.put("RequestId", object.getString("RequestId"));
-                map.put("CustomerName", object.getString("CustomerName"));
-                map.put("CustomerPhoto", object.getString("CustomerPhoto"));
-                map.put("CustomerMobileNo", object.getString("CustomerMobileNo"));
-                map.put("Flag", object.getString("Flag"));
+                map.put(GlobalConstants.KeyNames.TripId.toString(), object.getString("TripId"));
+                map.put(GlobalConstants.KeyNames.CustomerId.toString(), object.getString("CustomerId"));
+                map.put(GlobalConstants.KeyNames.DriverId.toString(), object.getString("DriverId"));
+                map.put(GlobalConstants.KeyNames.RequestId.toString(), object.getString("RequestId"));
+                map.put(GlobalConstants.KeyNames.CustomerName.toString(), object.getString("CustomerName"));
+                map.put(GlobalConstants.KeyNames.CustomerPhoto.toString(), object.getString("CustomerPhoto"));
+                map.put(GlobalConstants.KeyNames.CustomerMobileNo.toString(), object.getString("CustomerMobileNo"));
+                map.put(GlobalConstants.KeyNames.Flag.toString(), object.getString("Flag"));
 
                 if (object.getString("CustomerId").equals(Ride_Details.my_customerID))
                 {

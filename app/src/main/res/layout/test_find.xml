@@ -5,14 +5,14 @@
     xmlns:tools = "http://schemas.android.com/tools"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
-    tools:context = "car.sharewhere.gagan.sharewherecars.fragments.Just_Once_offerRide">
+    tools:context = ".Just_Once_offerRide">
 
     <LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
                   xmlns:tools = "http://schemas.android.com/tools"
                   android:layout_width = "match_parent"
                   android:layout_height = "match_parent"
                   android:orientation = "vertical"
-                  tools:context = "car.sharewhere.gagan.sharewherecars.fragments.Just_Once_offerRide">
+                  tools:context = ".Just_Once_offerRide">
 
         <include layout = "@layout/actionbar_toolbar"/>
 

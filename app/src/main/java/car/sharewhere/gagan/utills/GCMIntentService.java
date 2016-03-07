@@ -21,6 +21,10 @@ import com.google.android.gcm.GCMRegistrar;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
+import car.sharewhere.gagan.Chat.Chat_Activity;
+import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.MainActivity;
 import car.sharewhere.gagan.sharewherecars.R;
@@ -32,29 +36,32 @@ import car.sharewhere.gagan.sharewherecars.Ride_Details;
 public class GCMIntentService extends GCMBaseIntentService
 {
 
-    private static final String TAG                           = "GCMIntentService";
-    private static       String trip_id                       = "";
-    private static       String customer_name                 = "";
-    private static       String customer_pic                  = "";
-    private static       String customer_sender_id            = "";
-    private static       String customer_flag                 = "";
-    private static       String customer_seats                = "";
-    private static       String customer_requestID            = "";
-    private static       String customer_lat_long_req_or_send = "";
-    private static       String customer_message              = "";
-    private static       String customer_rider_id             = "";
-    private static       String customer_driver_id            = "";
-    private static       String customer_latitude             = "";
-    private static       String customer_longitude            = "";
-    private static       String customer_leavingfrom          = "";
-    private static       String customer_leavingto            = "";
-    private static       String customer_mobile               = "";
-    private static       int    notificatn_counter            = 0;
+    private static String trip_id              = "";
+    private static String customer_name        = "";
+    private static String customer_pic         = "";
+    private static String customer_sender_id   = "";
+    private static String customer_flag        = "";
+    private static String customer_requestID   = "";
+    private static String Status               = "";
+    private static String customer_message     = "";
+    private static String customer_rider_id    = "";
+    private static String customer_driver_id   = "";
+    private static String customer_latitude    = "";
+    private static String customer_longitude   = "";
+    private static String customer_leavingfrom = "";
+    private static String customer_leavingto   = "";
+    private static String customer_mobile      = "";
+    private static int    notificatn_counter   = 0;
     Bundle bun;
+    boolean can_generate_notification = true;
 
     Context con;
 
-    private static int count = 0;
+    Chat_Database     database;
+    SharedPreferences preferences;
+    String            my_customerID;
+    int message_noti_id=1000;
+    long message_count=0;
 
     public GCMIntentService()
     {
@@ -66,27 +73,23 @@ public class GCMIntentService extends GCMBaseIntentService
     @Override
     protected void onRegistered(Context context, String registrationId)
     {
-
     }
 
     @Override
     protected void onUnregistered(Context context, String registrationId)
     {
-
-        if (GCMRegistrar.isRegisteredOnServer(context))
-        {
-
-        }
-        else
-        {
-
-        }
-
     }
 
     @Override
     protected void onMessage(Context context, Intent intent)
     {
+
+        database = new Chat_Database(context);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        my_customerID = preferences.getString("CustomerId", null);
+
+        can_generate_notification = true;
 
         try
         {
@@ -99,13 +102,14 @@ public class GCMIntentService extends GCMBaseIntentService
             Log.e("message_gcm", message_new);
 
             final JSONObject jsonNoTi = new JSONObject(message_new);
+
             customer_name = jsonNoTi.optString("CustomerName");
             trip_id = jsonNoTi.optString("TripId");
             customer_pic = jsonNoTi.optString("CustomerPhoto");
             customer_sender_id = jsonNoTi.optString("CustomerId");
             customer_flag = jsonNoTi.optString("Flag");
             customer_requestID = jsonNoTi.optString("RequestId");
-            customer_lat_long_req_or_send = jsonNoTi.optString("Status");
+            Status = jsonNoTi.optString("Status");
             customer_message = jsonNoTi.optString("Message");
             customer_latitude = jsonNoTi.optString("Latitude");
             customer_longitude = jsonNoTi.optString("Longitude");
@@ -115,38 +119,68 @@ public class GCMIntentService extends GCMBaseIntentService
             customer_driver_id = jsonNoTi.optString("DriverId");
             customer_rider_id = jsonNoTi.optString("RiderId");
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            String chkbox_notifctn_state = preferences.getString("notification", null);
-            //            Log.e("chkbox_notifctn_   ", "message received..." + chkbox_notifctn_state);
-            if (chkbox_notifctn_state == null)
+            if (Status.equals("msg"))
             {
+                HashMap<String, String> map = new HashMap<>();
+                map.put("message_id", customer_requestID);
 
+                if (customer_flag.equals("Driver") && my_customerID.equals(customer_driver_id))
+                {
+                    map.put("sender_id", customer_rider_id);
+                    map.put("reciever_id", customer_driver_id);
+                }
+                else if (customer_flag.equals("Rider") && my_customerID.equals(customer_rider_id))
+                {
+                    map.put("sender_id", customer_driver_id);
+                    map.put("reciever_id", customer_rider_id);
+                }
+
+                String msg = customer_message.replace(customer_message.substring(0, customer_message.indexOf(":") + 2), "");
+
+                Log.e("msg", "" + msg);
+
+                map.put("message", msg);
+                map.put("tripId", trip_id);
+
+
+                String other_customer_id = customer_flag.equals("Rider") ? customer_driver_id : customer_rider_id;
+
+                boolean is_chat_opened = preferences.getBoolean("is_chat_opened", false) && Chat_Activity.other_user_id.equalsIgnoreCase(other_customer_id) && Chat_Activity.TripId.equalsIgnoreCase(trip_id);
+
+                if (is_chat_opened)
+                {
+                    map.put("message_status", "R");
+                    database.save_message(map);
+
+                    Utills_G.refresh_chat_BroadcastReceiver(context);
+                    can_generate_notification = false;
+                }
+                else
+                {
+                    map.put("message_status", "UR");
+                    database.save_message(map);
+                }
+
+                message_count= database.get_unread_messages_count("", "");
+                if(message_count>1)
+                {
+                    customer_message= message_count +" unread messages";
+                }
+            }
+
+            if (preferences.getBoolean("notification_on_off", true) == true && can_generate_notification)
+            {
                 generateNotification(context, customer_message);
             }
-            else if (chkbox_notifctn_state.equals("no"))
-            {
-
-            }
-            else if (chkbox_notifctn_state.equals("yes"))
-            {
-                generateNotification(context, customer_message);
-            }
-
-
-          /*  final JSONObject jsonNoTi = new JSONObject(message);
-            flag = jsonNoTi.getString("flag");
-*/
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            Log.e("GCm", "" + e.toString());
         }
         catch (Error e)
         {
             e.printStackTrace();
-            Log.e("GCm", "IIIII" + e.toString());
         }
     }
 
@@ -171,7 +205,7 @@ public class GCMIntentService extends GCMBaseIntentService
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private static void generateNotification(Context context, String message)
+    private  void generateNotification(Context context, String message)
     {
         int icon = R.mipmap.ic_launcher;
 
@@ -181,34 +215,17 @@ public class GCMIntentService extends GCMBaseIntentService
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             String title = "Share Where";
 
-
-
-
-
-            if (customer_flag.equals("5"))
+            if (customer_flag.equals("5"))  // New Request
             {
                 message = customer_name + " requested to ride along with you.";
             }
-            if (customer_flag.equals("1")) // Accept
-            {
-                //  message = customer_message;
-            }
-            if (customer_flag.equals("2")) //Decline
-            {
-                message = customer_name + " declined your request";
-            }
-            if (customer_flag.equals("6")) // cancel by rider
-            {
-                // message =  customer_name + " cancelled request";
-            }
-            if (customer_flag.equals("7")) // cancel by driver
-            {
-                //  message =  customer_message;
-            }
-            if (customer_flag.equals("Driver") || customer_flag.equals("Rider"))
-            {
+            // 1 Accept
 
-            }
+            // 2 Decline
+
+            // 6 cancel by rider
+
+            // 7 cancel by driver
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             String get_email_id = preferences.getString("email_id", null);
@@ -216,9 +233,34 @@ public class GCMIntentService extends GCMBaseIntentService
 
             if (customer_flag.matches("1|2|5|6|7"))
             {
+                Utills_G.rideDetailsBroadcastReceiver(context);
+
                 notificationIntent = new Intent(context, Ride_Details.class);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.TripId.toString(), trip_id);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), customer_sender_id);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());
+            }
+            else if (Status.equalsIgnoreCase("msg"))
+            {
+                /*notificationIntent = new Intent(context, Ride_Details.class);
                 notificationIntent.putExtra(GlobalConstants.Trip_Id, trip_id);
-                notificationIntent.putExtra(GlobalConstants.Customer_ID, customer_sender_id);
+                notificationIntent.putExtra(GlobalConstants.Customer_ID, customer_driver_id);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());*/
+
+                if(message_count>1)
+                {
+                    notificationIntent = new Intent(context,MainActivity.class );
+                }
+                else
+                {
+                    notificationIntent = new Intent(context,Chat_Activity.class );
+                }
+
+                notificationIntent.putExtra(GlobalConstants.KeyNames.RiderId.toString(), customer_rider_id);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.DriverId.toString(), customer_driver_id);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.RequestId.toString(), customer_requestID);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.CustomerPhoto.toString(), customer_pic);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.TripId.toString(), trip_id);
                 notificationIntent.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());
             }
             else if (get_email_id != null)
@@ -243,12 +285,12 @@ public class GCMIntentService extends GCMBaseIntentService
             notificationIntent.putExtra("customer_from", customer_leavingfrom);
             notificationIntent.putExtra("customer_to", customer_leavingto);
             notificationIntent.putExtra("customer_mobile", customer_mobile);
-            notificationIntent.putExtra("customer_status_lat_long", customer_lat_long_req_or_send);
+            notificationIntent.putExtra(GlobalConstants.KeyNames.Status.toString(), Status);
             notificationIntent.putExtra("customer_driver_id", customer_driver_id);
             notificationIntent.putExtra("customer_rider_id", customer_rider_id);
 
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT );
+            PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
@@ -268,24 +310,22 @@ public class GCMIntentService extends GCMBaseIntentService
                       setSmallIcon(icon).
                       setLights(Color.MAGENTA, 1, 2).
                       setAutoCancel(true).
-                      setStyle(style)
-                      .setSound(defaultSound);
-
+                      setStyle(style).setSound(defaultSound);
 
             builder.setNumber(notificatn_counter);
 
-            if (!customer_flag.matches("1|2|5|6|7"))
+          /*  if (!customer_flag.matches("1|2|5|6|7"))
             {
-                builder.setOngoing(true);
-            }
-
+                builder.setOngoing(true);  // user cannot clear the notification if it is true
+            }*/
 
             Notification not = new NotificationCompat.BigTextStyle(builder).bigText(message).build();
 
             //            	not.number=count++;
 
+            int counter=Status.equalsIgnoreCase("msg")? message_noti_id:notificatn_counter;
 
-            notificationManager.notify(notificatn_counter, not);
+            notificationManager.notify(counter, not);
             //            notificationManager.notify(0, not);
 
         }

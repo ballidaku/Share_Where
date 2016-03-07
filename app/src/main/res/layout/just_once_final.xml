@@ -1,185 +1,189 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="car.sharewhere.gagan.sharewherecars.fragments.Just_Once_offerRide">
+<android.support.design.widget.CoordinatorLayout
+    android:id = "@+id/coordinatorLayout"
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context = ".Just_Once_offerRide">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="car.sharewhere.gagan.sharewherecars.fragments.Just_Once_offerRide">
+    <LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+                  xmlns:tools = "http://schemas.android.com/tools"
+                  android:layout_width = "match_parent"
+                  android:layout_height = "match_parent"
+                  android:orientation = "vertical"
+                  tools:context = ".Just_Once_offerRide">
 
-        <include layout="@layout/actionbar_toolbar" />
+        <include layout = "@layout/actionbar_toolbar"/>
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
+
+
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            android:scrollbars = "none">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:orientation="vertical">
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:background = "@color/gray_backgroundfb"
+                android:orientation = "vertical">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ebebeb"
-                    android:orientation="vertical">
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:background = "#ebebeb"
+                    android:orientation = "vertical">
 
-                    <android.support.design.widget.TextInputLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:textColorHighlight="@color/black"
-                        android:textColorHint="@color/black"
-                        android:theme="@style/TextAppearence.App.TextInputLayout"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+                    <android.support.design.widget.TextInputLayout
+                        xmlns:app = "http://schemas.android.com/apk/res-auto"
+                        android:layout_width = "match_parent"
+                        android:layout_height = "wrap_content"
+                        android:layout_marginTop = "20dp"
+                        android:textColor = "@color/black"
+                        android:textColorHighlight = "@color/black"
+                        android:textColorHint = "@color/black"
+                        android:theme = "@style/TextAppearence.App.TextInputLayout"
+                        app:hintTextAppearance = "@style/TextAppearence.App.TextInputLayout">
 
                         <AutoCompleteTextView
-                            android:id="@+id/autocompleteFrom_just"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="30dp"
-                            android:drawableEnd="@mipmap/cancel"
-                            android:drawableRight="@mipmap/cancel"
-                            android:inputType="textCapWords"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-                            android:hint="Leaving from"
-                            android:imeOptions="actionNext"
+                            android:id = "@+id/autocompleteFrom_just"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginLeft = "20dp"
+                            android:layout_marginRight = "20dp"
 
-                            android:singleLine="true"
-                            android:textColor="@color/black"
-                            android:textColorHighlight="@color/black"
-                            android:textColorHint="@color/black" />
+                            android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                            android:drawableEnd = "@mipmap/cancel"
+                            android:drawableRight = "@mipmap/cancel"
+                            android:hint = "Leaving from"
+                            android:imeOptions = "actionNext"
+                            android:inputType = "textCapWords"
+
+                            android:singleLine = "true"
+                            android:textColor = "@color/black"
+                            android:textColorHighlight = "@color/black"
+                            android:textColorHint = "@color/black"/>
                     </android.support.design.widget.TextInputLayout>
 
-                    <android.support.design.widget.TextInputLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:textColorHighlight="@color/black"
-                        android:textColorHint="@color/black"
-                        android:theme="@style/TextAppearence.App.TextInputLayout"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+                    <android.support.design.widget.TextInputLayout
+                        xmlns:app = "http://schemas.android.com/apk/res-auto"
+                        android:layout_width = "match_parent"
+                        android:layout_height = "wrap_content"
+                        android:textColor = "@color/black"
+                        android:textColorHighlight = "@color/black"
+                        android:textColorHint = "@color/black"
+                        android:theme = "@style/TextAppearence.App.TextInputLayout"
+                        app:hintTextAppearance = "@style/TextAppearence.App.TextInputLayout">
 
                         <AutoCompleteTextView
-                            android:id="@+id/autocompleteTo_just"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="20dp"
-                            android:drawableRight="@mipmap/cancel"
-                            android:hint="Leaving To"
-                            android:imeOptions="actionNext"
-                            android:inputType="textCapWords"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-                            android:singleLine="true"
-                            android:textColor="@color/black"
-                            android:textColorHighlight="@color/black"
-                            android:textColorHint="@color/black" />
+                            android:id = "@+id/autocompleteTo_just"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "10dp"
+                            android:layout_marginLeft = "20dp"
+                            android:layout_marginRight = "20dp"
+                            android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                            android:drawableRight = "@mipmap/cancel"
+                            android:hint = "Leaving To"
+                            android:imeOptions = "actionNext"
+                            android:inputType = "textCapWords"
+                            android:singleLine = "true"
+                            android:textColor = "@color/black"
+                            android:textColorHighlight = "@color/black"
+                            android:textColorHint = "@color/black"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:elevation="4dp">
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:layout_margin = "10dp"
+                    android:elevation = "4dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-
-                        android:orientation="vertical">
+                        android:layout_width = "match_parent"
+                        android:layout_height = "wrap_content"
+                        android:orientation = "vertical">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="20dp"
-                            android:background="@mipmap/singletripbtn"
-                            android:orientation="horizontal">
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_gravity = "center_horizontal"
+                            android:layout_margin = "10dp"
+                            android:orientation = "horizontal">
 
                             <TextView
-                                android:id="@+id/btn_single_trip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_weight="1"
-                                android:background="@mipmap/singletripbtn"
-                                android:gravity="center"
-                                android:text="@string/single"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                android:id = "@+id/btn_single_trip"
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_margin = "10dp"
+                                android:layout_weight = "1"
+                                android:background = "@drawable/grey_border"
+                                android:gravity = "center"
+                                android:padding = "10dp"
+                                android:text = "@string/single"
+                                android:textColor = "@color/black"
+                                android:textSize = "16sp"/>
 
                             <TextView
-                                android:id="@+id/btn_round_trip"
-                                android:layout_width="wrap_content"
-
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@mipmap/singletripbtn"
-                                android:gravity="center"
-                                android:text="@string/round"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                android:id = "@+id/btn_round_trip"
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_margin = "10dp"
+                                android:layout_weight = "1"
+                                android:background = "@drawable/grey_border"
+                                android:gravity = "center"
+                                android:padding = "10dp"
+                                android:text = "@string/round"
+                                android:textColor = "@color/black"
+                                android:textSize = "16sp"/>
                         </LinearLayout>
 
 
                         <!-- RadioGroup vehicle type-->
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="10dp"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_gravity = "center"
+                            android:layout_marginBottom = "10dp"
 
-                            android:layout_marginTop="10dp"
-                            android:gravity="center"
-                            android:orientation="horizontal">
+                            android:layout_marginTop = "10dp"
+                            android:gravity = "center"
+                            android:orientation = "horizontal">
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
-                                android:text="Vehicle Type"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_gravity = "center"
+                                android:layout_marginLeft = "10dp"
+                                android:layout_marginRight = "10dp"
+                                android:text = "Vehicle Type"
+                                android:textColor = "@color/black"
+                                android:textSize = "16sp"/>
 
                             <RadioGroup
-                                android:id="@+id/radiogrp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:id = "@+id/radiogrp"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
 
-                                android:orientation="horizontal">
+                                android:orientation = "horizontal">
 
                                 <RadioButton
-                                    android:id="@+id/radiocar"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
+                                    android:id = "@+id/radiocar"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
 
-                                    android:background="@android:color/transparent"
-                                    android:button="@drawable/yourbuttonbackground"
-                                    android:checked="true"
-                                    android:drawableRight="@mipmap/car"
-                                    android:paddingLeft="5dp"
+                                    android:background = "@android:color/transparent"
+                                    android:button = "@drawable/yourbuttonbackground"
+                                    android:checked = "true"
+                                    android:drawableRight = "@mipmap/car"
+                                    android:paddingLeft = "5dp"
 
-                                    android:paddingRight="5dp"
+                                    android:paddingRight = "5dp"
 
-                                    android:text="" />
+                                    android:text = ""/>
 
                                 <!--<ImageView
                                     android:layout_width="wrap_content"
@@ -188,18 +192,18 @@
                                     android:src="@mipmap/car" />-->
 
                                 <RadioButton
-                                    android:id="@+id/radiobike"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginLeft="10dp"
-                                    android:background="@android:color/transparent"
-                                    android:button="@drawable/yourbuttonbackground"
-                                    android:drawableRight="@mipmap/bike"
-                                    android:gravity="center"
-                                    android:paddingLeft="5dp"
-                                    android:paddingRight="5dp"
-                                    android:text="" />
+                                    android:id = "@+id/radiobike"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginLeft = "10dp"
+                                    android:background = "@android:color/transparent"
+                                    android:button = "@drawable/yourbuttonbackground"
+                                    android:drawableRight = "@mipmap/bike"
+                                    android:gravity = "center"
+                                    android:paddingLeft = "5dp"
+                                    android:paddingRight = "5dp"
+                                    android:text = ""/>
 
                                 <!--  <ImageView
                                       android:layout_width="wrap_content"
@@ -212,72 +216,67 @@
 
                         <!-- Departure-->
                         <LinearLayout
-                            android:id="@+id/lnr_time"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginTop="20dp"
-                            android:orientation="horizontal">
+                            android:id = "@+id/lnr_time"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "20dp"
+                            android:layout_marginLeft = "10dp"
+                            android:layout_marginRight = "10dp"
+                            android:layout_marginTop = "20dp"
+                            android:orientation = "horizontal">
                             <!--android:background="@color/white"-->
 
                             <LinearLayout
-                                android:id="@+id/lnr_depart_time_regular"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:id = "@+id/lnr_depart_time_regular"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
 
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:layout_weight = "1"
+                                android:orientation = "vertical">
                                 <!--  android:layout_alignParentLeft="true"-->
 
                                 <TextView
-                                    android:id="@+id/txtvw_depart_date"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginBottom="5dp"
-                                    android:gravity="center"
-                                    android:text="Departure Date"
-                                    android:textColor="#000000"
-                                    android:textSize="16sp" />
+                                    android:id = "@+id/txtvw_depart_date"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginBottom = "5dp"
+                                    android:gravity = "center"
+                                    android:text = "Departure Date"
+                                    android:textColor = "#000000"
+                                    android:textSize = "16sp"/>
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_depart_date"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:background="@mipmap/dates"
-                                    android:clickable="true"
-                                    android:orientation="horizontal">
+                                    android:id = "@+id/lnr_depart_date"
+                                    android:layout_width = "130dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:background = "@drawable/grey_border"
+                                    android:clickable = "true"
+                                    android:orientation = "horizontal">
 
                                     <TextView
-                                        android:id="@+id/txt_departure_date"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_margin="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@color/white"
-                                        android:gravity="center"
-                                        android:hint="set date"
-                                        android:textColor="@color/black" />
+                                        android:id = "@+id/txt_departure_date"
+                                        android:layout_width = "0dp"
+                                        android:layout_height = "match_parent"
+                                        android:layout_margin = "5dp"
+                                        android:layout_weight = "1"
+                                        android:background = "@color/white"
+                                        android:gravity = "center"
+                                        android:hint = "Set date"
+                                        android:textColor = "@color/black"/>
 
                                     <View
-                                        android:layout_width="1dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@android:color/darker_gray" />
+                                        android:layout_width = "1dp"
+                                        android:layout_height = "match_parent"
+                                        android:background = "@color/gray_backgroundfb"/>
 
                                     <ImageView
-                                        android:id="@+id/depart_calender_img"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-
-                                        android:layout_margin="5dp"
-                                        android:src="@mipmap/calendar" />
+                                        android:id = "@+id/depart_calender_img"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:padding = "8dp"
+                                        android:src = "@mipmap/calendar"/>
                                     <!--  android:layout_gravity="center"-->
                                 </LinearLayout>
 
@@ -285,62 +284,58 @@
 
 
                             <LinearLayout
-                                android:id="@+id/regulr_return_lnr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:layout_marginLeft="10dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:id = "@+id/regulr_return_lnr"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentRight = "true"
+                                android:layout_marginLeft = "10dp"
+                                android:layout_weight = "1"
+                                android:orientation = "vertical">
 
                                 <TextView
-                                    android:id="@+id/txtvw_depart_time"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginBottom="5dp"
-                                    android:gravity="center"
-                                    android:text="Departure Time"
-                                    android:textColor="#000000"
-                                    android:textSize="16sp" />
+                                    android:id = "@+id/txtvw_depart_time"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginBottom = "5dp"
+                                    android:gravity = "center"
+                                    android:text = "Departure Time"
+                                    android:textColor = "#000000"
+                                    android:textSize = "16sp"/>
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_clk_depart"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:background="@mipmap/dates"
-                                    android:clickable="true"
-                                    android:orientation="horizontal">
+                                    android:id = "@+id/lnr_clk_depart"
+                                    android:layout_width = "100dp"
+                                    android:layout_height = "match_parent"
+                                    android:layout_gravity = "center"
+                                    android:background = "@drawable/grey_border"
+                                    android:clickable = "true"
+                                    android:orientation = "horizontal">
 
                                     <TextView
-                                        android:id="@+id/txt_departure_time"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_margin="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@color/white"
-                                        android:gravity="center"
-                                        android:hint="set time"
-                                        android:textColor="@color/black" />
+                                        android:id = "@+id/txt_departure_time"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:layout_margin = "5dp"
+                                        android:layout_weight = "1"
+                                        android:background = "@color/white"
+                                        android:gravity = "center"
+                                        android:hint = "Set time"
+                                        android:textColor = "@color/black"/>
 
                                     <View
-                                        android:layout_width="1dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@android:color/darker_gray" />
+                                        android:layout_width = "1dp"
+                                        android:layout_height = "match_parent"
+                                        android:background = "@color/gray_backgroundfb"/>
 
                                     <ImageView
-                                        android:id="@+id/clk_depart"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_margin="5dp"
-                                        android:src="@mipmap/clock" />
+                                        android:id = "@+id/clk_depart"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:padding = "8dp"
+                                        android:src = "@mipmap/clock"/>
                                 </LinearLayout>
 
                             </LinearLayout>
@@ -352,124 +347,116 @@
 
 
                         <RelativeLayout
-                            android:id="@+id/rel_return"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
-                            android:visibility="gone">
+                            android:id = "@+id/rel_return"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "20dp"
+                            android:layout_marginLeft = "15dp"
+                            android:layout_marginRight = "15dp"
+                            android:visibility = "gone">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:orientation="vertical">
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentLeft = "true"
+                                android:orientation = "vertical">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginBottom="5dp"
-                                    android:gravity="center"
-                                    android:text="Return Date"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginBottom = "5dp"
+                                    android:gravity = "center"
+                                    android:text = "Return Date"
+                                    android:textColor = "@color/black"
+                                    android:textSize = "16sp"/>
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_return_date"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@mipmap/dates"
-                                    android:clickable="true"
-                                    android:orientation="horizontal">
+                                    android:id = "@+id/lnr_return_date"
+                                    android:layout_width = "150dp"
+                                    android:layout_height = "wrap_content"
+                                    android:background = "@drawable/grey_border"
+                                    android:clickable = "true"
+                                    android:orientation = "horizontal">
 
                                     <TextView
-                                        android:id="@+id/txt_return_date"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_margin="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@color/white"
-                                        android:gravity="center"
-                                        android:hint="set date"
-                                        android:textColor="@color/black" />
+                                        android:id = "@+id/txt_return_date"
+                                        android:layout_width = "0dp"
+                                        android:layout_height = "match_parent"
+                                        android:layout_margin = "5dp"
+                                        android:layout_weight = "1"
+                                        android:background = "@color/white"
+                                        android:gravity = "center"
+                                        android:hint = "Set date"
+                                        android:textColor = "@color/black"/>
 
                                     <View
-                                        android:layout_width="1dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@android:color/darker_gray" />
+                                        android:layout_width = "1dp"
+                                        android:layout_height = "match_parent"
+                                        android:background = "@color/gray_backgroundfb"/>
 
                                     <ImageView
-                                        android:id="@+id/img_return_calendr"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_margin="5dp"
-                                        android:src="@mipmap/calendar" />
+                                        android:id = "@+id/img_return_calendr"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:padding = "8dp"
+                                        android:src = "@mipmap/calendar"/>
                                 </LinearLayout>
 
                             </LinearLayout>
 
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentRight = "true"
 
-                                android:layout_marginLeft="10dp"
-                                android:orientation="vertical">
+                                android:layout_marginLeft = "10dp"
+                                android:orientation = "vertical">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginBottom="5dp"
-                                    android:gravity="center"
-                                    android:text="Return Time"
-                                    android:textColor="#000000"
-                                    android:textSize="16sp" />
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginBottom = "5dp"
+                                    android:gravity = "center"
+                                    android:text = "Return Time"
+                                    android:textColor = "#000000"
+                                    android:textSize = "16sp"/>
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_return_clk"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@mipmap/dates"
-                                    android:clickable="true"
-                                    android:orientation="horizontal">
+                                    android:id = "@+id/lnr_return_clk"
+                                    android:layout_width = "150dp"
+                                    android:layout_height = "wrap_content"
+                                    android:background = "@drawable/grey_border"
+                                    android:clickable = "true"
+                                    android:orientation = "horizontal">
 
                                     <TextView
-                                        android:id="@+id/txt_return_time"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_margin="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@color/white"
-                                        android:gravity="center"
-                                        android:hint="set time"
-                                        android:textColor="@color/black" />
+                                        android:id = "@+id/txt_return_time"
+                                        android:layout_width = "0dp"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:layout_margin = "5dp"
+                                        android:layout_weight = "1"
+                                        android:background = "@color/white"
+                                        android:gravity = "center"
+                                        android:hint = "Set time"
+                                        android:textColor = "@color/black"/>
 
                                     <View
-                                        android:layout_width="1dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@android:color/darker_gray" />
+                                        android:layout_width = "1dp"
+                                        android:layout_height = "match_parent"
+                                        android:background = "@color/gray_backgroundfb"/>
 
                                     <ImageView
-                                        android:id="@+id/img_return_clk"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_margin="5dp"
-                                        android:src="@mipmap/clock" />
+                                        android:id = "@+id/img_return_clk"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:padding = "8dp"
+                                        android:src = "@mipmap/clock"/>
                                 </LinearLayout>
 
                             </LinearLayout>
@@ -477,50 +464,52 @@
                         </RelativeLayout>
                         <!--enter days-->
                         <LinearLayout
-                            android:id="@+id/lnr_main_days"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
-                            android:orientation="vertical">
+                            android:id = "@+id/lnr_main_days"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "20dp"
+                            android:layout_marginLeft = "15dp"
+                            android:layout_marginRight = "15dp"
+                            android:orientation = "vertical">
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:paddingLeft="10dp"
-                                android:text="Set Days"
-                                android:textColor="#000000"
-                                android:textSize="16sp" />
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentTop = "true"
+                                android:paddingLeft = "10dp"
+                                android:text = "Set Days"
+                                android:textColor = "#000000"
+                                android:textSize = "16sp"/>
 
                             <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/mid_txt"
-                                android:gravity="bottom"
-                                android:orientation="horizontal">
+                                android:layout_width = "match_parent"
+                                android:layout_height = "wrap_content"
+                                android:layout_below = "@+id/mid_txt"
+                                android:gravity = "bottom"
+                                android:layout_marginTop="5dp"
+                                android:orientation = "horizontal">
 
                                 <TextView
-                                    android:id="@+id/txt_days_data"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="1"
-                                    android:background="@mipmap/midpoint"
-                                    android:gravity="center_vertical"
-                                    android:hint="Tap Right to select days"
-                                    android:paddingLeft="10dp"
-                                    android:textColor="@color/black"
-                                    android:textCursorDrawable="@null" />
+                                    android:id = "@+id/txt_days_data"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center_vertical"
+                                    android:layout_weight = "1"
+                                    android:background = "@drawable/grey_border"
+                                    android:gravity = "center_vertical"
+                                    android:hint = "Tap Right to select days"
+                                    android:padding = "8dp"
+                                    android:layout_margin="5dp"
+                                    android:textColor = "@color/black"
+                                    android:textCursorDrawable = "@null"/>
 
                                 <ImageView
-                                    android:id="@+id/img_add_days"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="10dp"
-                                    android:padding="10dp"
-                                    android:src="@mipmap/addlocation" />
+                                    android:id = "@+id/img_add_days"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "match_parent"
+                                    android:layout_marginLeft = "10dp"
+                                    android:padding = "8dp"
+                                    android:src = "@mipmap/calendar"/>
                             </LinearLayout>
                         </LinearLayout>
 
@@ -554,58 +543,61 @@
                         <!--</LinearLayout>-->
                         <!--enter mid points-->
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="15dp"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "20dp"
+                            android:layout_marginLeft = "15dp"
 
-                            android:layout_marginRight="15dp"
-                            android:orientation="vertical">
+                            android:layout_marginRight = "15dp"
+                            android:orientation = "vertical">
 
                             <TextView
-                                android:id="@+id/mid_txt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:paddingLeft="10dp"
-                                android:text="Mid Points"
-                                android:textColor="#000000"
-                                android:textSize="16sp" />
+                                android:id = "@+id/mid_txt"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentTop = "true"
+                                android:paddingLeft = "10dp"
+                                android:text = "Mid Points"
+                                android:textColor = "#000000"
+                                android:textSize = "16sp"/>
 
                             <ListView
-                                android:id="@+id/list_mid"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"></ListView>
+                                android:id = "@+id/list_mid"
+                                android:layout_width = "match_parent"
+                                android:layout_height = "wrap_content"
+                                android:dividerHeight="3dp"
+                                android:divider = "@null"/>
 
 
                             <LinearLayout
-                                android:id="@+id/linear_mid_new"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/mid_txt"
-                                android:gravity="bottom"
-                                android:orientation="horizontal">
+                                android:id = "@+id/linear_mid_new"
+                                android:layout_width = "match_parent"
+                                android:layout_height = "wrap_content"
+                                android:layout_below = "@+id/mid_txt"
+                                android:gravity = "bottom"
+                                android:orientation = "horizontal">
 
                                 <AutoCompleteTextView
-                                    android:id="@+id/autocomplete_new_mid_point"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:background="@mipmap/midpoint"
-                                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-                                    android:hint="Enter mid points"
-                                    android:inputType="textCapWords"
-                                    android:paddingLeft="10dp"
-                                    android:textCursorDrawable="@null" />
+                                    android:id = "@+id/autocomplete_new_mid_point"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_weight = "1"
+                                    android:background = "@drawable/grey_border"
+                                    android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                                    android:hint = "Enter mid points"
+                                    android:inputType = "textCapWords"
+                                    android:layout_gravity="center_vertical"
+                                    android:padding = "8dp"
+                                    android:layout_margin="5dp"
+                                    android:textCursorDrawable = "@null"/>
 
                                 <ImageView
-                                    android:id="@+id/img_add_midpnt"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="10dp"
-                                    android:padding="10dp"
-                                    android:src="@mipmap/addlocation" />
+                                    android:id = "@+id/img_add_midpnt"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "match_parent"
+                                    android:layout_marginLeft = "10dp"
+                                    android:padding = "8dp"
+                                    android:src = "@mipmap/addlocation"/>
                             </LinearLayout>
 
                             <!--<LinearLayout-->
@@ -638,127 +630,119 @@
                         </LinearLayout>
 
                         <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginTop="10dp">
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "20dp"
+                            android:layout_marginLeft = "10dp"
+                            android:layout_marginRight = "10dp"
+                            android:layout_marginTop = "10dp">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_marginLeft="10dp"
-                                android:orientation="vertical">
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentLeft = "true"
+                                android:layout_marginLeft = "10dp"
+                                android:orientation = "vertical">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginBottom="5dp"
-                                    android:text="Seats Available"
-                                    android:textColor="#000000"
-                                    android:textSize="16sp" />
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginBottom = "5dp"
+                                    android:text = "Seats Available"
+                                    android:textColor = "#000000"
+                                    android:textSize = "16sp"/>
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_vw_seat_nmbr"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@mipmap/seats"
-                                    android:orientation="horizontal">
+                                    android:id = "@+id/lnr_vw_seat_nmbr"
+                                    android:layout_width = "100dp"
+                                    android:layout_height = "wrap_content"
+                                    android:background = "@drawable/grey_border"
+                                    android:orientation = "horizontal">
 
                                     <EditText
-                                        android:id="@+id/txt_seat_number"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_margin="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@color/white"
-                                        android:gravity="center"
-                                        android:imeOptions="actionDone"
-                                        android:inputType="number"
-                                        android:maxLength="1"
-                                        android:textColor="@color/black"
-                                        android:textCursorDrawable="@null" />
+                                        android:id = "@+id/txt_seat_number"
+                                        android:layout_width = "0dp"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:layout_margin = "5dp"
+                                        android:layout_weight = "1"
+                                        android:background = "@color/white"
+                                        android:gravity = "center"
+                                        android:imeOptions = "actionDone"
+                                        android:inputType = "number"
+                                        android:maxLength = "1"
+                                        android:textColor = "@color/black"
+                                        android:textCursorDrawable = "@null"/>
 
                                     <View
-                                        android:layout_width="1dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="8dp"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@android:color/darker_gray" />
+                                        android:layout_width = "1dp"
+                                        android:layout_height = "match_parent"
+                                        android:background = "@color/gray_backgroundfb"/>
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:paddingBottom="5dp"
-                                        android:paddingRight="5dp"
-                                        android:paddingTop="5dp"
-                                        android:src="@mipmap/seatspra" />
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "match_parent"
+                                        android:layout_gravity = "center"
+                                        android:padding = "8dp"
+                                        android:src = "@mipmap/seatspra"/>
                                 </LinearLayout>
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentRight = "true"
 
-                                android:layout_marginRight="20dp"
-                                android:orientation="vertical">
+                                android:layout_marginRight = "20dp"
+                                android:orientation = "vertical">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginBottom="5dp"
-                                    android:text="Rate per seat"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center"
+                                    android:layout_marginBottom = "5dp"
+                                    android:text = "Rate per seat"
+                                    android:textColor = "@color/black"
+                                    android:textSize = "16sp"/>
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_rate"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@mipmap/seats"
-                                    android:orientation="horizontal">
+                                    android:id = "@+id/lnr_rate"
+                                    android:layout_width = "100dp"
+                                    android:layout_height = "wrap_content"
+                                    android:background = "@drawable/grey_border"
+                                    android:orientation = "horizontal">
 
                                     <EditText
-                                        android:id="@+id/txt_rate_perseat"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_margin="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@color/white"
-                                        android:gravity="center"
-                                        android:imeOptions="actionDone"
-                                        android:inputType="number|numberDecimal"
-                                        android:maxLength="5"
-                                        android:textColor="@color/black"
-                                        android:textCursorDrawable="@null"
-                                        android:textSize="16sp" />
+                                        android:id = "@+id/txt_rate_perseat"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_margin = "5dp"
+                                        android:layout_weight = "1"
+                                        android:background = "@color/white"
+                                        android:gravity = "center"
+                                        android:imeOptions = "actionDone"
+                                        android:inputType = "number|numberDecimal"
+                                        android:maxLength = "5"
+                                        android:textColor = "@color/black"
+                                        android:textCursorDrawable = "@null"
+                                        android:textSize = "16sp"/>
 
                                     <View
-                                        android:layout_width="1dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="8dp"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@android:color/darker_gray" />
+                                        android:layout_width = "1dp"
+                                        android:layout_height = "match_parent"
+                                        android:background = "@color/gray_backgroundfb"/>
 
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:paddingBottom="5dp"
-                                        android:paddingRight="5dp"
-                                        android:paddingTop="5dp"
-                                        android:src="@mipmap/dollar" />
+                                    <TextView
+                                        android:id="@+id/txtv_currency"
+                                        android:layout_width = "wrap_content"
+                                        android:layout_height = "wrap_content"
+                                        android:layout_gravity = "center"
+                                        android:padding = "8dp"
+                                        android:textStyle="bold"
+                                        android:textSize="15sp"
+                                        android:text="\u20B9"
+                                       />
                                 </LinearLayout>
                             </LinearLayout>
                         </RelativeLayout>
@@ -767,201 +751,214 @@
                 </android.support.v7.widget.CardView>
 
                 <!--Car Information-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@mipmap/find_ride_txtbox"
-                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/car_info_txt_top"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:text="Car Information"
-                        android:textColor="#000000"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
+                <android.support.v7.widget.CardView
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:layout_margin = "10dp"
+                    android:elevation = "4dp">
+
+
+                    <LinearLayout
+                        android:layout_width = "match_parent"
+                        android:layout_height = "wrap_content"
+                        android:orientation = "vertical">
 
                         <TextView
-                            android:id="@+id/txtcar_name_info"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="20dp"
-                            android:gravity="center"
-                            android:text="Car"
-                            android:textColor="#000000"
-                            android:textSize="18dp" />
+                            android:id = "@+id/car_info_txt_top"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:gravity = "center"
+                            android:padding = "10dp"
+                            android:text = "Car Information"
+                            android:textColor = "#000000"
+                            android:textSize = "18dp"
+                            android:textStyle = "bold"/>
 
-
-                        <EditText
-                            android:id="@+id/edt_car_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="20dp"
-
-                            android:layout_marginRight="20dp"
-                            android:background="@mipmap/carinfobars"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-                            android:gravity="center"
-                            android:imeOptions="actionDone"
-                            android:inputType="textCapSentences"
-                            android:maxLength="10"
-                            android:padding="10dp"
-                            android:textCursorDrawable="@null"
-                            android:textSize="18dp" />
-                        <!--android:inputType="textFilter"-->
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/txt_v_car_tye"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="20dp"
-                            android:gravity="center"
-                            android:text="Type"
-                            android:textColor="#000000"
-                            android:textSize="18dp" />
-
-                        <EditText
-                            android:id="@+id/edt_car_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:background="@mipmap/carinfobars"
-                            android:editable="false"
-                            android:gravity="center"
-                            android:padding="10dp"
-                            android:textCursorDrawable="@null"
-                            android:textSize="18dp" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/lnr_vehicle_nmber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/txt_vw_txt_carnmbr"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="20dp"
-                            android:gravity="center"
-                            android:text="Car number"
-                            android:textColor="#000000"
-                            android:textSize="18dp" />
-
-                        <EditText
-                            android:id="@+id/edt_car_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:background="@mipmap/carinfobars"
-                            android:gravity="center"
-                            android:imeOptions="actionDone"
-                            android:inputType="textCapWords"
-                            android:maxLength="10"
-                            android:padding="10dp"
-                            android:textCursorDrawable="@null"
-                            android:textSize="18dp" />
-                        <!-- android:inputType="textFilter"
-                          -->
-                    </RelativeLayout>
-                </LinearLayout>
-                <!-- Bottom layout-->
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/black">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp">
+                        <View
+                            android:layout_width = "match_parent"
+                            android:layout_height = "1dp"
+                            android:background = "@drawable/line_last_faint"/>
 
                         <RelativeLayout
-                            android:id="@+id/rel_find"
-                            android:layout_width="150dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true">
+                            android:layout_width = "wrap_content"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginTop = "20dp"
+                            android:orientation = "horizontal">
 
-                            <Button
-                                android:id="@+id/btn_select"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:background="#000000"
-                                android:gravity="center"
-                                android:text="@string/select_ride"
-                                android:textColor="#fff"
-                                android:textStyle="bold" />
+                            <TextView
+                                android:id = "@+id/txtcar_name_info"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "match_parent"
+                                android:layout_centerVertical = "true"
+                                android:layout_marginLeft = "20dp"
+                                android:gravity = "center"
+                                android:text = "Car"
+                                android:textColor = "#000000"
+                                android:textSize = "18dp"/>
 
-                            <Button
-                                android:id="@+id/line_select"
-                                android:layout_width="150dp"
-                                android:layout_height="5dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentLeft="true"
-                                android:background="@drawable/line" />
+
+                            <EditText
+                                android:id = "@+id/edt_car_name"
+                                android:layout_width = "130dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentRight = "true"
+                                android:layout_marginLeft = "20dp"
+                                android:layout_marginRight = "20dp"
+                                android:background = "@drawable/grey_border"
+                                android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                                android:gravity = "center"
+                                android:imeOptions = "actionDone"
+                                android:inputType = "textCapSentences"
+                                android:maxLength = "10"
+                                android:padding = "10dp"
+                                android:textCursorDrawable = "@null"
+                                android:textSize = "18dp"/>
+                            <!--android:inputType="textFilter"-->
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:id="@+id/rel_ofr"
-                            android:layout_width="150dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true">
+                            android:layout_width = "wrap_content"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginTop = "20dp"
+                            android:orientation = "horizontal">
+
+                            <TextView
+                                android:id = "@+id/txt_v_car_tye"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_centerVertical = "true"
+                                android:layout_marginLeft = "20dp"
+                                android:gravity = "center"
+                                android:text = "Type"
+                                android:textColor = "#000000"
+                                android:textSize = "18dp"/>
+
+                            <EditText
+                                android:id = "@+id/edt_car_type"
+                                android:layout_width = "130dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentRight = "true"
+                                android:layout_marginLeft = "20dp"
+                                android:layout_marginRight = "20dp"
+                                android:background = "@drawable/grey_border"
+                                android:editable = "false"
+                                android:gravity = "center"
+                                android:padding = "10dp"
+                                android:textCursorDrawable = "@null"
+                                android:textSize = "18dp"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id = "@+id/lnr_vehicle_nmber"
+                            android:layout_width = "wrap_content"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "20dp"
+                            android:layout_marginTop = "20dp"
+                            android:orientation = "horizontal">
+
+                            <TextView
+                                android:id = "@+id/txt_vw_txt_carnmbr"
+                                android:layout_width = "wrap_content"
+                                android:layout_height = "wrap_content"
+                                android:layout_centerVertical = "true"
+                                android:layout_marginLeft = "20dp"
+                                android:gravity = "center"
+                                android:text = "Car number"
+                                android:textColor = "#000000"
+                                android:textSize = "18dp"/>
+
+                            <EditText
+                                android:id = "@+id/edt_car_number"
+                                android:layout_width = "130dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_alignParentRight = "true"
+                                android:layout_marginLeft = "20dp"
+                                android:layout_marginRight = "20dp"
+                                android:background = "@drawable/grey_border"
+                                android:gravity = "center"
+                                android:imeOptions = "actionDone"
+                                android:inputType = "textCapCharacters"
+                                android:maxLength = "10"
+                                android:padding = "10dp"
+                                android:textCursorDrawable = "@null"
+                                android:textSize = "18dp"/>
+                            <!-- android:inputType="textFilter"textCapWords
+                              -->
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+                <!-- Bottom layout-->
+
+                <RelativeLayout
+                    android:layout_width = "match_parent"
+                    android:layout_height = "60dp"
+                    android:layout_alignParentBottom = "true"
+                    android:layout_gravity = "bottom"
+                    android:layout_marginTop = "20dp"
+                    android:background = "@color/black">
+
+                    <RelativeLayout
+                        android:layout_width = "match_parent"
+                        android:layout_height = "70dp"
+                        android:layout_marginLeft = "20dp"
+                        android:layout_marginRight = "20dp">
+
+                        <RelativeLayout
+                            android:id = "@+id/rel_find"
+                            android:layout_width = "150dp"
+                            android:layout_height = "wrap_content"
+                            android:layout_alignParentRight = "true"
+                            >
 
                             <Button
-                                android:id="@+id/btn_cancel"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:background="#000000"
-                                android:gravity="center"
-                                android:text="@string/cancel_ride"
-                                android:textColor="#fff"
-                                android:textStyle="bold" />
+                                android:id = "@+id/btn_select"
+                                android:layout_width = "match_parent"
+                                android:layout_height = "wrap_content"
+                                android:layout_centerInParent = "true"
+                                android:background = "#000000"
+                                android:gravity = "center"
+                                android:text = "@string/select_ride"
+                                android:textColor = "#fff"
+                                android:textStyle = "bold"/>
 
                             <Button
-                                android:id="@+id/line_cancel"
-                                android:layout_width="150dp"
+                                android:id = "@+id/line_select"
+                                android:layout_width = "150dp"
+                                android:layout_height = "5dp"
+                                android:layout_alignParentBottom = "true"
+                                android:layout_alignParentLeft = "true"
+                                android:background = "@drawable/line"/>
+                        </RelativeLayout>
 
-                                android:layout_height="5dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentLeft="true"
-                                android:background="@drawable/line" />
+                        <RelativeLayout
+                            android:id = "@+id/rel_ofr"
+                            android:layout_width = "150dp"
+                            android:layout_height = "wrap_content"
+                            android:layout_alignParentLeft = "true">
+
+                            <Button
+                                android:id = "@+id/btn_cancel"
+                                android:layout_width = "match_parent"
+                                android:layout_height = "wrap_content"
+                                android:layout_centerInParent = "true"
+                                android:background = "#000000"
+                                android:gravity = "center"
+                                android:text = "@string/cancel_ride"
+                                android:textColor = "#fff"
+                                android:textStyle = "bold"/>
+
+                            <Button
+                                android:id = "@+id/line_cancel"
+                                android:layout_width = "150dp"
+
+                                android:layout_height = "5dp"
+                                android:layout_alignParentBottom = "true"
+                                android:layout_alignParentLeft = "true"
+                                android:background = "@drawable/line"/>
                         </RelativeLayout>
                     </RelativeLayout>
                 </RelativeLayout>

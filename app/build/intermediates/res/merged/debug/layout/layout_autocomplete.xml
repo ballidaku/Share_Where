@@ -1,11 +1,12 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:gravity="center"
-    android:textSize="14sp"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:textAppearance="?android:attr/textAppearanceMediumInverse"
-    android:textColor="@color/black" />
+<TextView
+    android:id = "@android:id/text1"
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content"
+    android:background = "@color/white"
+    android:gravity = "center_vertical"
+    android:padding = "4dp"
+    android:textAppearance = "?android:attr/textAppearanceMediumInverse"
+    android:textColor = "@color/black"
+    android:textSize = "14sp"/>
 <!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/layout/layout_autocomplete.xml -->

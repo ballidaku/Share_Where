@@ -90,4 +90,10 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
     </style>
 
+
+    <!--Switch theme -->
+    <style name="Color1SwitchStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlActivated">@color/Green</item>
+    </style>
+
 </resources>

@@ -1,8 +1,8 @@
 package car.sharewhere.gagan.utills;
 
-
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -25,16 +25,12 @@ import java.util.Locale;
 
 import car.sharewhere.gagan.sharewherecars.R;
 
-
 /**
- * Created by Gagan on 7/3/2015.
- */
+ Created by Gagan on 7/3/2015. */
 public class Utills_G
 {
 
-
     public static Toast toast;
-
 
     public static void showToast(String msg, Context context, boolean center)
     {
@@ -54,55 +50,55 @@ public class Utills_G
 
     public static Dialog global_dialog;
 
-
-    public static String address(Context con,double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
+    public static String address(Context con, double LATITUDE, double LONGITUDE)
+    {
+        String   strAdd   = "";
         Geocoder geocoder = new Geocoder(con, Locale.getDefault());
-        try {
+        try
+        {
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
+            if (addresses != null)
+            {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
 
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++)
+                {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
                 Log.w("urrentloctionaddress", "" + strReturnedAddress.toString());
-            } else {
+            }
+            else
+            {
                 Log.w("Current loction address", "No Address returned!");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             Log.w("Currentloctionaddress", "Canont get Address!");
         }
         return strAdd;
     }
 
-
-
-
     //dialog onw button
-    public static void show_dialog_msg(final Context con, final String text,
-                                       View.OnClickListener onClickListener)
+    public static void show_dialog_msg(final Context con, final String text, View.OnClickListener onClickListener)
     {
-        global_dialog = new Dialog(con,R.style.AppCompatAlertDialogStyle);
+        global_dialog = new Dialog(con, R.style.AppCompatAlertDialogStyle);
         global_dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
         global_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         global_dialog.setContentView(R.layout.mobile_custom_verify);
 
-       // global_dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        // global_dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-
-        TextView tex = (TextView) global_dialog.findViewById(R.id.text);
+        TextView tex     = (TextView) global_dialog.findViewById(R.id.text);
         EditText edt_nmr = (EditText) global_dialog.findViewById(R.id.text_mobile);
-        Button ok = (Button) global_dialog.findViewById(R.id.ok);
-        Button cancel = (Button) global_dialog.findViewById(R.id.cancel);
-
+        Button   ok      = (Button) global_dialog.findViewById(R.id.ok);
+        Button   cancel  = (Button) global_dialog.findViewById(R.id.cancel);
 
         tex.setText(text);
         edt_nmr.setVisibility(View.GONE);
-
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(global_dialog.getWindow().getAttributes());
@@ -111,7 +107,6 @@ public class Utills_G
 
         global_dialog.show();
         global_dialog.getWindow().setAttributes(lp);
-
 
         if (onClickListener != null)
         {
@@ -128,7 +123,6 @@ public class Utills_G
                 }
             });
 
-
             ok.setOnClickListener(onClickListener);
 
         }
@@ -140,8 +134,8 @@ public class Utills_G
                 @Override
                 public void onClick(View v)
                 {
-                    if(text.equals("You want to exit Share Where ?")){
-
+                    if (text.equals("You want to exit Share Where ?"))
+                    {
 
                     }
                     global_dialog.dismiss();
@@ -150,11 +144,7 @@ public class Utills_G
             });
         }
 
-
     }
-
-
-
 
     public static String dateToString(Date date, String format)
     {
@@ -173,7 +163,6 @@ public class Utills_G
         }
     }
 
-
     public void setRoundImage(Context con, ImageView imageView, String url)
     {
 
@@ -182,8 +171,22 @@ public class Utills_G
 
     }
 
+    public static String ridedetails = "com.ridedetails";
+
+    public static void rideDetailsBroadcastReceiver(Context con)
+    {
+
+        Intent intent = new Intent(Utills_G.ridedetails);
+        con.sendBroadcast(intent);
+    }
 
 
+    public static String refresh_chat = "com.refresh_chat";
+    public static void refresh_chat_BroadcastReceiver(Context con)
+    {
 
+        Intent intent = new Intent(Utills_G.refresh_chat);
+        con.sendBroadcast(intent);
+    }
 
 }

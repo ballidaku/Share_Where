@@ -32,12 +32,15 @@
                     android:text = "Departure Date"
                     android:textColor = "#000000"/>
 
-                <!--  <TextView
-                      android:id = "@+id/txt_time"
-                      android:layout_width = "wrap_content"
-                      android:layout_height = "wrap_content"
-                      android:text = "Time"
-                      android:textColor = "#000000"/>-->
+                  <TextView
+                      android:id = "@+id/txtv_message_count"
+                      android:layout_width = "25dp"
+                      android:layout_height = "25dp"
+                      android:text = ""
+                      android:gravity="center"
+                      android:textStyle="bold"
+                      android:background="@drawable/badge"
+                      android:textColor = "#FFF"/>
 
 
                 <TextView
@@ -45,6 +48,7 @@
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginRight = "10dp"
+                    android:layout_marginLeft="20dp"
                     android:text = ""
                     android:textColor = "#000000"
                     android:visibility = "visible"
@@ -166,6 +170,7 @@
                         android:layout_height = "wrap_content"
                         android:layout_weight = "1"
                         android:hint = "Maruti K10"
+                        android:layout_marginLeft="10dp"
                         android:textColor = "@color/black"/>
 
                     <TextView
@@ -174,6 +179,7 @@
                         android:layout_height = "wrap_content"
                         android:gravity = "center"
                         android:text = "Mini Cab"
+                        android:layout_marginRight="10dp"
                         android:textColor = "@color/black"
                         android:visibility = "visible"/>
 

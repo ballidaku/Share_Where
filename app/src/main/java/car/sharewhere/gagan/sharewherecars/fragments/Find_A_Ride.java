@@ -41,8 +41,8 @@ import java.util.HashMap;
 
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
-import car.sharewhere.gagan.GPS_Classes.GetCurrentLocation;
-import car.sharewhere.gagan.GPS_Classes.Location_Notifier;
+import car.sharewhere.gagan.Location.GetCurrentLocation;
+import car.sharewhere.gagan.Location.Location_Notifier;
 import car.sharewhere.gagan.WebServices.GetCityHelperG_;
 import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.model.Latlng_data;
@@ -173,7 +173,7 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
 
         if (cd.isConnectingToInternet())
         {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
             address_current = Utills_G.address(getActivity(), latlng.getLatitude(), latlng.getLongitude());
             lat = GlobalConstants.latitude(latlng.getLatitude());
             longitude = GlobalConstants.longitude(latlng.getLongitude());
@@ -400,8 +400,8 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
 
                 Intent is = new Intent(getActivity(), Ride_Details.class);
 
-                is.putExtra(GlobalConstants.Trip_Id, bean_ride_details.getTripId());
-                is.putExtra(GlobalConstants.Customer_ID, bean_ride_details.getCustomerId());
+                is.putExtra(GlobalConstants.KeyNames.TripId.toString(), bean_ride_details.getTripId());
+                is.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), bean_ride_details.getCustomerId());
 
                 startActivity(is);
                 getActivity().overridePendingTransition(0, R.anim.push_down_out);
@@ -717,12 +717,13 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
             TextView  txt_flag         = (TextView) v.findViewById(R.id.txt_flag);
             ImageView img_vehicle      = (ImageView) v.findViewById(R.id.img_man);
             TextView  txt_vw_ride_type = (TextView) v.findViewById(R.id.txt_vw_ride_type);
+            v.findViewById(R.id.txtv_message_count).setVisibility(View.GONE);
 
             v.findViewById(R.id.rel_my_ride_edit).setVisibility(View.GONE);
 
             final Bean_Ride_Details bean_ride_details = local_list.get(position);
 
-            txt_day.setText(bean_ride_details.getDepartureDate() + "     " + bean_ride_details.getDepartureTime());
+            // txt_day.setText(bean_ride_details.getDepartureDate() + "     " + bean_ride_details.getDepartureTime());
 
             txt_txt_driver_name.setText(bean_ride_details.getCustomerName());
 
@@ -739,6 +740,11 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
             {
                 String is_regular_basis = bean_ride_details.getIsRegulerBasis().equals("false") ? "Ride Type" + "\n" + "One Time" : "Riding Type" + "\n" + "Daily";
                 txt_vw_ride_type.setText(is_regular_basis);
+
+                String date_day_str= bean_ride_details.getIsRegulerBasis().equals("false")? bean_ride_details.getDepartureDate() : bean_ride_details.getRegulerDays();
+                //      Log.e("date_day_str ","date_day_str  "+date_day_str+"   "+feedItem.getLeaving_date()+"  gggg   "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +"  One Time") );
+
+                txt_day.setText(date_day_str+"     "+  bean_ride_details.getDepartureTime());
             }
 
             txt_car_name.setText("Type : " + bean_ride_details.getVehicleType() + "\n" + "Name : " + bean_ride_details.getVehicleName() + "\n" + "Number : " + bean_ride_details.getVehicleNo());

@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
 import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
@@ -74,6 +75,8 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
     ArrayList<String>   array_flag       = new ArrayList<String>();
     ArrayList<String>   array_requestID  = new ArrayList<String>();
 
+    Chat_Database chat_database;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -83,6 +86,8 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
         editor = preferences.edit();
         customerID = preferences.getString("CustomerId", null);
         customername = preferences.getString("first_name", null);
+
+        chat_database = new Chat_Database(getActivity());
 
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -110,7 +115,6 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
         btn_ofer_ride.setVisibility(View.GONE);
 
-
         img_vw_reload.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -131,9 +135,8 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
                 Getter_setter feedItem = feedItemList.get(position);
 
-                is.putExtra(GlobalConstants.Trip_Id, feedItem.getTrip_id());
-                is.putExtra(GlobalConstants.Customer_ID, preferences.getString("CustomerId", null));
-
+                is.putExtra(GlobalConstants.KeyNames.TripId.toString(), feedItem.getTrip_id());
+                is.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), preferences.getString("CustomerId", null));
 
                 startActivity(is);
                 getActivity().overridePendingTransition(0, R.anim.push_down_out);
@@ -377,6 +380,18 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
     }
 
+    @Override
+    public void onResultsSucceeded_Post_Method4(JSONObject result)
+    {
+
+    }
+
+    @Override
+    public void onResultsSucceeded_Post_Method5(JSONObject result)
+    {
+
+    }
+
     /**
      @ListAdapter
      */
@@ -419,44 +434,59 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
             TextView txt_day = (TextView) v.findViewById(R.id.txt_day);
 
-            TextView txt_from = (TextView) v.findViewById(R.id.txt_from);
-            TextView txt_to   = (TextView) v.findViewById(R.id.txt_to);
-            TextView txt_driver_name=(TextView) v.findViewById(R.id.txt_driver_name);
+            TextView txt_from         = (TextView) v.findViewById(R.id.txt_from);
+            TextView txt_to           = (TextView) v.findViewById(R.id.txt_to);
+            TextView txt_driver_name  = (TextView) v.findViewById(R.id.txt_driver_name);
             TextView txt_vw_ride_type = (TextView) v.findViewById(R.id.txt_vw_ride_type);
             TextView txt_car_name     = (TextView) v.findViewById(R.id.txt_car_name);
+            TextView txtv_message_count     = (TextView) v.findViewById(R.id.txtv_message_count);
+            v.findViewById(R.id.txt_flag).setVisibility(View.GONE);
 
             img_driver_img = (ImageView) v.findViewById(R.id.img_driver_img);
             ImageView img_vehicle = (ImageView) v.findViewById(R.id.img_man);
 
-            ImageView img_phn             = (ImageView) v.findViewById(R.id.img_phn);
+            ImageView img_phn = (ImageView) v.findViewById(R.id.img_phn);
 
             LinearLayout rel_my_ride_edit = (LinearLayout) v.findViewById(R.id.rel_my_ride_edit);
 
             v.findViewById(R.id.btn_edit).setVisibility(View.GONE);
             v.findViewById(R.id.btn_del).setVisibility(View.GONE);
 
-
-
             txt_vw_ride_type.setVisibility(View.VISIBLE);
             rel_my_ride_edit.setVisibility(View.VISIBLE);
 
             final Getter_setter feedItem = feedItemList.get(position);
 
-            txt_day.setText(feedItem.getLeaving_date() + "     " + feedItem.getLeaving_time());
-
-            if (feedItem.getModel_CustomerPhoto() != null)
+            long count =chat_database.get_unread_messages_count(feedItem.getTrip_id(), "");
+            if(count>0)
             {
-                Picasso.with(getActivity()).load(feedItem.getModel_CustomerPhoto()).
+                txtv_message_count.setText(""+count);
+            }
+            else
+            {
+                txtv_message_count.setVisibility(View.GONE);
+            }
+
+
+//            txt_day.setText(feedItem.getLeaving_date() + "     " + feedItem.getLeaving_time());
+
+            if (feedItem.getImage() != null)
+            {
+                Picasso.with(getActivity()).load(feedItem.getImage()).
                           transform(new CircleTransform()).into(img_driver_img);
             }
 
             txt_driver_name.setText(feedItem.getCustomer_name());
 
-
             if (feedItem.getIs_regular() != null)
             {
                 String is_regular_basis = feedItem.getIs_regular().equals("false") ? "Ride Type" + "\n" + "One Time" : "Riding Type" + "\n" + "Daily";
                 txt_vw_ride_type.setText(is_regular_basis);
+                Log.e("Riders",""+feedItem.getRegulardays());
+                String date_day_str= feedItem.getIs_regular().equals("false")? feedItem.getLeaving_date() : feedItem.getRegulardays();
+                Log.e("Rider ","date_day_str "+date_day_str+" "+feedItem.getLeaving_date()+" gggg "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +" One Time") );
+
+                txt_day.setText(date_day_str+" "+ feedItem.getLeaving_time());
             }
 
             if (feedItem.getLeaving_from() != null)
@@ -472,9 +502,6 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
             int id = feedItem.getVehicle_type().equals("Bike") ? R.mipmap.bike : R.mipmap.car;
             img_vehicle.setBackgroundResource(id);
-
-
-
 
             img_phn.setOnClickListener(new View.OnClickListener()
             {
@@ -532,8 +559,6 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
                     txt_vw_ride_type.setPaintFlags(txt_car_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 }
             }*/
-
-
 
             return v;
         }

@@ -30,12 +30,18 @@ public class GlobalConstants {
     public static String GET_PROFILE_BYID_CONSTANT_TRIPID="TripId=";
     public static String GET_PROFILE_BYID_CONSTANT_CUSTOMERID="&CustomerId=";
 
+    public static String RESEND_OTP="http://112.196.34.42:9091/Customer/ReSendCode";
+    public static String UPDATE_PROFILE ="http://112.196.34.42:9091/Customer/UpdateProfile";
+    public static String CHANGE_MOBILE_NUMBER ="http://112.196.34.42:9091/Customer/ChangeMobileNo";
+
 
     public static final String GET_SERVICE_METHOD1 = "get1";
     public static final String GET_SERVICE_METHOD2 = "get2";
     public static final String POST_SERVICE_METHOD1 = "post1";
     public static final String POST_SERVICE_METHOD2 = "post2";
     public static final String POST_SERVICE_METHOD3 = "post3";
+    public static final String POST_SERVICE_METHOD4 = "post4";
+    public static final String POST_SERVICE_METHOD5 = "post5";
 
 
     public static final String MESSAGE = "Message";
@@ -48,36 +54,14 @@ public class GlobalConstants {
     public static final String Return_Date = "ReturnDate";
     public static final String Round_Trip = "RoundTrip";
     public static final String Image = "image";
-    public static final String Trip_Id = "tripid";
     public static final String Mobile_Number = "mobile";
     public static final String Points = "points";
-    public static final String Car_Info = "car_info";
     public static final String Is_Regular = "regular";
-    public static final String Customer_ID = "CustomerId";
-    public static final String Trip_Id_GCM = "trip_id_gcm";
     public static final String Flag = "flag";
     public static final String Regular_Days = "RegulerDays";
-    public static final String CUstomer_ID_GCM = "customer_sender_id_gcm";
-    public static final String Request_Type = "request_type";
-    public static final String My_Rides_Constant = "my_rides";
-    public static final String Search_Trip_passed_Constant = "trip_passed";
     public static final String Available_Seats = "available_seat";
     public static final String Rate_seat = "rate";
     public static final String Vehicle_number = "vehicle_number";
-    public static final String GCM_FLAG = "flag";
-    public static final String TRIP_Status = "trip_status";
-    public static final String Constant_Rider = "rider";
-    public static final String Constant_Driver = "driver";
-    public static final String MODEL_NAME = "model_name";
-    public static final String MODEL_IMAGE = "model_image";
-    public static final String MODEL_NUMBER = "model_number";
-    public static final String Search_TIME_pass = "time_pass";
-    public static final String GCM_Lat = "gcm_lat";
-    public static final String GCM_Long = "gcm_long";
-    public static final String GCM_DriverId = "gcm_driver_id";
-    public static final String GCM_Rider_ID = "gcm_rider_id";
-    public static final String GCM_message = "gcm_message";
-    public static final String GCM_REquestID = "requestid";
     public static String lat="0.0";
     public static  String longitude="0.0";
 
@@ -165,8 +149,12 @@ public class GlobalConstants {
     }
 
 
+
    public enum KeyNames
     {
-        fromWhere,Notification
+        fromWhere,Notification,CustomerName,CustomerPhoto,CustomerMobileNo,CustomerId,Flag,TripId,DriverId,RequestId,Driver,Rider,RiderId,Messages
+        ,Status
     }
+
+
 }

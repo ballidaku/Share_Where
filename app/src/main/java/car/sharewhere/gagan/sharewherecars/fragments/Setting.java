@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,107 +19,78 @@ import car.sharewhere.gagan.sharewherecars.LicenceDummy;
 import car.sharewhere.gagan.sharewherecars.R;
 
 /**
- * Created by ameba on 25/11/15.
- */
-public class Setting extends FragmentG {
-    LinearLayout lnr_liscence,lnr_show_notificatn;
-    CheckBox chk_notificatn;
-    SharedPreferences preferences;
+ Created by ameba on 25/11/15. */
+public class Setting extends FragmentG
+{
+    LinearLayout lnr_liscence, lnr_show_notificatn;
+    SharedPreferences        preferences;
     SharedPreferences.Editor editor;
-    String chkbox_notifctn_state;
+    SwitchCompat             switch_notification;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
 
         View view = inflater.inflate(R.layout.seting, container, false);
 
-        setActionBar(view,"Settings");
+        setActionBar(view, "Settings");
         findViewbyID(view);
 
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         editor = preferences.edit();
 
-         chkbox_notifctn_state = preferences.getString("notification", null);
-
-        if (chkbox_notifctn_state == null) {
-            chk_notificatn.setChecked(true);
-        }
-        else if (chkbox_notifctn_state.equals("no"))
+        switch_notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
-            chk_notificatn.setChecked(false);
-        }
-        else if (chkbox_notifctn_state.equals("yes"))
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+
+                if (isChecked)
+                {
+                    preferences.edit().putBoolean("notification_on_off", true).apply();
+                }
+                else
+                {
+                    preferences.edit().putBoolean("notification_on_off", false).apply();
+                }
+            }
+        });
+
+        if (preferences.getBoolean("notification_on_off", true) == true)
         {
-            chk_notificatn.setChecked(true);
+            switch_notification.setChecked(true);
         }
-
-
-
-
-        checkbox_pic_listner();
+        else
+        {
+            switch_notification.setChecked(false);
+        }
 
         return view;
     }
 
-    /**
-     * finding view by id
-     */
-    private void findViewbyID(View view) {
+    private void findViewbyID(View view)
+    {
         lnr_liscence = (LinearLayout) view.findViewById(R.id.licence_lnr);
         lnr_show_notificatn = (LinearLayout) view.findViewById(R.id.lnr_show_notificatn);
-        chk_notificatn = (CheckBox) view.findViewById(R.id.chk_notificatn);
+        switch_notification = (SwitchCompat) view.findViewById(R.id.switch_notification);
 
-       /* lnr_show_notificatn.setOnClickListener(new View.OnClickListener() {
+        lnr_liscence.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                Intent i=new Intent(getActivity(), NotificationActivity.class);
-                startActivity(i);
-            }
-        });*/
-        lnr_liscence.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 GetLiscence();
             }
         });
     }
 
-
-    private void GetLiscence() {
+    private void GetLiscence()
+    {
         Intent i = new Intent(getActivity(), LicenceDummy.class);
         startActivity(i);
     }
 
-    /**
-     * @CheckboxPic_Listner
-     */
-    private void checkbox_pic_listner() {
-        chk_notificatn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (chk_notificatn.isChecked()) {
-                    editor.putString("notification", "yes");
-                    editor.commit();
-                } else {
-                    editor.putString("notification", "no");
-                    editor.commit();
-                }
-            }
-        });
-        {
-        }
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
 }

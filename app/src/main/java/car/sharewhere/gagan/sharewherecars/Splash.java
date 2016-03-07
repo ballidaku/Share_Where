@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,186 +24,98 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.List;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Currency;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import car.sharewhere.gagan.utills.CommonUtilities;
 
-public class Splash extends AppCompatActivity {
-
-    String deviceToken;
+public class Splash extends AppCompatActivity
+{
+    String               symbol;
     GoogleCloudMessaging gcm;
-    SharedPreferences preferences;
+    SharedPreferences    preferences;
     String countryCode = "";
-    public  String address_current="";
-    public  String lat, longitude;
+    public String lat, longitude;
     LocationManager locationManager;
 
     //Added
     SharedPreferences.Editor editor;
-    String GCM_Reg_id="";
 
-
-    boolean torecreate=false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(Splash.this);
-        deviceToken = preferences.getString("deviceToken", null);//GCM Id
-
-       torecreate=false;
-      //Added
         editor = preferences.edit();
 
-
-        Log.e("Splash device",""+deviceToken);
-
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        countryCode = tm.getSimCountryIso();
-        Log.e("Splash countryCode", "" + countryCode);
-        if (countryCode.equals("")) {
-            Log.e("Splash countryCode","enteres"+countryCode);
-
-
-            countryCode = "IN";
-        }
-        GetCountryZipCode(countryCode);
-
-
-
-
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
-
-        if (status == ConnectionResult.SUCCESS)
-        {
-            registerInBackground();
-        }
-        else
-        {
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, 0);
-                 if (dialog != null)
-                {
-                //This dialog will help the user update to the latest GooglePlayServices
-                dialog.show();
-                            }
-            return;
-        }
-
-Log.e("    MoVE 1111","===========");
-
-
     }
 
     /**
-     * @CountryCode
+     registeration for GCM
      */
-    private void GetCountryZipCode(String code)
+    private void registerInBackground()
     {
 
-        String CountryID = "";
-        Log.e("before code",""+code);
-
-        TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        //getNetworkCountryIso
-        CountryID = manager.getSimCountryIso().toUpperCase();
-
-        Log.e("GetCountryZipCode",""+CountryID);
-
-        String[] rl = this.getResources().getStringArray(R.array.CountryCodes);
-        for (int i = 0; i < rl.length; i++)
+        new AsyncTask<Void, Void, String>()
         {
-            String[] g = rl[i].split(",");
-            if (g[1].trim().equals(CountryID.trim()))
-            {
-                code = g[0];
-                Log.e("for loop code",""+code);
-                break;
-            }
-        }
-    }
-
-    /**
-     * registeration for GCM
-     */
-    private void registerInBackground() {
-
-
-
-
-        new AsyncTask<Void,Void,String>(){
             @Override
-            protected String doInBackground(Void... params) {
+            protected String doInBackground(Void... params)
+            {
 
-                String msg="";
+                String msg = "";
 
+                try
+                {
+                    if (gcm == null)
+                    {
+                        gcm = GoogleCloudMessaging.getInstance(Splash.this);
+                        //                        GCM_Reg_id = gcm.register(CommonUtilities.SENDER_ID);
 
-                try{
-                    if (gcm == null) {
-                       gcm = GoogleCloudMessaging.getInstance(Splash.this);
-//                        GCM_Reg_id = gcm.register(CommonUtilities.SENDER_ID);
-
-
-                 }
+                    }
                     msg = gcm.register(CommonUtilities.SENDER_ID);
 
-                }catch(IOException e){
-                   // e.toString();
-                    msg="ERROR";
+                }
+                catch (IOException e)
+                {
+                    // e.toString();
+                    msg = "ERROR";
                 }
                 return msg;
             }
 
-
             @Override
-            protected void onPostExecute(String s) {
+            protected void onPostExecute(String s)
+            {
                 super.onPostExecute(s);
 
-                if(s.isEmpty()||s.equalsIgnoreCase("ERROR")){
+                if (s.isEmpty() || s.equalsIgnoreCase("ERROR"))
+                {
                     registerInBackground();
 
-                    Log.e("registration id","registration if");
+                    Log.e("registration id", "registration if");
                 }
-                else {
-                    Log.e("registration id","else");
+                else
+                {
+                    Log.e("registration id", "else");
                     editor.putString("deviceToken", s);
-                    editor.commit();
+                    editor.apply();
                 }
 
             }
-        }.execute(null,null,null);
+        }.execute(null, null, null);
     }
 
-
-
-    public String address(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(Splash.this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
-
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                }
-                strAdd = strReturnedAddress.toString();
-                Log.w("urrentloctionaddress", "" + strReturnedAddress.toString());
-            } else {
-                Log.w("Current loction address", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.w("Currentloctionaddress", "Canont get Address!");
-        }
-        return strAdd;
-    }
-
-    public void turnGPSOn() {
+    public void turnGPSOn()
+    {
 
         final Dialog dialog = new Dialog(Splash.this);
 
@@ -214,14 +124,13 @@ Log.e("    MoVE 1111","===========");
         dialog.setContentView(R.layout.mobile_custom_verify);
         dialog.setCancelable(false);
 
-        TextView text = (TextView) dialog.findViewById(R.id.text);
-        Button ok = (Button) dialog.findViewById(R.id.ok);
-        Button cancel = (Button) dialog.findViewById(R.id.cancel);
+        TextView       text       = (TextView) dialog.findViewById(R.id.text);
+        Button         ok         = (Button) dialog.findViewById(R.id.ok);
+        Button         cancel     = (Button) dialog.findViewById(R.id.cancel);
         final EditText edt_mobile = (EditText) dialog.findViewById(R.id.text_mobile);
         edt_mobile.setVisibility(View.GONE);
 
         text.setText(("Enable GPS to get your location"));
-
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
@@ -231,18 +140,22 @@ Log.e("    MoVE 1111","===========");
         dialog.show();
         dialog.getWindow().setAttributes(lp);
 
-        ok.setOnClickListener(new View.OnClickListener() {
+        ok.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
-             //   torecreate=true;
+
                 dialog.dismiss();
             }
         });
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
                 dialog.dismiss();
                 finish();
@@ -252,28 +165,146 @@ Log.e("    MoVE 1111","===========");
         dialog.show();
     }
 
+    private String GetCountryCode_CurrencySymbol()
+    {
+        String CountryID = "";
 
+        TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        if (CountryID.equals(""))
+        {
+            CountryID = "IN";
+        }
+        String[]              rl  = this.getResources().getStringArray(R.array.CountryCodes);
+        Map<Currency, Locale> map = getCurrencyLocaleMap();
+        for (int i = 0; i < rl.length; i++)
+        {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim()))
+            {
+                countryCode = "+" + g[0];
+                //===Currency Symbol====
+                currency_Symbol(map, g[1].trim());
+                break;
+            }
+        }
+        return countryCode;
+    }
+
+    private void currency_Symbol(Map<Currency, Locale> map, String countryCode)
+    {
+
+        Locale   locale   = new Locale("EN", countryCode);
+        Currency currency = Currency.getInstance(locale);
+        // String symbol = currency.getSymbol(map.get(currency));
+
+        try
+        {
+            if ((map.get(currency) == null) || (map.get(currency)).equals("null"))
+            {
+                Locale locale_ = new Locale(" ", countryCode);
+                NumberFormat currency_ = NumberFormat.getCurrencyInstance(locale_);
+                DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) currency_).getDecimalFormatSymbols();
+                String currencySymbol = decimalFormatSymbols.getCurrencySymbol();
+                symbol = currencySymbol;
+            }
+            else
+            {
+                symbol = currency.getSymbol(map.get(currency));
+            }
+
+            Log.e("For country", " " + countryCode + "  currency symbol is" + symbol);
+        }
+        catch (Exception e)
+        {
+            Log.e("Exception e", "" + e.toString());
+
+        }
+
+        //====Save Currency SYMBOL==============
+        if (symbol.isEmpty() || symbol.equalsIgnoreCase("null") || symbol == null)
+        {
+            currency_Symbol(getCurrencyLocaleMap(), countryCode);
+
+        }
+        else
+        {
+
+            editor.putString("currency_symbol", symbol);
+            editor.apply();
+            Log.e("Symbol Else", "" + preferences.getString("currency_symbol", "null"));
+        }
+
+    }
+
+    //==========
+    //========Currency Symbol=======
+    public static Map<Currency, Locale> getCurrencyLocaleMap()
+    {
+        Map<Currency, Locale> map = new HashMap<>();
+        for (Locale locale : Locale.getAvailableLocales())
+        {
+            try
+            {
+                Currency currency = Currency.getInstance(locale);
+                map.put(currency, locale);
+            }
+            catch (Exception e)
+            {
+                // skip strange locale
+            }
+        }
+        return map;
+    }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
 
         super.onResume();
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
             turnGPSOn();
-          //  return;
+            //  return;
         }
-        else {
-            Log.e("    MoVE 2222","===========");
+        else
+        {
+            Log.e("    MoVE 2222", "===========");
+            countryCode = GetCountryCode_CurrencySymbol();
+            editor.putString("country_code", countryCode);
+            editor.apply();
+            Log.e("country_code", "===========" + preferences.getString("country_code", ""));
+
+            int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+
+            if (status == ConnectionResult.SUCCESS)
+            {
+                registerInBackground();
+            }
+            else
+            {
+                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, 0);
+                if (dialog != null)
+                {
+                    //This dialog will help the user update to the latest GooglePlayServices
+                    dialog.show();
+                }
+                return;
+            }
+
             android.os.Handler h = new android.os.Handler();
-            h.postDelayed(new Runnable() {
+            h.postDelayed(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     startActivity(new Intent(Splash.this, Registeration.class));
                     finish();
                 }
             }, 3000);
         }
     }
+
 }

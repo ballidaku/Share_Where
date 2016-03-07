@@ -1,12 +1,10 @@
 package car.sharewhere.gagan.sharewherecars;
 
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -20,9 +18,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,7 +26,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,16 +46,13 @@ import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import car.sharewhere.gagan.GPS_Classes.GetCurrentLocation;
-import car.sharewhere.gagan.GPS_Classes.Location_Notifier;
 import car.sharewhere.gagan.GPS_Classes.ProgressDialogWoody;
+import car.sharewhere.gagan.Location.GetCurrentLocation;
+import car.sharewhere.gagan.Location.Location_Notifier;
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
 import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
@@ -70,6 +62,7 @@ import car.sharewhere.gagan.utills.ConnectivityDetector;
 public class Registeration extends FragmentActivity implements Asnychronus_notifier,Location_Notifier
 {
 
+    String symbol;
     LoginButton btnLogin;
     ImageView fb_custom;
     CallbackManager callbackManager;
@@ -79,12 +72,12 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
     HashMap<String, String> data_mobile = new HashMap<>();
     String res_MobileNo, res_CustomerId, res_PhotoPath, res_FirstName,
             res_LastName, res_EmailID, res_MobileNoVerifyCode, res_emailverified, res_mobileverified,
-            res_emailVerifyCode, get_email_id, photo, app_id, facebook_id,
+            res_emailVerifyCode, get_email_id, photo, app_id,
             stringLatitude, stringLongitude, first_name, last_name, encoded, send_mobile_numbr;
 
-    SharedPreferences preferences;
-    ProgressBar progress;
-    String mobile, countryCode;
+    SharedPreferences    preferences;
+    ProgressBar          progress;
+    String               mobile;
     ConnectivityDetector cd;
     private CoordinatorLayout coordinatorLayout;
     Snackbar snackbar;
@@ -93,11 +86,10 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
     TelephonyManager         tm;
     ProfileTracker           profileTracker;
     String macAddress        = "";
-    String DeviceSerialNo    = "";
     String mobileverify_code = "";
     private ProgressDialogWoody dailog;
     private GetCurrentLocation  google_location;
-    //  Dialog dialog;
+    boolean changed_mobilenumber = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -115,11 +107,13 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         {
             e.printStackTrace();
         }
+
         cd = new ConnectivityDetector(Registeration.this);
         dailog = new ProgressDialogWoody(Registeration.this);
 
         google_location = new GetCurrentLocation(Registeration.this);
         google_location.setOnResultsListener(this);
+
         if (cd.isConnectingToInternet() && google_location.mGoogleApiClient != null)
         {
             google_location.mGoogleApiClient.connect();
@@ -148,7 +142,6 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         app_id = preferences.getString("deviceToken", null);
         isAlreadyLogin(isLoggedIn());
         editor = preferences.edit();
-        //dialog = new Dialog(this);
 
         /**
          * Hiding soft keyboard
@@ -180,10 +173,6 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         });
 
         /**
-         * fetching lat/long GPS
-         */
-
-        /**
          * facebook permissions & callback manager
          */
         callbackManager = CallbackManager.Factory.create();
@@ -194,22 +183,24 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
             public void onSuccess(LoginResult loginResult)
             {
                 user_email_id(loginResult);
-                Log.e("email", email_id);
 
             }
 
             @Override
             public void onCancel()
             {
-                Log.e("OnCancel", "cancel");
-                LoginManager.getInstance().logOut();
+                Log.e("OnCancel","cancel");
+               LoginManager.getInstance().logOut();
+                AccessToken.setCurrentAccessToken(null);
+                Profile.setCurrentProfile(null);
+
 
             }
 
             @Override
-            public void onError(FacebookException exception)
-            {
+            public void onError(FacebookException exception) {
                 snackbar_method(exception.toString());
+
 
             }
         });
@@ -219,15 +210,21 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
 
 
 
-    private String getmac_Adres() {
+    private String getmac_Adres()
+    {
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo wInfo = wifiManager.getConnectionInfo();
         macAddress = wInfo.getMacAddress();
-        if (macAddress != null) {
+        if (macAddress != null)
+        {
             Log.e("mac adres=",macAddress);
             return macAddress;
-        } else {
-            return "";
+        }
+        else
+        {
+            Log.e("MAC ADDRESS ","MMMM "+macAddress);
+            //return "";
+            return  getmac_Adres();
         }
 
     }
@@ -255,37 +252,34 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
                     try {
-//email
-                        if (object.has("email")) {
 
-                            Log.e("Yam","yyyyyyyyyyyyyy");
+                        if (object.has("email"))
+                        {
                             email_id = object.getString("email");
-                            Log.e("Yam","yyyyyyyyyy  "+email_id);
+                            Log.e("email_id","yyyyyyyyyy  "+email_id);
+                            editor.putString("email_id", email_id);
+                           editor.commit();
 
                         }
                         else if (object.has("id"))
                         {
                             email_id = object.getString("id");
-                            Log.e("YamId","ididid  "+email_id);
+                            editor.putString("email_id", email_id);
+                            editor.commit();
+                            Log.e("Id", "ididid  " + email_id);
                         }
 
 
                         if (!email_id.equals(""))
                         {
-                            Log.e("Noprofile", "tracker");
+                            Log.e("get_first_last_name", "get_first_last_name");
                             get_first_last_name();
                         }
-//                        else
-//                        {
-//                            Log.e("profile", "tracker");
-//                            profile_tracker_method();
-//                        }
 
-
-                    } catch (Exception e) {
+                    } catch (Exception e)
+                    {
                         snackbar_method(e.toString());
-                       /* data_login.put("EmailId", "");
-                        data_registration.put("EmailId", "");*/
+
                     }
                 }
             });
@@ -293,68 +287,72 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
             parameters.putString("fields", "email,first_name,last_name,name,id");
             request.setParameters(parameters);
             request.executeAsync();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             snackbar_method(ex.toString());
 
         }
     }
 
+//======In case phot not fetched  using get_first_last_name()========
+    private void profile_tracker_method() {
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                Log.e("ProfileTracker", "======"+Profile.getCurrentProfile());
 
-//    private void profile_tracker_method() {
-//        profileTracker = new ProfileTracker() {
-//            @Override
-//            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-//                Log.e("AAAAAAAAAAAAAA", "Hello");
-//
-//                if (Profile.getCurrentProfile() != null) {
-//// Log.e("currentProfile", "Hello" + currentProfile.getName() + "...." + currentProfile.getProfilePictureUri(100, 100) + "...." + currentProfile.getId());
-//
-//
-//                    email_id = currentProfile.getId() + " ";
-//
-//
-//                    first_name = currentProfile.getFirstName();
-//                    last_name = currentProfile.getLastName();
-//                    Log.e("onSuccess", "7" + first_name);
-//                    Log.e("onSuccess", "8" + last_name);
-//                    Log.e("onSuccess", "9" + currentProfile.getProfilePictureUri(500, 500).toString());
-//
-//
-//                    get_profile_picture_tracker(currentProfile.getProfilePictureUri(100, 100));
-//
-//
-//                } else {
-//                    stop_fb();
-//                }
-//
-//            }
-//        };
-//
-//
-//        profileTracker.startTracking();
-//
-//    }
+                if (Profile.getCurrentProfile() != null) {
+
+                    Log.e("ProfileTracker", "======");
+                    first_name=currentProfile.getFirstName();
+                    last_name=currentProfile.getLastName();
+
+                    editor.putString("first_name", first_name);
+                    editor.putString("last_name", last_name);
+
+                    editor.commit();
+                    Log.e("onSuccess", "7" + first_name+"  "+preferences.getString("first_name", ""));
+                    Log.e("onSuccess", "8" + last_name+"   "+preferences.getString("first_name", ""));
+                    Log.e("onSuccess", "9" + currentProfile.getProfilePictureUri(500, 500).toString());
 
 
-//    public void stop_fb() {
-//        Log.e("Logout", "Logout");
-//
-//        try {
-//            if (profileTracker.isTracking()) {
-//                profileTracker.stopTracking();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            AccessToken.setCurrentAccessToken(null);
-//            Profile.setCurrentProfile(null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+                    get_profile_picture_tracker(currentProfile.getProfilePictureUri(100, 100));
+
+
+                }
+                else
+                {
+                    Log.e("ProfileTracker", "ELSE");
+                    stop_fb();
+                }
+
+            }
+        };
+
+
+        profileTracker.startTracking();
+
+    }
+
+
+    public void stop_fb() {
+
+            snackbar_method("Please login again.");
+        try {
+            if (profileTracker.isTracking()) {
+                profileTracker.stopTracking();
+            }
+            LoginManager.getInstance().logOut();
+            AccessToken.setCurrentAccessToken(null);
+            Profile.setCurrentProfile(null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 
 
     /**
@@ -362,7 +360,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
      */
     private void get_first_last_name()
     {
-        Log.e("get_first","firstfirstlastlast");
+
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
         Profile profile = Profile.getCurrentProfile();
         if (enableButtons && profile != null)
@@ -370,20 +368,13 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
 
             first_name = profile.getFirstName();
             last_name = profile.getLastName();
+            //because if phone number not registered then
+            editor.putString("first_name", first_name);
+            editor.putString("last_name", last_name);
 
-//            if (email_id.equals(""))
-//            {
-//
-//                Log.e("email_id if","email_id");
-//                email_id = profile.getId();
-//
-//                data_login.put("EmailId", email_id + "@gmail.com");
-//                data_registration.put("EmailId", email_id + "@gmail.com");
-//
-//            }
-         //   last_name = profile.getId();
-//
-         //   Log.e("email_id last_name",""+last_name);
+
+            editor.commit();
+
 
             /******* get the profile picture in BASE64 form*****************/
 
@@ -407,36 +398,55 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
 
 
     public void get_profile_picture(final Profile profile) {
-        new AsyncTask<String, Void, String>() {
+        new AsyncTask<String, Void, URL>() {
             @Override
-            protected String doInBackground(String... params) {
+            protected URL doInBackground(String... params) {
                 encoded = "";
                 Bitmap mIcon1 = null;
+                URL img_value = null;
+
                 try {
-                    URL img_value = null;
-                    try {
+
+                    Log.e("getProfile 1",""+profile.getProfilePictureUri(100, 100));
+
                         img_value = new URL("" + profile.getProfilePictureUri(100, 100));
-                        mIcon1 = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        mIcon1.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                        byte[] byteArray = byteArrayOutputStream.toByteArray();
-                        encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                    } catch (MalformedURLException e) {
-                        Log.e("Exception 1", e.toString());
-                    } catch (IOException e) {
-                        Log.e("Exception 2", e.toString());
-                    }
+                        Log.e("FirstMethod","FFFFFFF"+img_value);
+                    
 
-                    return encoded;
-                } catch (Exception e) {
-
-                    return encoded;
                 }
+                catch (Exception e) {
+
+                  Log.e("Exception e"," "+e.toString());
+                }
+                return img_value;
             }
 
-            protected void onPostExecute(String result) {
-                photo = result;
-                calService();
+
+protected void onPostExecute(URL result) {
+
+Log.e("result", " @@@!!!!!! " + result);
+    if(result==null)
+    {
+        Log.e("resultNull", " null " + result);
+        profile_tracker_method();
+    }
+    else
+    {
+        photo = result.toString().trim();
+        if (photo.length() == 0)
+        {
+
+            Log.e("photo", "photo=======" + photo);
+            profile_tracker_method();
+        }
+        else
+        {
+
+            editor.putString("photo_path", photo);
+            editor.apply();
+            calService();
+        }
+    }
             }
         }.execute();
 
@@ -444,35 +454,34 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
 
 
     public void get_profile_picture_tracker(final Uri profilePictureUri) {
-        new AsyncTask<String, Void, String>() {
+
+        new AsyncTask<String, Void, URL>() {
             @Override
-            protected String doInBackground(String... params) {
+            protected URL doInBackground(String... params) {
                 encoded = "";
                 Bitmap mIcon1 = null;
+                URL img_value = null;
                 try {
-                    URL img_value = null;
-                    try {
-                        img_value = new URL("" + profilePictureUri);
-                        mIcon1 = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        mIcon1.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                        byte[] byteArray = byteArrayOutputStream.toByteArray();
-                        encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                    } catch (MalformedURLException e) {
-                        Log.e("Exception 1", e.toString());
-                    } catch (IOException e) {
-                        Log.e("Exception 2", e.toString());
-                    }
 
-                    return encoded;
+
+                        img_value = new URL("" + profilePictureUri);
+                        Log.e("SecondMethod","SSSSSSSS"+img_value);
+
+
+
                 } catch (Exception e) {
 
-                   return encoded;
+
                 }
+                return img_value;
             }
 
-            protected void onPostExecute(String result) {
-                photo = result;
+            protected void onPostExecute(URL result) {
+
+                Log.e("URL SECond"," "+result);
+                photo = result.toString().trim();
+                editor.putString("photo_path", photo);
+                editor.apply();
                 calService();
 
             }
@@ -484,14 +493,16 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
      * @FbAcessToken
      */
     private void isAlreadyLogin(boolean currentAccessToken) {
-        if (currentAccessToken) {
+        if (currentAccessToken)
+        {
 
 
                 Log.e("isAlreadyLogin",""+currentAccessToken);
                 get_email_id = preferences.getString("email_id", null);
-                get_email_id = preferences.getString("email_verify", null);
+
                 String get_mobile_verify = preferences.getString("mobile_verify", null);
-            Log.e("get_mobile_verify",""+get_mobile_verify);
+            Log.e("get_mobile_verify","gggggggggggggggg       "+get_mobile_verify);
+            Log.e("mobilenumber","mobilenumber       "+preferences.getString("mobile_no", null));
                 if (get_mobile_verify != null)
                 {
                     if (get_mobile_verify.equals("true"))
@@ -508,7 +519,8 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
                 }
                 else
                 {
-//                   showdialog_codeValidatio();
+                    showdialog();
+
                 }
 
         }
@@ -538,17 +550,22 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
      * @HitServiceLogin
      */
     public void calService() {
+
+        //Login Service directly
+
         data_login.put("EmailId", email_id);
 
-
-        data_login.put("PhotoPath", photo);
+        //data_login.put("PhotoPath",photo);
+        data_login.put("PhotoPath", preferences.getString("photo_path", ""));
+        data_login.put("FirstName", preferences.getString("first_name", ""));
+        data_login.put("LastName", preferences.getString("last_name", ""));
         mobile = preferences.getString("mobile_no", null);
         data_login.put("ApplicationId", app_id);
         data_login.put("DeviceType", "android");
         data_login.put("Flag", "facebook");
         data_login.put("DeviceSerialNo", getmac_Adres());
 
-            Log.e("Service", "" + data_login);
+            Log.e("calService", "ssssssssss        " + data_login);
 
         if (!cd.isConnectingToInternet())
         {
@@ -558,7 +575,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         else
         {
 
-            Log.e("Cal service Else",""+data_login);
+
             final Json_AsnycTask tsk = new Json_AsnycTask(Registeration.this,
                     GlobalConstants.URL_REGISTER_LOGIN + GlobalConstants.LOGIN_CONSTANT,
                     GlobalConstants.POST_SERVICE_METHOD1, data_login);
@@ -575,23 +592,32 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
      */
     public void HitService_REgister() {
 
-        data_registration.put("EmailId", email_id);
-        data_registration.put("PhotoPath", photo);
+//preferences.getString("photo_path", "")
+        Log.e("PhotoPAth",""+photo);
 
-        data_registration.put("FirstName", first_name);
-        data_registration.put("LastName", last_name);
+        Log.e("PhotoPAth",""+photo);
+        Log.e("countryCode", "" + preferences.getString("country_code", ""));
+        data_registration.put("EmailId", preferences.getString("email_id", ""));
+//        data_registration.put("PhotoPath", photo);
+        data_registration.put("PhotoPath", preferences.getString("photo_path", ""));
+        data_registration.put("FirstName", preferences.getString("first_name", ""));
+        data_registration.put("LastName", preferences.getString("last_name", ""));
         data_registration.put("ApplicationId", app_id);
         data_registration.put("DeviceType", "android");
-        data_registration.put("MobilePrefix", GetCountryZipCode());
+//      data_registration.put("MobilePrefix", GetCountryZipCode());
+        data_registration.put("MobilePrefix",preferences.getString("country_code", ""));
         data_registration.put("MobileNo", send_mobile_numbr);
         data_registration.put("DeviceSerialNo", getmac_Adres());
 
 
-        if (!cd.isConnectingToInternet()) {
+        if (!cd.isConnectingToInternet())
+        {
 
             snackbar_method("No internet connection!");
 
-        } else {
+        }
+        else
+        {
             Json_AsnycTask task = new Json_AsnycTask(Registeration.this,
                     GlobalConstants.URL_REGISTER_LOGIN + GlobalConstants.REGISTER_CONSTANT,
                     GlobalConstants.POST_SERVICE_METHOD2, data_registration);
@@ -600,6 +626,32 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
             progress.setVisibility(View.VISIBLE);
         }
     }
+
+    //======Resend OTP======
+
+    HashMap<String,String> hashmapresend_otp=new HashMap<>();
+     public void Resend_OTPService()
+    {
+    String customerID = preferences.getString("CustomerId", null);
+    hashmapresend_otp.put("CustomerId", customerID);
+   // hashmapresend_otp.put("MobileNo", preferences.getString("mobile_no",""));
+
+    if (!cd.isConnectingToInternet())
+    {
+        snackbar_method("No internet connection!");
+
+    }
+    else
+    {
+        Json_AsnycTask task = new Json_AsnycTask(Registeration.this,
+                GlobalConstants.RESEND_OTP,
+                GlobalConstants.POST_SERVICE_METHOD4, hashmapresend_otp);
+        task.setOnResultsListener(this);
+        task.execute();
+        progress.setVisibility(View.VISIBLE);
+    }
+  }
+
 
 
     public void HitService_MobileVerify_Code() {
@@ -611,10 +663,14 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         data_mobile.put("MobileVerifyCode", mobileverify_code);
 
 
-        if (!cd.isConnectingToInternet()) {
+        if (!cd.isConnectingToInternet())
+        {
             snackbar_method("No internet connection!");
 
-        } else {
+        }
+        else
+        {
+
             Json_AsnycTask task = new Json_AsnycTask(Registeration.this,
                     GlobalConstants.MOBILE_VERIFICATION,
                     GlobalConstants.POST_SERVICE_METHOD3, data_mobile);
@@ -642,7 +698,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
     public void onResultsSucceeded_Post_Method1(JSONObject result)
     {
         progress.setVisibility(View.GONE);
-        Log.e("response 1", "Login==" + result);
+        Log.e("Postresponse 1", "Login==" + result);
 
         if (result != null)
         {
@@ -654,7 +710,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
                       snackbar_method("Try Again!! Internal server error");
 
                    }
-                    else if (result.optString("Message").equals("Connection Timeout."))
+                  else if (result.optString("Message").equals("Connection Timeout."))
                    {
 
                        FacebookSdk.sdkInitialize(Registeration.this);
@@ -703,6 +759,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
                         {
                             res_EmailID = userDetails.getString("EmailID");
                             editor.putString("email_id", res_EmailID);
+
                             editor.apply();
                         }
                         if (userDetails.has("MobileVerifyCode"))
@@ -758,10 +815,11 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
 
 //                    showdialog();
 
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                       //  snackbar_method("Try Again!! Internal server error");
-Log.e("-----",""+ex.toString());
+                         Log.e("-----",""+ex.toString());
                         FacebookSdk.sdkInitialize(Registeration.this);
                         LoginManager.getInstance().logOut();
                     }
@@ -773,6 +831,7 @@ Log.e("-----",""+ex.toString());
                 snackbar_method("User not registered, please wait...trying to register");
            Log.e("Register here","here");
                 /*Register*/
+              //RESPONSE WHEN NOT REGISTERED  {"Message":"Email Id not found.","Status":"error"}
                 showdialog();
 //                HitService_REgister();
             }
@@ -798,20 +857,27 @@ Log.e("-----",""+ex.toString());
     @Override
     public void onResultsSucceeded_Post_Method2(JSONObject result) {
         progress.setVisibility(View.GONE);
-        Log.e("response 2", "Register==" + result);
+        Log.e("Post Response 2", "Register==" + result);
+//        if(dialog_.isShowing()&& dialog_!=null)
+//        {
+//
+//            dialog_.dismiss();
+//
+//        }
         if (result != null)
         {
 
 
 
-            if (result.optString("Message").equals("Internal Server Error."))
-            {
-                FacebookSdk.sdkInitialize(Registeration.this);
-                LoginManager.getInstance().logOut();
-                snackbar_method("Try Again!! Internal server error");
-
-            }
-            else if (result.optString("Status").equals("success"))
+//            if (result.optString("Message").equals("Internal Server Error."))
+//            {
+//                FacebookSdk.sdkInitialize(Registeration.this);
+//                LoginManager.getInstance().logOut();
+//                snackbar_method("Try Again!! Internal server error");
+//
+//            }
+//            else if (result.optString("Status").equals("success"))
+            if (result.optString("Status").equals("success"))
             {
                 try {
 //                    Toast.makeText(Registeration.this,"Regidterd",Toast.LENGTH_LONG).show();
@@ -861,7 +927,7 @@ Log.e("-----",""+ex.toString());
                     if (userDetails.has("MobileNo"))
                     {
                         res_MobileNo = userDetails.getString("MobileNo");
-//                        editor.putString("mobile_no", res_MobileNo);
+                        editor.putString("mobile_no", res_MobileNo);
                         editor.apply();
                     }
                     if (userDetails.has("IsEmailVerified")) {
@@ -875,7 +941,14 @@ Log.e("-----",""+ex.toString());
                         editor.putString("mobile_verify", res_mobileverified);
                         editor.apply();
                     }
+                    if(dialog_.isShowing()&& dialog_!=null)
+                    {
+
+                       dialog_.dismiss();
+                    }
                     showdialog_codeValidatio();
+
+
 
 
                 } catch (Exception ex) {
@@ -885,21 +958,39 @@ Log.e("-----",""+ex.toString());
                     LoginManager.getInstance().logOut();
                 }
             }
-            else if(result.optString("Status").equalsIgnoreCase("error")){
-
+            else if(result.optString("Status").equalsIgnoreCase("error"))
+            {
+                Log.e("Error","ERROR ERROR");
+                snackbar_method("Mobile number is already exists.");
+                Toast.makeText(Registeration.this,"Mobile number is already exists.",Toast.LENGTH_LONG).show();
+                edt_mobile.setText("");
                 FacebookSdk.sdkInitialize(Registeration.this);
                 LoginManager.getInstance().logOut();
                 AccessToken.setCurrentAccessToken(null);
-                  snackbar_method("Mobile number is already exists.");
+
             }
-            else
+//            if (result.optString("Message").equals("Internal Server Error."))
+        //    else if (result.has("Message")&&!result.isNull("Message"))
+            else if (result.has("Message"))
             {
+
                 FacebookSdk.sdkInitialize(Registeration.this);
                 LoginManager.getInstance().logOut();
+                if(result.isNull("Message")){
+                    snackbar_method("Please Try Again!! ");
+                }
+                else
+                {
+                    snackbar_method("Try Again!! " + result.optString("Message"));
+                }
 
-                snackbar_method("Not able to register");
+                if(dialog_.isShowing()&& dialog_!=null)
+                {
 
+                    dialog_.dismiss();
+                }
             }
+
         }
         else //when result is null
         {
@@ -916,20 +1007,26 @@ Log.e("-----",""+ex.toString());
         Log.e("response 3", "MobileVerify==" + result);
         progress.setVisibility(View.GONE);
         editor.putString("mobile_no", send_mobile_numbr);
-        if (result != null) {
-            if (result.optString("Status").equals("success")) {
+        if (result != null)
+        {
+            if (result.optString("Status").equals("success"))
+            {
 
+                changed_mobilenumber=false;
+dialog1.dismiss();
 
-//                        dialog.dismiss();
-
-                try {
+                try
+                {
                     JSONObject userDetails = result.getJSONObject("Message");
-                    if (userDetails.has("MobileNo")) {
+                    if (userDetails.has("MobileNo"))
+                    {
                         String mob = userDetails.getString("MobileNo");
                         editor.putString("mobile_no", mob);
                         editor.apply();
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
 //                    snackbar_method(ex.toString());
                     Toast.makeText(Registeration.this,ex.toString(),Toast.LENGTH_LONG).show();
                 }
@@ -956,6 +1053,72 @@ Log.e("-----",""+ex.toString());
 
     }
 
+    @Override
+    public void onResultsSucceeded_Post_Method4(JSONObject result) {
+        Log.e("response 4", "RESENDOTP==" + result);
+        progress.setVisibility(View.GONE);
+        if (result != null)
+        {
+            if (result.optString("Status").equals("success"))
+            {
+                snackbar_method("OTP sent successfully ");
+
+
+            }
+        }
+        else
+        {
+            snackbar_method("Please try again");
+        }
+
+
+    }
+
+    @Override
+    public void onResultsSucceeded_Post_Method5(JSONObject result) {
+
+
+        Log.e("RESPONSE %5","55555555555555"+result);
+        progress.setVisibility(View.GONE);
+
+        if(result!=null)
+        {
+            if (result.optString("Status").equals("success"))
+            {
+
+//                changed_mobilenumber=false;
+                try {
+                    JSONObject userDetails = result.getJSONObject("Message");
+                    SharedPreferences.Editor editor = preferences.edit();
+
+                    if (userDetails.has("MobileNo"))
+                    {
+                        res_MobileNo = userDetails.getString("MobileNo");
+                        editor.putString("mobile_no", res_MobileNo);
+                        editor.apply();
+                    }
+
+                    dialog_.dismiss();
+                    showdialog_codeValidatio();
+                }
+
+                catch(Exception e)
+                {
+                    Log.e("EXCEPTION RESPONSE 5",""+e.toString());
+                }
+            }
+            else if(result.optString("Status").equals("error"))
+            {
+               edt_mobile.setText("");
+                snackbar_method("Mobile Number is already exists");
+                Toast.makeText(Registeration.this,"Mobile Number is already exists",Toast.LENGTH_LONG).show();
+
+            }
+        }
+        else
+        {}
+    }
+
 
     /**
      * @ViewByID
@@ -971,50 +1134,107 @@ Log.e("-----",""+ex.toString());
         progress = (ProgressBar) findViewById(R.id.progressBar);
 
     }
+//======Changed Mobile Number============
+     private void changeMobileNumber_Service()
+     {
 
+         String customerID = preferences.getString("CustomerId", null);
+
+         data_login.put("CustomerId", customerID);
+         data_login.put("MobileNo", send_mobile_numbr);
+
+         Log.e("DATAAA", "" + data_login);
+
+         if (!cd.isConnectingToInternet())
+         {
+
+             snackbar_method("No internet connection!");
+
+         }
+         else
+         {
+             Json_AsnycTask task = new Json_AsnycTask(Registeration.this,
+                     GlobalConstants.CHANGE_MOBILE_NUMBER,
+                     GlobalConstants.POST_SERVICE_METHOD5, data_login);
+             task.setOnResultsListener(this);
+             task.execute();
+             progress.setVisibility(View.VISIBLE);
+         }
+     }
+
+
+    //===================================
 
     /**
      * @MobileVerification
      */
+   Dialog dialog_;
+    EditText edt_mobile;
     public void showdialog() {
-        final Dialog dialog = new Dialog(Registeration.this);
+       // final Dialog dialog = new Dialog(Registeration.this);
+        dialog_ = new Dialog(Registeration.this);
 
-        dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.mobile_custom_verify);
-        dialog.setCancelable(false);
+        dialog_.getWindow().addFlags(Window.FEATURE_NO_TITLE);
+        dialog_.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog_.setContentView(R.layout.mobile_custom_verify);
+        dialog_.setCancelable(false);
 
-        TextView text = (TextView) dialog.findViewById(R.id.text);
-        Button ok = (Button) dialog.findViewById(R.id.ok);
-        Button cancel = (Button) dialog.findViewById(R.id.cancel);
-        final EditText edt_mobile = (EditText) dialog.findViewById(R.id.text_mobile);
+        TextView text = (TextView) dialog_.findViewById(R.id.text);
+        Button ok = (Button) dialog_.findViewById(R.id.ok);
+        Button cancel = (Button) dialog_.findViewById(R.id.cancel);
+//        final EditText edt_mobile = (EditText) dialog_.findViewById(R.id.text_mobile);
+        edt_mobile = (EditText) dialog_.findViewById(R.id.text_mobile);
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.copyFrom(dialog_.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
        // dialog.show();
-        dialog.getWindow().setAttributes(lp);
+        dialog_.getWindow().setAttributes(lp);
 
         ok.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (edt_mobile.getText().toString().length() > 0) {
+                if (edt_mobile.getText().toString().length() > 0)
+                {
                     String phone_number = edt_mobile.getText().toString();
-                    if (phone_number.toString().length() == 10) {
-                        send_mobile_numbr = edt_mobile.getText().toString();
-                        HitService_REgister();
-                        editor.putString("mobile_no", send_mobile_numbr);
-                        editor.commit();
-                        dialog.dismiss();
 
-                    } else {
+                    if (phone_number.toString().length() == 10)
+                    {
+
+
+                        send_mobile_numbr = edt_mobile.getText().toString();
+
+//                        editor.putString("mobile_no", send_mobile_numbr);
+//                        editor.commit();
+                         if(changed_mobilenumber==true)
+                         {
+
+
+                             changeMobileNumber_Service();
+
+                         }
+                        else
+                         {
+                             HitService_REgister();
+                           //  dialog_.dismiss();
+                         }
+
+
+
+
+
+                    }
+                    else
+                    {
                         Toast.makeText(Registeration.this, "Enter 10 digit number", Toast.LENGTH_LONG).show();
                     }
 
-                } else {
+                }
+                else
+                {
                     Toast.makeText(Registeration.this, "Enter your 10 digit number", Toast.LENGTH_LONG).show();
                 }
             }
@@ -1041,59 +1261,77 @@ Log.e("-----",""+ex.toString());
 //               // Registeration.this.finish();
 //                startActivity(intent);
 
-                dialog.dismiss();
+                dialog_.dismiss();
             }
         });
 
-        dialog.show();
+        dialog_.show();
     }
 
 
     /**
      * @VerifyCode
      */
+   Dialog dialog1 ;
     public void showdialog_codeValidatio() {
 
-       final Dialog dialog = new Dialog(Registeration.this);
+    //  final Dialog dialog1 = new Dialog(Registeration.this);
+        dialog1 = new Dialog(Registeration.this);
 
-        dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-           /* dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);*/
-        dialog.setContentView(R.layout.mobile_custom_verify);
-        dialog.setCancelable(false);
 
-        TextView text = (TextView) dialog.findViewById(R.id.text);
-        Button ok = (Button) dialog.findViewById(R.id.ok);
-        Button cancel = (Button) dialog.findViewById(R.id.cancel);
+        dialog1.getWindow().addFlags(Window.FEATURE_NO_TITLE);
+        dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        final EditText edt_mobile = (EditText) dialog.findViewById(R.id.text_mobile);
-//        edt_mobile.setText(res_MobileNoVerifyCode);
-       cancel.setVisibility(View.GONE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.WRAP_CONTENT);
-        ok.setLayoutParams(params);
-        ok.setGravity(Gravity.CENTER);
+        dialog1.setContentView(R.layout.resendeotp_layout);
+        dialog1.setCancelable(false);
+
+        TextView text = (TextView) dialog1.findViewById(R.id.tv_);
+        Button btn_resendotp = (Button) dialog1.findViewById(R.id.btn_resend);
+        Button btn_verifycode = (Button) dialog1.findViewById(R.id.btn_verify);
+        Button btn_changenumber= (Button) dialog1.findViewById(R.id.btn_changeno);
+        btn_changenumber.setVisibility(View.VISIBLE);
+        final EditText edt_mobile = (EditText) dialog1.findViewById(R.id.ed_otp);
+
+
+//        btn_resendotp.setText("Resnd OTP");
+//        btn_changenumber.setText("Change Mobile Number");
+//        btn_verifycode.setText("Verify  OTP");
+
         String get_mobile_verify = preferences.getString("mobile_verify", null);
-        text.setText(("Enter OTP to verify"));
-        ok.setText("Verify your number");
+
+
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.copyFrom(dialog1.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        Log.e("DIALOG 1","&&&&&&&&&&&&");
+        dialog1.show();
+        dialog1.getWindow().setAttributes(lp);
 
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
 
-        ok.setOnClickListener(new View.OnClickListener() {
+        btn_resendotp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edt_mobile.getText().toString().length() == 4) {
-                    mobileverify_code=edt_mobile.getText().toString();
+                Resend_OTPService();
+                Log.e("DIALOG 2","@@@@@@@@@@@@@@@");
+
+            }
+        });
+
+        btn_verifycode.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (edt_mobile.getText().toString().length() == 4)
+                {
+                    mobileverify_code = edt_mobile.getText().toString();
                     HitService_MobileVerify_Code();
-                    dialog.dismiss();
-                } else {
+                    //dialog1.dismiss();
+                }
+                else
+                {
                     edt_mobile.setError("Enter valid OTP");
                 }
 
@@ -1101,34 +1339,22 @@ Log.e("-----",""+ex.toString());
             }
         });
 
-        dialog.show();
-    }
 
-
-    /**
-     * @CountryCode
-     */
-    private String GetCountryZipCode() {
-        String CountryID = "";
-        countryCode = tm.getSimCountryIso();
-        if (countryCode.equals("")) {
-            countryCode = "IN";
-        }
-        TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        CountryID = manager.getSimCountryIso().toUpperCase();
-        if (CountryID.equals("")) {
-            CountryID = "IN";
-        }
-        String[] rl = this.getResources().getStringArray(R.array.CountryCodes);
-        for (int i = 0; i < rl.length; i++) {
-            String[] g = rl[i].split(",");
-            if (g[1].trim().equals(CountryID.trim())) {
-                countryCode = "+" + g[0];
-                break;
+        btn_changenumber.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog1.dismiss();
+                changed_mobilenumber=true;
+                showdialog();
             }
-        }
-        return countryCode;
+        });
+
+
     }
+
+
 
 
     /**
@@ -1179,6 +1405,5 @@ Log.e("-----",""+ex.toString());
         }
 
     }
-
 
 }

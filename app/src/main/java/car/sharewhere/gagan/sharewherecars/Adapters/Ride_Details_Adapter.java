@@ -10,12 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -24,9 +28,12 @@ import java.util.HashMap;
 
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
+import car.sharewhere.gagan.Chat.Chat_Activity;
+import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
+import car.sharewhere.gagan.utills.Dialogs;
 import car.sharewhere.gagan.utills.Utills_G;
 
 /**
@@ -34,19 +41,23 @@ import car.sharewhere.gagan.utills.Utills_G;
 public class Ride_Details_Adapter extends BaseAdapter
 {
     Context con;
-    String   my_customerID,my_customer_name, gcm_lat, gcm_long,RoundTrip,IsRegulerBasis;
+    String  my_customerID, my_customer_name, gcm_lat, gcm_long, RoundTrip, IsRegulerBasis;
     ArrayList<HashMap<String, String>> list;
     SharedPreferences                  preferences;
-    Utills_G utills_g = new Utills_G();
 
-    public Ride_Details_Adapter(Context con, ArrayList<HashMap<String, String>> list,String IsRegulerBasis,String RoundTrip)
+    Utills_G utills_g = new Utills_G();
+    Chat_Database chat_database;
+
+    public Ride_Details_Adapter(Context con, ArrayList<HashMap<String, String>> list, String IsRegulerBasis, String RoundTrip)
     {
         this.con = con;
         this.list = list;
-//        tripID = list.get(0).get("TripId");
+        //        tripID = list.get(0).get("TripId");
 
-        this.IsRegulerBasis=IsRegulerBasis;
-        this.RoundTrip=RoundTrip;
+        chat_database = new Chat_Database(con);
+
+        this.IsRegulerBasis = IsRegulerBasis;
+        this.RoundTrip = RoundTrip;
 
         preferences = PreferenceManager.getDefaultSharedPreferences(con);
 
@@ -88,56 +99,42 @@ public class Ride_Details_Adapter extends BaseAdapter
         LayoutInflater inflater = LayoutInflater.from(con);
         View           v        = inflater.inflate(R.layout.custom_ride_details, parent, false);
 
-        TextView  txt_txt_driver_name = (TextView) v.findViewById(R.id.txt_driver_name);
-        TextView  txt_from            = (TextView) v.findViewById(R.id.txt_from);
-        TextView  txt_to              = (TextView) v.findViewById(R.id.txt_to);
+        TextView txt_txt_driver_name = (TextView) v.findViewById(R.id.txt_driver_name);
+        TextView txt_from            = (TextView) v.findViewById(R.id.txt_from);
+        TextView txt_to              = (TextView) v.findViewById(R.id.txt_to);
         TextView  txt_cancel          = (TextView) v.findViewById(R.id.txt_cancel);
         TextView  txt_chat            = (TextView) v.findViewById(R.id.txt_chat);
         ImageView img_driver_img      = (ImageView) v.findViewById(R.id.img_driver_img);
+        TextView txtv_message_count     = (TextView) v.findViewById(R.id.txtv_message_count);
 
         final Button btn_one   = (Button) v.findViewById(R.id.btn_one);
-        final Button btn_two   = (Button) v.findViewById(R.id.btn_two);
+        final TextView btn_two   = (TextView) v.findViewById(R.id.btn_two);
         final Button btn_three = (Button) v.findViewById(R.id.btn_three);
 
+        RelativeLayout rel_decline=(RelativeLayout)v.findViewById(R.id.rel_decline);
 
-        RelativeLayout             rel_Top_cancel      = (RelativeLayout) v.findViewById(R.id.rel_Top_cancel);
         RelativeLayout             rel_dest_ds         = (RelativeLayout) v.findViewById(R.id.rel_dest_ds);
-        ImageView             img_phn           = (ImageView) v.findViewById(R.id.img_phn);
-        final AutoCompleteTextView dialog_autocomplete = (AutoCompleteTextView) v.findViewById(R.id.dialog_autocomplete);
+        ImageView                  img_phn             = (ImageView) v.findViewById(R.id.img_phn);
 
         txt_cancel.setPaintFlags(txt_cancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        dialog_autocomplete.setVisibility(View.GONE);
         btn_three.setVisibility(View.GONE);
         txt_chat.setVisibility(View.GONE);
         txt_cancel.setVisibility(View.GONE);
         rel_dest_ds.setVisibility(View.GONE);
-        dialog_autocomplete.setThreshold(1);
 
-   /*     dialog_autocomplete.addTextChangedListener(new TextWatcher()
+
+        long count =chat_database.get_unread_messages_count(list.get(position).get(GlobalConstants.KeyNames.TripId.toString()), list.get(position).get(GlobalConstants.KeyNames.CustomerId.toString()));
+        if(count>0)
         {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            txtv_message_count.setText(""+count);
+        }
+        else
+        {
+            txtv_message_count.setVisibility(View.GONE);
+        }
 
-            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                if (editable.length()>0)
-                {
-                    dialog_autocomplete.setError(null);
-                }
-
-            }
-        });*/
 
         String flag = list.get(position).get("Flag");
 
@@ -148,14 +145,14 @@ public class Ride_Details_Adapter extends BaseAdapter
         if (flag.equals("0") || flag.equals("5"))
         {
             //No Request
-            btn_one.setText("Accept");
-            btn_two.setText("Decline");
+            btn_one.setText("Decline");
+            btn_two.setText("Accept");
         }
         else if (flag.equals("3") || flag.equals("2"))
         {
             //Already Decline/Cancel
             txt_chat.setVisibility(View.VISIBLE);
-            btn_two.setVisibility(View.GONE);
+            rel_decline.setVisibility(View.GONE);
             txt_chat.setText("Your request declined");
             btn_one.setText("OK");
         }
@@ -163,9 +160,8 @@ public class Ride_Details_Adapter extends BaseAdapter
         {
             //Accepted
             txt_cancel.setVisibility(View.VISIBLE);
-            dialog_autocomplete.setVisibility(View.VISIBLE);
             btn_one.setText("Ask location on map");
-            btn_two.setText("Where are you?");
+            btn_two.setText("Message");
         }
 
         img_phn.setOnClickListener(new View.OnClickListener()
@@ -190,7 +186,7 @@ public class Ride_Details_Adapter extends BaseAdapter
 
             }
         });
-        rel_Top_cancel.setOnClickListener(new View.OnClickListener()
+        txt_cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -215,10 +211,10 @@ public class Ride_Details_Adapter extends BaseAdapter
             public void onClick(View v)
             {
 
-                if (btn_one.getText().toString().equals("Accept"))
+                if (btn_one.getText().toString().equals("Decline"))
                 {
+                   HitService_Request(position, "Decline"); //it sends message to rider that driver decline your req and rider will not able to send request again
 
-                    HitService_Request(position, "Accept");
                 }
                 /*else if (btn_one.getText().toString().equals("SEND"))
                 {
@@ -234,29 +230,68 @@ public class Ride_Details_Adapter extends BaseAdapter
 
             }
         });
-        btn_two.setOnClickListener(new View.OnClickListener()
+        rel_decline.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (btn_two.getText().toString().equals("Decline"))
+                if (btn_two.getText().toString().equals("Accept"))
                 {
+                    HitService_Request(position, "Accept");
 
-                    HitService_Request(position,"Decline");
                 }
-                else if (btn_two.getText().toString().equals("Where are you?") /*|| btn_two.getText().toString().equals("Send")*/)
+                else if (btn_two.getText().toString().equals("Message") /*|| btn_two.getText().toString().equals("Send")*/)
                 {
-                    if (dialog_autocomplete.getText().toString().trim().length() > 0)
-                    {
-                        // request_type = "Where are you";
-                        HitService_Adress_message(position,my_customer_name + " : " +  dialog_autocomplete.getText().toString().trim(),"msg");
-                    }
-                    else
-                    {
-                        dialog_autocomplete.requestFocus();
-                        dialog_autocomplete.setSelection(dialog_autocomplete.length());
-                        dialog_autocomplete.setError("Enter comment first");
-                    }
+                        /*View.OnClickListener send = new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+
+                                int selectedId = dialogs.radioGroup.getCheckedRadioButtonId();
+
+                                if (selectedId == -1)
+                                {
+                                    if (editText.getText().toString().trim().isEmpty())
+                                    {
+                                        Utills_G.showToast("Please enter or select message.",con,false);
+                                    }
+                                    else
+                                    {
+                                        Utills_G.showToast(editText.getText().toString().trim(), con, false);
+
+//                                        HitService_Adress_message(position, my_customer_name + " : " + editText.getText().toString().trim(), "msg");
+
+                                        dialogs.dialog.dismiss();
+                                    }
+                                }
+                                else
+                                {
+                                    RadioButton radioButton = (RadioButton) dialogs.dialog.findViewById(selectedId);
+
+                                    Utills_G.showToast(radioButton.getText().toString(), con, false);
+
+                                    //                                    HitService_Adress_message(position, my_customer_name + " : " + radioButton.getText().toString(), "msg");
+
+                                    dialogs.dialog.dismiss();
+                                }
+
+
+
+                            }
+                        };
+                        editText = dialogs.send_message(con, send);*/
+
+
+
+                    Intent i=new Intent(con, Chat_Activity.class);
+                    i.putExtra(GlobalConstants.KeyNames.RiderId.toString(),list.get(position).get(GlobalConstants.KeyNames.CustomerId.toString()));
+                    i.putExtra(GlobalConstants.KeyNames.DriverId.toString(),list.get(position).get(GlobalConstants.KeyNames.DriverId.toString()));
+                    i.putExtra(GlobalConstants.KeyNames.CustomerPhoto.toString(), list.get(position).get(GlobalConstants.KeyNames.CustomerPhoto.toString()));
+                    i.putExtra(GlobalConstants.KeyNames.TripId.toString(), list.get(position).get(GlobalConstants.KeyNames.TripId.toString()));
+                    i.putExtra(GlobalConstants.KeyNames.RequestId.toString(), list.get(position).get(GlobalConstants.KeyNames.RequestId.toString()));
+                    con.startActivity(i);
+
                 }
             }
         });
@@ -271,7 +306,17 @@ public class Ride_Details_Adapter extends BaseAdapter
         HashMap<String, String> map = new HashMap<>();
 
         map.put("TripId", list.get(position).get("TripId"));
-        map.put("CustomerId", request_type.equals("CancelByDriver") | request_type.equals("Accept")? list.get(position).get("CustomerId"): my_customerID);
+        if(request_type.equalsIgnoreCase("Decline"))
+        {
+            Log.e("CHeckDecline","if decline if decline");
+            map.put("CustomerId", list.get(position).get("CustomerId"));
+        }
+        else
+        {
+        map.put("CustomerId", request_type.equals("CancelByDriver") | request_type.equals("Accept") ? list.get(position).get("CustomerId") : my_customerID);
+
+    }
+       // map.put("CustomerId", request_type.equals("CancelByDriver") | request_type.equals("Accept") ? list.get(position).get("CustomerId") : my_customerID);
         map.put("RequestType", request_type);
         map.put("RequestID", list.get(position).get("RequestId"));
         map.put("IsRegulerBasis", IsRegulerBasis);
@@ -291,7 +336,7 @@ public class Ride_Details_Adapter extends BaseAdapter
                     if (object.getString("Status").equalsIgnoreCase("success"))
                     {
 
-                        ((Ride_Details)con).refresh();
+                        ((Ride_Details) con).refresh();
 
                     }
                     else
@@ -310,7 +355,7 @@ public class Ride_Details_Adapter extends BaseAdapter
 
     //**********************************************************************************************************************
 
-    private void HitService_Adress_message(int position, String Message,String status)
+    private void HitService_Adress_message(int position, String Message, String status)
     {
         HashMap<String, String> map = new HashMap<>();
 

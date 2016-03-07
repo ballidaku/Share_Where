@@ -28,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
     SharedPreferences        preferences;
     SharedPreferences.Editor editor;
 
-    String pref_photopath, name_header, customerID, mobile_verify_code, gcm_flag, gcm_pic, gcm_leaving_from, gcm_leaving_to, gcm_name, gcm_trip_id, gcm_customer_id, gcm_mobile, gcm_requestID, gcm_reider_id, gcm_driver_id, gcm_message, gcm_lat, gcm_long, gcm_req_or_send, lat_to_send, long_to_send, gcm_driver_rider, city_name_to_send, map_locate_intent_string;
+    String pref_photopath, name_header, customerID, mobile_verify_code, gcm_flag, gcm_pic, gcm_leaving_from, gcm_leaving_to, gcm_name, gcm_trip_id, gcm_customer_id, gcm_mobile, gcm_requestID, gcm_reider_id, gcm_driver_id, gcm_message, gcm_lat, gcm_long,  gcm_driver_rider, city_name_to_send, map_locate_intent_string;
 
     static ImageView img_header_profile;
     static TextView  txt_header_name;
@@ -74,13 +73,18 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
     View header;
     boolean doubleBackToExitPressedOnce = false;
     String  my_customer_name            = "null";
-    Intent            i;
     CoordinatorLayout coordinatorLayout;
     Snackbar          snackbar;
 
     ArrayList<String> array_auto = new ArrayList<String>();
     ProgressDialog progress;
-//    GPSTracker     track;
+
+    //**************************Sharan*****************************************************
+
+
+    Context  con;
+
+    String status="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -88,12 +92,16 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        con = this;
+
+
+
         cd = new ConnectivityDetector(MainActivity.this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-        i = getIntent();
-//        track = new GPSTracker(MainActivity.this);
+
+        //        track = new GPSTracker(MainActivity.this);
         array_auto.add("I have reached");
         array_auto.add("When will you reach here");
         array_auto.add("I will be there in 10 mins");
@@ -121,18 +129,18 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         name_header = preferences.getString("first_name", null);
         customerID = preferences.getString("CustomerId", null);
         mobile_verify_code = preferences.getString("mobile_code", null);
-        lat_to_send = preferences.getString("current_lat", "0.0");
-        long_to_send = preferences.getString("current_long", "0.0");
 
-        Log.e("LAT", "LLLL" + lat_to_send);
-        Log.e("LONG", "LLLL" + long_to_send);
 
         try
         {
-            if(getIntent().getStringExtra(GlobalConstants.KeyNames.fromWhere.toString()).equals(GlobalConstants.KeyNames.Notification.toString()))
+            if (getIntent().getStringExtra(GlobalConstants.KeyNames.fromWhere.toString()).equals(GlobalConstants.KeyNames.Notification.toString())
+                      || getIntent().getStringExtra(GlobalConstants.KeyNames.fromWhere.toString()).equals(GlobalConstants.KeyNames.Messages.toString()))
             {
                 displayView(R.id.nav_offer_ride);
             }
+
+
+
         }
         catch (Exception e)
         {
@@ -165,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         getIntent_gcm_method();
         city_name_to_send = preferences.getString("current_city", txt_header_name.getText().toString());
 
-        if (gcm_flag != null)
+        if (gcm_flag != null && !status.equalsIgnoreCase("msg"))
         {
             Log.e("flag", gcm_flag);
             showdialog();
@@ -208,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         gcm_requestID = getIntent().getStringExtra("customer_requestID");
         gcm_trip_id = getIntent().getStringExtra("customer_trip_id_gcm");
         gcm_customer_id = getIntent().getStringExtra("customer_sender_id_gcm");
-        gcm_req_or_send = getIntent().getStringExtra("customer_status_lat_long");
 
         gcm_lat = getIntent().getStringExtra("customer_Latitude");
         gcm_long = getIntent().getStringExtra("customer_Longitude");
@@ -219,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         gcm_mobile = getIntent().getStringExtra("customer_mobile");
         gcm_reider_id = getIntent().getStringExtra("customer_rider_id");
         gcm_driver_id = getIntent().getStringExtra("customer_driver_id");
+
+        status=getIntent().getStringExtra(GlobalConstants.KeyNames.Status.toString());
     }
 
     /**
@@ -238,7 +247,8 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                 fragment = new Find_A_Ride();
                 break;
 
-            case R.id.nav_offer_ride:
+            case R.id.nav_offer_ride: // name galat aa
+
                 fragment = new My_Rides();
                 break;
 
@@ -250,9 +260,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                 fragment = new AboutUs();
                 break;
 
-           /* case R.id.nav_notify:
-                fragment = new NotificationActivity();
-                break;*/
+
 
             case R.id.nav_logout:
 
@@ -304,21 +312,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         }
     }
 
-    /**
-     @OnResumeMdoabiileValioobiion
-     */
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-       /* if (name_header != null && !name_header.equals("") || name_header != str_null) {
-            txt_header_name.setText(name_header);
-        }
-        if (pref_photopath != null && !pref_photopath.equals("") || pref_photopath != str_null) {
-           *//* Picasso.with(this).load(pref_photopath).transform(new CircleTransform()).
-                    into(img_header_profile);*//*
-        }*/
-    }
+
 
     private void transitionToActivity(Activity activity, Class target, View profilePic, View profileName)
     {
@@ -466,60 +460,55 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
 
     }
 
+    @Override
+    public void onResultsSucceeded_Post_Method4(JSONObject result)
+    {
+
+    }
+
+    @Override
+    public void onResultsSucceeded_Post_Method5(JSONObject result)
+    {
+
+    }
+
     /**
      @Dialog
      */
 
+    Dialog dialog;
+
     public void showdialog()
     {
 
-        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog = new Dialog(MainActivity.this);
         dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         dialog.setContentView(R.layout.custom_ride_details);
-        if (gcm_flag.equals("Rider") || gcm_flag.equals("Driver"))
-        {
-            if (gcm_req_or_send.equals("msg"))
-            {
-                dialog.setCancelable(true);
-            }
-            else
-            {
-                dialog.setCancelable(false);
-            }
-        }
-        else
-        {
-            dialog.setCancelable(false);
-        }
+
+        dialog.setCancelable(false);
 
         TextView  txt_txt_driver_name = (TextView) dialog.findViewById(R.id.txt_driver_name);
         TextView  txt_from            = (TextView) dialog.findViewById(R.id.txt_from);
         TextView  txt_to              = (TextView) dialog.findViewById(R.id.txt_to);
         TextView  txt_chat            = (TextView) dialog.findViewById(R.id.txt_chat);
         TextView  txt_cancel          = (TextView) dialog.findViewById(R.id.txt_cancel);
+       dialog.findViewById(R.id.txtv_message_count).setVisibility(View.GONE);
         ImageView img_driver_img      = (ImageView) dialog.findViewById(R.id.img_driver_img);
 
         final Button btn_one   = (Button) dialog.findViewById(R.id.btn_one);
-        final Button btn_two   = (Button) dialog.findViewById(R.id.btn_two);
+        final TextView btn_two   = (TextView) dialog.findViewById(R.id.btn_two);
         final Button btn_three = (Button) dialog.findViewById(R.id.btn_three);
 
-//        RelativeLayout             rel_click           = (RelativeLayout) dialog.findViewById(R.id.rel_click);
-        RelativeLayout             rel_Top_cancel      = (RelativeLayout) dialog.findViewById(R.id.rel_Top_cancel);
-        ImageView             img_phn           = (ImageView) dialog.findViewById(R.id.img_phn);
-        final AutoCompleteTextView dialog_autocomplete = (AutoCompleteTextView) dialog.findViewById(R.id.dialog_autocomplete);
+        final RelativeLayout rel_decline = (RelativeLayout) dialog.findViewById(R.id.rel_decline);
+
+        ImageView img_phn = (ImageView) dialog.findViewById(R.id.img_phn);
 
         txt_cancel.setPaintFlags(txt_cancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-       /* ArrayAdapter<String> autocompletetextAdapter = new ArrayAdapter<String>(
-                MainActivity.this,
-                R.layout.layout_autocomplete, array_auto);
-        dialog_autocomplete.setAdapter(autocompletetextAdapter);
-        dialog_autocomplete.showDropDown();*/
-
         txt_cancel.setVisibility(View.GONE);
         txt_chat.setVisibility(View.GONE);
-        dialog_autocomplete.setVisibility(View.GONE);
         btn_three.setVisibility(View.GONE);
         try
         {
@@ -557,44 +546,10 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         {
             Log.e("flag=", gcm_flag);
 
-          /*  if (gcm_flag.equals("5"))
-            {
-                //New Request
-                btn_one.setText("Accept");
-                btn_two.setText("Decline");
-            }
-            if (gcm_flag.equals("2"))
-            {
-                //Request Declined
-                txt_chat.setVisibility(View.VISIBLE);
-                btn_two.setVisibility(View.GONE);
-                txt_chat.setText("Your request declined");
-                btn_one.setText("OK");
-
-            }
-            if (gcm_flag.equals("1"))
-            {
-                //Request Accepted
-                Toast.makeText(MainActivity.this, "Your request Accepted", Toast.LENGTH_LONG).show();
-                txt_cancel.setVisibility(View.VISIBLE);
-                dialog_autocomplete.setVisibility(View.VISIBLE);
-                dialog_autocomplete.setThreshold(1);
-
-                btn_one.setText("Ask location on map");
-                btn_two.setText("Where are you?");
-
-            }
-            if (gcm_flag.equals("6") || gcm_flag.equals("7"))
-            {
-                //Request Cancelled
-                btn_two.setVisibility(View.GONE);
-                txt_chat.setText("Your request is cancelled");
-                btn_one.setText("OK");
-            }*/
             if (gcm_flag.equals("8"))
             {
                 //Request Cancelled
-                btn_two.setVisibility(View.GONE);
+                rel_decline.setVisibility(View.GONE);
                 txt_chat.setText("Trip Deleted");
                 btn_one.setText("OK");
             }
@@ -611,42 +566,42 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                     gcm_driver_rider = "CancelByRider";
                 }
 
-                if (gcm_req_or_send != null)
+                if (status != null)
                 {
-                    if (gcm_req_or_send.equals("request"))
+                    if (status.equals("request"))
                     {
-                        btn_two.setVisibility(View.VISIBLE);
+                        rel_decline.setVisibility(View.VISIBLE);
                         txt_chat.setVisibility(View.VISIBLE);
-                        txt_chat.setText("Requested you to send your current location");
-                        btn_one.setText("SEND");
-                        btn_two.setText("Decline Request");
+                        txt_chat.setText("Requested you to send your current location.");
+
+//                        btn_one.setText("SEND");
+//                        btn_two.setText("Decline Request");
+
+                        btn_one.setText("Decline Request");
+                        btn_two.setText("SEND");
                     }
-                    else if (gcm_req_or_send.contains("send"))
+                    else if (status.contains("send"))
                     {
-                        String[] separated = gcm_req_or_send.split(":");
+                        String[] separated = status.split(":");
                         map_locate_intent_string = separated[1];
                         Log.e("MapMap00000", "" + map_locate_intent_string);
+
+
+                        btn_one.setVisibility(View.GONE);
+                        rel_decline.setVisibility(View.GONE);
                         btn_three.setVisibility(View.VISIBLE);
-                        btn_two.setVisibility(View.VISIBLE);
-                        txt_chat.setVisibility(View.GONE);
-                        btn_one.setText("Ask location on map");
-                        btn_two.setText("Where are you?");
-                    }
-                    else if (gcm_req_or_send.equals("msg"))
-                    {
-                        btn_three.setVisibility(View.GONE);
-                        btn_two.setVisibility(View.VISIBLE);
-                        txt_chat.setVisibility(View.VISIBLE);
+
                         txt_chat.setText(gcm_message);
-                        dialog_autocomplete.setVisibility(View.VISIBLE);
-                        btn_one.setText("Ask location on map");
-                        btn_two.setText("Where are you?");
+
+//                        btn_one.setText("Ask location on map");
+//                        btn_two.setText("Message");
                     }
+
                 }
             }
         }
 
-        rel_Top_cancel.setOnClickListener(new View.OnClickListener()
+        txt_cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -689,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                     {
                         ex.printStackTrace();
                     }
-                    //                    dialog.dismiss();
+
                 }
             }
         });
@@ -724,15 +679,15 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                 {
                     if (gcm_flag.equals("1"))
                     {
-                        HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " wants to locate you on map", "Driver", "request");
+                        HitService_Adress_message("0.0", "0.0", gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " wants to locate you on map", "Driver", "request");
                     }
                     else if (gcm_flag.equals("Driver"))
                     {
-                        HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " wants to locate you on map", "Rider", "request");
+                        HitService_Adress_message("0.0", "0.0", gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " wants to locate you on map", "Rider", "request");
                     }
                     else if (gcm_flag.equals("Rider"))
                     {
-                        HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " wants to locate you on map", "Driver", "request");
+                        HitService_Adress_message("0.0", "0.0", gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " wants to locate you on map", "Driver", "request");
                     }
                     dialog.dismiss();
                 }
@@ -741,22 +696,45 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                     Toast.makeText(MainActivity.this, "Tap button below to send location", Toast.LENGTH_LONG).show();
                     if (gcm_flag.equals("Driver"))
                     {
-                        HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, "Send to Rider", "Rider", "send" + ":" + city_name_to_send);
+                        HitService_Adress_message("0.0", "0.0", gcm_reider_id, gcm_driver_id, gcm_trip_id, "Send to Rider", "Rider", "send" + ":" + city_name_to_send);
                     }
                     else
                     {
-                        HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, "Send to Driver", "Driver", "send" + ":" + city_name_to_send);
+                        HitService_Adress_message("0.0", "0.0", gcm_reider_id, gcm_driver_id, gcm_trip_id, "Send to Driver", "Driver", "send" + ":" + city_name_to_send);
                     }
+                    dialog.dismiss();
+                }
+                else if (btn_one.getText().toString().equals("Decline Request"))
+                {
                     dialog.dismiss();
                 }
                 else if (btn_one.getText().toString().equals("OK"))
                 {
                     dialog.dismiss();
                 }
-                else if (btn_one.getText().toString().equals("SEND"))
+
+            }
+        });
+
+        rel_decline.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (btn_two.getText().toString().equals("Decline"))
                 {
+                    HitServiceGCM("Decline");
+                    dialog.dismiss();
+                }
+
+                else if (btn_two.getText().toString().equals("SEND"))
+                {
+
+//                    GetLocation();
+
                     String current_lat = preferences.getString("current_lat", "0.0");
                     String current_long = preferences.getString("current_long", "0.0");
+
                     if (current_long.equals("0.0") || current_lat.equals("0.0"))
                     {
                         Toast.makeText(MainActivity.this, "Not able fetch your current location, enable gps if it is not on!!", Toast.LENGTH_LONG).show();
@@ -769,60 +747,9 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                         }
                         else
                         {
-                            HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " sends location, locate me on map", "Driver", "send" + ":" + city_name_to_send);
+                            HitService_Adress_message(current_lat, current_long, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " sends location, locate me on map", "Driver", "send" + ":" + city_name_to_send);
                         }
                         dialog.dismiss();
-                    }
-                }
-            }
-        });
-
-        btn_two.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (btn_two.getText().toString().equals("Decline"))
-                {
-                    HitServiceGCM("Decline");
-                    dialog.dismiss();
-                }
-                else if (btn_two.getText().toString().equals("Decline Request"))
-                {
-                    Toast.makeText(MainActivity.this, "You can request again", Toast.LENGTH_LONG).show();
-                    dialog.dismiss();
-                }
-                else if (btn_two.getText().toString().equals("Where are you?"))
-                {
-                    if (dialog_autocomplete.getVisibility() == View.VISIBLE)
-                    {
-                        // Its visible
-                    }
-                    else
-                    {
-                        dialog_autocomplete.setVisibility(View.VISIBLE);
-                        dialog_autocomplete.requestFocus();
-                        dialog_autocomplete.setSelection(dialog_autocomplete.length());
-                        dialog_autocomplete.setError("Enter comment first");
-                    }
-                    if (dialog_autocomplete.getText().toString().trim().length() > 0)
-                    {
-                        if (gcm_flag.equals("Driver"))
-                        {
-                            HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, dialog_autocomplete.getText().toString().trim(), "Rider", "msg");
-                        }
-                        else
-                        {
-                            HitService_Adress_message(lat_to_send, long_to_send, gcm_reider_id, gcm_driver_id, gcm_trip_id, dialog_autocomplete.getText().toString().trim(), "Driver", "msg");
-                        }
-
-                        dialog.dismiss();
-                    }
-                    else
-                    {
-                        dialog_autocomplete.requestFocus();
-                        dialog_autocomplete.setSelection(dialog_autocomplete.length());
-                        dialog_autocomplete.setError("Enter comment first");
                     }
                 }
             }
@@ -830,6 +757,8 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         });
         dialog.show();
     }
+
+
 
     ///Dialog end/////////////
 
@@ -858,4 +787,47 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
     }
+
+
+
+   //*************************************************************************************************************
+
+    /*private void GetLocation()
+    {
+
+       new GiveMeLocationS(MainActivity.this, new Location_Interface()
+        {
+            @Override
+            public void onTaskCompleted(Location location)
+            {
+                try
+                {
+                    Log.e("Sharan Latitude", ""+location.getLatitude());
+                    Log.e("Sharan Longitude", ""+location.getLongitude());
+
+                    String lat=String.valueOf(location.getLatitude());
+                    String lon=String.valueOf(location.getLongitude());
+
+                    if (gcm_flag.equals("Driver"))
+                    {
+                        HitService_Adress_message(lat, lon, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " sends location, locate me on map", "Rider", "send" + ":" + city_name_to_send);
+                    }
+                    else
+                    {
+                        HitService_Adress_message(lat, lon, gcm_reider_id, gcm_driver_id, gcm_trip_id, my_customer_name + " sends location, locate me on map", "Driver", "send" + ":" + city_name_to_send);
+                    }
+                    dialog.dismiss();
+
+
+                }
+                catch (Exception ex)
+                {
+                    Log.e("Exception is", ex.toString());
+                }
+            }
+        });
+
+    }*/
+
+
 }

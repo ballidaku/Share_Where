@@ -1,76 +1,77 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/gray_backgroundfb"
-    android:orientation="vertical"
-    tools:context="car.sharewhere.gagan.sharewherecars.fragments.Find_A_Ride">
+<android.support.design.widget.CoordinatorLayout
+    android:id = "@+id/coordinatorLayout"
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    android:background = "@color/gray_backgroundfb"
+    android:orientation = "vertical"
+    tools:context = "car.sharewhere.gagan.sharewherecars.fragments.Find_A_Ride">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+                  xmlns:tools = "http://schemas.android.com/tools"
+                  android:layout_width = "match_parent"
+                  android:layout_height = "match_parent"
+                  android:orientation = "vertical">
 
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="bottom">
-
-
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:layout_gravity = "bottom"
+            android:gravity = "bottom">
 
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_height="wrap_content"
-                android:id="@+id/relativeLayout">
+                android:id = "@+id/relativeLayout"
+                android:layout_width = "match_parent"
+                android:layout_height = "wrap_content"
+                android:layout_centerInParent = "true">
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:id="@+id/txt_no_ride"
-                    android:layout_centerInParent="true"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:text="Sorry currently you have no ride to offer,Click below to start a new ride!!Happy Riding"/>
+                    android:id = "@+id/txt_no_ride"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:layout_centerInParent = "true"
+                    android:gravity = "center"
+                    android:text = "Sorry currently you have no ride to offer,Click below to start a new ride!!Happy Riding"
+                    android:textColor = "@color/black"
+                    android:textSize = "15sp"/>
+
+                <ImageView
+                    android:id = "@+id/img_vw_reload"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_below="@+id/txt_no_ride"
+                    android:layout_marginTop="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:background = "@mipmap/reload"/>
 
             </RelativeLayout>
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_ofr_ride"
-                android:textColor="@color/yellow_old"
-                android:layout_alignParentBottom="true"
-                android:text="Offer A Ride"
-                android:textSize="15sp"
-                android:background="@color/black"/>
+                android:id = "@+id/btn_ofr_ride"
+                android:layout_width = "match_parent"
+                android:layout_height = "wrap_content"
+                android:layout_alignParentBottom = "true"
+                android:background = "@color/black"
+                android:text = "Offer A Ride"
+                android:textColor = "@color/yellow_old"
+                android:textSize = "15sp"/>
             <Button
-                android:id="@+id/line_cancel"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/line" />
+                android:id = "@+id/line_cancel"
+                android:layout_width = "match_parent"
+                android:layout_height = "5dp"
+                android:layout_alignParentBottom = "true"
+                android:layout_alignParentLeft = "true"
+                android:background = "@drawable/line"/>
             <ListView
-                android:id="@+id/list_home_recent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:scrollbars="none"
-                android:divider="@null" />
+                android:id = "@+id/list_home_recent"
+                android:layout_width = "match_parent"
+                android:layout_height = "wrap_content"
+                android:divider = "@null"
+                android:scrollbars = "none"
+                android:visibility = "gone"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@mipmap/reload"
-                android:id="@+id/img_vw_reload"
-                android:layout_above="@+id/btn_ofr_ride"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="57dp" />
+
 
         </RelativeLayout>
 

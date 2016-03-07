@@ -19,13 +19,6 @@
             android:layout_height="wrap_content">
 
             <RadioButton
-                android:id="@+id/radio_sedan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Sedan" />
-
-            <RadioButton
                 android:id="@+id/radio_audi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,12 +26,48 @@
                 android:checked="true"
                 android:text="Audi" />
 
+
+            <RadioButton
+                android:id="@+id/radio_coupe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:text="Coupe" />
+
+            <RadioButton
+                android:id="@+id/radio_cross"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:text="Cross Over" />
+
+            <RadioButton
+                android:id="@+id/radio_estate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:text="Estate" />
+
+            <RadioButton
+                android:id="@+id/radio_hatchback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:text="HatchBack" />
+
+
+
+
+
+
+
+
+
             <RadioButton
                 android:id="@+id/radio_minicab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                android:checked="true"
                 android:text="Mini Cab" />
 
             <RadioButton
@@ -46,56 +75,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                android:checked="true"
                 android:text="MUV" />
 
-            <RadioButton
-                android:id="@+id/radio_suv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:checked="true"
-                android:text="SUV" />
 
             <RadioButton
                 android:id="@+id/radio_roadster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                android:checked="true"
                 android:text="Roadster" />
 
             <RadioButton
-                android:id="@+id/radio_estate"
+                android:id="@+id/radio_sedan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:checked="true"
-                android:text="Estate" />
+                android:text="Sedan" />
 
             <RadioButton
-                android:id="@+id/radio_coupe"
+                android:id="@+id/radio_suv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                android:checked="true"
-                android:text="Coupe" />
+                android:text="SUV" />
 
-            <RadioButton
-                android:id="@+id/radio_hatchback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:checked="true"
-                android:text="HatchBack" />
 
-            <RadioButton
-                android:id="@+id/radio_cross"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:checked="true"
-                android:text="Cross Over" />
+
+
+
+
+
+
+
 
         </RadioGroup>
 

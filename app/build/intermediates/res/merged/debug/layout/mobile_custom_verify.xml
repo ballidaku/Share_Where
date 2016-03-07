@@ -84,7 +84,7 @@
                 android:padding="10dp"
                 android:text="OK"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
 

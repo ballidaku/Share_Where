@@ -128,8 +128,14 @@ public class Json_AsnycTask extends AsyncTask<Void, Void, String> {
                 else if (method.equalsIgnoreCase(GlobalConstants.POST_SERVICE_METHOD2)) {
                     listener.onResultsSucceeded_Post_Method2(result);
                 }
-                else {
+                else if (method.equalsIgnoreCase(GlobalConstants.POST_SERVICE_METHOD3)) {
                     listener.onResultsSucceeded_Post_Method3(result);
+                }
+                else if (method.equalsIgnoreCase(GlobalConstants.POST_SERVICE_METHOD4)) {
+                    listener.onResultsSucceeded_Post_Method4(result);
+                }
+                else {
+                    listener.onResultsSucceeded_Post_Method5(result);
                 }
             }
             catch (Exception e) {
@@ -138,90 +144,6 @@ public class Json_AsnycTask extends AsyncTask<Void, Void, String> {
 
     }
 
-/*
-    @SuppressLint("NewApi")
-    public JSONObject executeHttpPost_server(String url, String method, ArrayList<String> param, ArrayList<String> value) {
-        JSONObject jArray = null;
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-
-            HttpClient httpClient = new DefaultHttpClient();
-
-            if (method.equalsIgnoreCase(GlobalConstants.GET_SERVICE_METHOD1) || method.equalsIgnoreCase(GlobalConstants.GET_SERVICE_METHOD2)) {
-                httpget = new HttpGet(url);
-                httpget.setHeader("Content-Type", "application/x-www-form-urlencoded");
-                httpget.setHeader("Accept", "application/json");
-                httpResponse = httpClient.execute(httpget);
-                jArray = getFunction();
-            } else {
-                httppost = new HttpPost(url);
-
-                List<NameValuePair> paramsL = new LinkedList<>();
-                for (int i = 0; i < param.size(); i++) {
-                    paramsL.add(new BasicNameValuePair(param.get(i).toString(), value.get(i).toString()));
-
-                }
-
-                httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-                httppost.setHeader("Accept", "application/json");
-                HttpEntity entity = new UrlEncodedFormEntity(paramsL, "UTF-8");
-                httppost.setEntity(entity);
-
-                httpResponse = httpClient.execute(httppost);
-
-                resul = EntityUtils.toString(httpResponse.getEntity());
-
-
-                JSONObject object = new JSONObject(resul);
-
-                jArray = object;
-
-
-            }
-
-
-        } catch (Exception e) {
-            Log.e("exception", "exception" + e);
-        }
-        return jArray;
-    }
-
-
-    private JSONObject getFunction() {
-        InputStream isb = null;
-        String result = "";
-        JSONObject jArray = null;
-
-        HttpEntity resultentity = httpResponse.getEntity();
-        try {
-            isb = resultentity.getContent();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(isb, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            isb.close();
-            result = sb.toString();
-
-            jArray = new JSONObject(result);
-        } catch (Exception e) {
-        }
-        return jArray;
-    }
-
-    private JSONObject postFunction() {
-        JSONObject result = null;
-        try {
-            result = new JSONObject(resul);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-*/
 
 
 }

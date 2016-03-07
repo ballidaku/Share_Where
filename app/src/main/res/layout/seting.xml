@@ -1,112 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/gray_backgroundfb"
-    android:keepScreenOn="true"
-    android:orientation="vertical">
+<LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+              xmlns:app = "http://schemas.android.com/apk/res-auto"
+              android:layout_width = "match_parent"
+              android:layout_height = "match_parent"
+              android:background = "@color/gray_backgroundfb"
+              android:keepScreenOn = "true"
+              android:orientation = "vertical">
 
 
-    <include layout="@layout/actionbar_toolbar" />
-
-
+    <include layout = "@layout/actionbar_toolbar"/>
 
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@mipmap/setng_bg">
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:background = "@mipmap/setng_bg">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
-            android:text="Notifications"
-            android:textColor="@color/black"
-            android:textSize="16dp" />
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_alignParentLeft = "true"
+            android:layout_centerInParent = "true"
+            android:layout_marginLeft = "10dp"
+            android:text = "Notifications"
+            android:textColor = "@color/black"
+            android:textSize = "16dp"/>
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:background="@android:color/transparent"
-            android:button="@drawable/checkbox_selector_stng"
-            android:gravity="center"
-            android:id="@+id/chk_notificatn"
+
+
+        <android.support.v7.widget.SwitchCompat
+            android:id = "@+id/switch_notification"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:checked = "false"
+            android:layout_alignParentRight = "true"
+            android:layout_centerInParent = "true"
             android:paddingRight="10dp"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            app:theme = "@style/Color1SwitchStyle"
+            />
+
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@mipmap/setng_bg"
-        android:visibility="gone">
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_margin = "10dp"
+        android:background = "@mipmap/setng_bg"
+        android:visibility = "gone">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
-            android:text="Dont show people without photos"
-            android:textColor="@color/black"
-            android:textSize="16dp" />
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_alignParentLeft = "true"
+            android:layout_centerInParent = "true"
+            android:layout_marginLeft = "10dp"
+            android:text = "Dont show people without photos"
+            android:textColor = "@color/black"
+            android:textSize = "16dp"/>
 
         <CheckBox
-            android:id="@+id/chk_photos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:background="@android:color/transparent"
-            android:button="@drawable/checkbox_selector_stng"
-            android:gravity="center"
-            android:paddingRight="10dp"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:id = "@+id/chk_photos"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_alignParentRight = "true"
+            android:layout_centerInParent = "true"
+            android:background = "@android:color/transparent"
+            android:button = "@drawable/checkbox_selector_stng"
+            android:gravity = "center"
+            android:paddingRight = "10dp"
+            android:textAppearance = "?android:attr/textAppearanceLarge"/>
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/licence_lnr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@mipmap/setng_bg"
-        android:orientation="horizontal">
+        android:id = "@+id/licence_lnr"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_margin = "10dp"
+        android:background = "@mipmap/setng_bg"
+        android:orientation = "horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:text="Licence and Agreement"
-            android:textColor="@color/black"
-            android:textSize="16dp" />
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_gravity = "center"
+            android:layout_marginLeft = "10dp"
+            android:text = "Licence and Agreement"
+            android:textColor = "@color/black"
+            android:textSize = "16dp"/>
     </LinearLayout>
 
 
     <LinearLayout
-        android:id="@+id/lnr_show_notificatn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:visibility="gone"
-        android:background="@mipmap/setng_bg"
-        android:orientation="horizontal">
+        android:id = "@+id/lnr_show_notificatn"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_margin = "10dp"
+        android:background = "@mipmap/setng_bg"
+        android:orientation = "horizontal"
+        android:visibility = "gone">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:text="Show All Notifications"
-            android:textColor="@color/black"
-            android:textSize="16dp" />
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_gravity = "center"
+            android:layout_marginLeft = "10dp"
+            android:text = "Show All Notifications"
+            android:textColor = "@color/black"
+            android:textSize = "16dp"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -552,6 +552,17 @@ public class ProfileActivity extends AppCompatActivity implements Asnychronus_no
 
     }
 
+    @Override
+    public void onResultsSucceeded_Post_Method4(JSONObject result)
+    {
+
+    }
+
+    @Override
+    public void onResultsSucceeded_Post_Method5(JSONObject result)
+    {
+
+    }
 
     /**
      * @snackbarMethod
