@@ -25,14 +25,14 @@
 
             <LinearLayout
                 android:layout_width = "match_parent"
-                android:layout_height = "match_parent"
+                android:layout_height = "wrap_content"
                 android:background = "@color/gray_backgroundfb"
                 android:orientation = "vertical">
 
                 <LinearLayout
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
-                    android:background = "#ebebeb"
+                    android:background = "@color/black"
                     android:orientation = "vertical">
 
                     <android.support.design.widget.TextInputLayout
@@ -40,9 +40,6 @@
                         android:layout_width = "match_parent"
                         android:layout_height = "wrap_content"
                         android:layout_marginTop = "20dp"
-                        android:textColor = "@color/black"
-                        android:textColorHighlight = "@color/black"
-                        android:textColorHint = "@color/black"
                         android:theme = "@style/TextAppearence.App.TextInputLayout"
                         app:hintTextAppearance = "@style/TextAppearence.App.TextInputLayout">
 
@@ -52,27 +49,21 @@
                             android:layout_height = "wrap_content"
                             android:layout_marginLeft = "20dp"
                             android:layout_marginRight = "20dp"
-
                             android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:drawableEnd = "@mipmap/cancel"
                             android:drawableRight = "@mipmap/cancel"
                             android:hint = "Leaving from"
                             android:imeOptions = "actionNext"
                             android:inputType = "textCapWords"
+                            android:textColor = "@color/white"
+                            android:textColorHint = "@color/white"/>
 
-                            android:singleLine = "true"
-                            android:textColor = "@color/black"
-                            android:textColorHighlight = "@color/black"
-                            android:textColorHint = "@color/black"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
                         xmlns:app = "http://schemas.android.com/apk/res-auto"
                         android:layout_width = "match_parent"
                         android:layout_height = "wrap_content"
-                        android:textColor = "@color/black"
-                        android:textColorHighlight = "@color/black"
-                        android:textColorHint = "@color/black"
                         android:theme = "@style/TextAppearence.App.TextInputLayout"
                         app:hintTextAppearance = "@style/TextAppearence.App.TextInputLayout">
 
@@ -86,12 +77,13 @@
                             android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:drawableRight = "@mipmap/cancel"
                             android:hint = "Leaving To"
-                            android:imeOptions = "actionNext"
                             android:inputType = "textCapWords"
-                            android:singleLine = "true"
-                            android:textColor = "@color/black"
-                            android:textColorHighlight = "@color/black"
-                            android:textColorHint = "@color/black"/>
+                            android:imeOptions = "actionNext"
+                            android:textColor = "@color/white"
+                            android:textColorHint = "@color/white">
+                            <requestFocus />
+                        </AutoCompleteTextView>
+
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
@@ -220,15 +212,13 @@
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
                             android:layout_marginBottom = "20dp"
-                            android:layout_marginLeft = "10dp"
-                            android:layout_marginRight = "10dp"
                             android:layout_marginTop = "20dp"
                             android:orientation = "horizontal">
                             <!--android:background="@color/white"-->
 
                             <LinearLayout
                                 android:id = "@+id/lnr_depart_time_regular"
-                                android:layout_width = "wrap_content"
+                                android:layout_width = "0dp"
                                 android:layout_height = "wrap_content"
 
                                 android:layout_weight = "1"
@@ -248,11 +238,12 @@
 
                                 <LinearLayout
                                     android:id = "@+id/lnr_depart_date"
-                                    android:layout_width = "130dp"
+                                    android:layout_width = "wrap_content"
                                     android:layout_height = "wrap_content"
                                     android:layout_gravity = "center"
                                     android:background = "@drawable/grey_border"
                                     android:clickable = "true"
+                                    android:minWidth = "130dp"
                                     android:orientation = "horizontal">
 
                                     <TextView
@@ -285,10 +276,8 @@
 
                             <LinearLayout
                                 android:id = "@+id/regulr_return_lnr"
-                                android:layout_width = "wrap_content"
+                                android:layout_width = "0dp"
                                 android:layout_height = "wrap_content"
-                                android:layout_alignParentRight = "true"
-                                android:layout_marginLeft = "10dp"
                                 android:layout_weight = "1"
                                 android:orientation = "vertical">
 
@@ -305,11 +294,12 @@
 
                                 <LinearLayout
                                     android:id = "@+id/lnr_clk_depart"
-                                    android:layout_width = "100dp"
+                                    android:layout_width = "wrap_content"
                                     android:layout_height = "match_parent"
                                     android:layout_gravity = "center"
                                     android:background = "@drawable/grey_border"
                                     android:clickable = "true"
+                                    android:minWidth = "110dp"
                                     android:orientation = "horizontal">
 
                                     <TextView
@@ -346,19 +336,18 @@
                         <!--Return params-->
 
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:id = "@+id/rel_return"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
                             android:layout_marginBottom = "20dp"
-                            android:layout_marginLeft = "15dp"
-                            android:layout_marginRight = "15dp"
                             android:visibility = "gone">
 
                             <LinearLayout
-                                android:layout_width = "wrap_content"
+                                android:layout_width = "0dp"
                                 android:layout_height = "wrap_content"
-                                android:layout_alignParentLeft = "true"
+                                android:layout_weight = "1"
+                                android:gravity = "center"
                                 android:orientation = "vertical">
 
                                 <TextView
@@ -373,10 +362,11 @@
 
                                 <LinearLayout
                                     android:id = "@+id/lnr_return_date"
-                                    android:layout_width = "150dp"
+                                    android:layout_width = "wrap_content"
                                     android:layout_height = "wrap_content"
                                     android:background = "@drawable/grey_border"
                                     android:clickable = "true"
+                                    android:minWidth = "130dp"
                                     android:orientation = "horizontal">
 
                                     <TextView
@@ -408,11 +398,10 @@
 
 
                             <LinearLayout
-                                android:layout_width = "wrap_content"
+                                android:layout_width = "0dp"
                                 android:layout_height = "wrap_content"
-                                android:layout_alignParentRight = "true"
-
-                                android:layout_marginLeft = "10dp"
+                                android:layout_weight = "1"
+                                android:gravity = "center"
                                 android:orientation = "vertical">
 
                                 <TextView
@@ -427,10 +416,11 @@
 
                                 <LinearLayout
                                     android:id = "@+id/lnr_return_clk"
-                                    android:layout_width = "150dp"
+                                    android:layout_width = "wrap_content"
                                     android:layout_height = "wrap_content"
                                     android:background = "@drawable/grey_border"
                                     android:clickable = "true"
+                                    android:minWidth = "110dp"
                                     android:orientation = "horizontal">
 
                                     <TextView
@@ -461,7 +451,7 @@
 
                             </LinearLayout>
 
-                        </RelativeLayout>
+                        </LinearLayout>
                         <!--enter days-->
                         <LinearLayout
                             android:id = "@+id/lnr_main_days"
@@ -485,8 +475,8 @@
                                 android:layout_width = "match_parent"
                                 android:layout_height = "wrap_content"
                                 android:layout_below = "@+id/mid_txt"
+                                android:layout_marginTop = "5dp"
                                 android:gravity = "bottom"
-                                android:layout_marginTop="5dp"
                                 android:orientation = "horizontal">
 
                                 <TextView
@@ -494,12 +484,12 @@
                                     android:layout_width = "0dp"
                                     android:layout_height = "wrap_content"
                                     android:layout_gravity = "center_vertical"
+                                    android:layout_margin = "5dp"
                                     android:layout_weight = "1"
                                     android:background = "@drawable/grey_border"
                                     android:gravity = "center_vertical"
                                     android:hint = "Tap Right to select days"
                                     android:padding = "8dp"
-                                    android:layout_margin="5dp"
                                     android:textColor = "@color/black"
                                     android:textCursorDrawable = "@null"/>
 
@@ -561,12 +551,18 @@
                                 android:textColor = "#000000"
                                 android:textSize = "16sp"/>
 
-                            <ListView
-                                android:id = "@+id/list_mid"
+                            <!--    <ListView
+                                    android:id = "@+id/list_mid"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:dividerHeight="3dp"
+                                    android:divider = "@null"/>-->
+
+                            <LinearLayout
+                                android:id = "@+id/lay_mid_point"
                                 android:layout_width = "match_parent"
                                 android:layout_height = "wrap_content"
-                                android:dividerHeight="3dp"
-                                android:divider = "@null"/>
+                                android:orientation = "vertical"/>
 
 
                             <LinearLayout
@@ -581,14 +577,14 @@
                                     android:id = "@+id/autocomplete_new_mid_point"
                                     android:layout_width = "0dp"
                                     android:layout_height = "wrap_content"
+                                    android:layout_gravity = "center_vertical"
+                                    android:layout_margin = "5dp"
                                     android:layout_weight = "1"
                                     android:background = "@drawable/grey_border"
                                     android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                                     android:hint = "Enter mid points"
                                     android:inputType = "textCapWords"
-                                    android:layout_gravity="center_vertical"
                                     android:padding = "8dp"
-                                    android:layout_margin="5dp"
                                     android:textCursorDrawable = "@null"/>
 
                                 <ImageView
@@ -734,15 +730,15 @@
                                         android:background = "@color/gray_backgroundfb"/>
 
                                     <TextView
-                                        android:id="@+id/txtv_currency"
+                                        android:id = "@+id/txtv_currency"
                                         android:layout_width = "wrap_content"
                                         android:layout_height = "wrap_content"
                                         android:layout_gravity = "center"
                                         android:padding = "8dp"
-                                        android:textStyle="bold"
-                                        android:textSize="15sp"
-                                        android:text="\u20B9"
-                                       />
+                                        android:text = "\u20B9"
+                                        android:textSize = "15sp"
+                                        android:textStyle = "bold"
+                                        />
                                 </LinearLayout>
                             </LinearLayout>
                         </RelativeLayout>
@@ -878,9 +874,9 @@
                                 android:layout_marginLeft = "20dp"
                                 android:layout_marginRight = "20dp"
                                 android:background = "@drawable/grey_border"
+                                android:digits = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890 "
                                 android:gravity = "center"
                                 android:imeOptions = "actionDone"
-                                android:inputType = "textCapCharacters"
                                 android:maxLength = "10"
                                 android:padding = "10dp"
                                 android:textCursorDrawable = "@null"

@@ -2,8 +2,10 @@ package car.sharewhere.gagan.Tabs;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -58,6 +60,7 @@ import car.sharewhere.gagan.utills.CircleTransform;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
 import car.sharewhere.gagan.utills.GetterSetter_Driver;
 import car.sharewhere.gagan.utills.Getter_setter;
+import car.sharewhere.gagan.utills.Utills_G;
 
 /**
  Created by ameba on 12/1/16. */
@@ -66,12 +69,12 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
 
     SharedPreferences.Editor editor;
     ListView                 list_home_recent;
-    TextView            txt_no_ride;
-    ImageView img_driver_img, img_vw_reload;
+    TextView                 txt_no_ride;
+    ImageView                img_driver_img, img_vw_reload;
     SharedPreferences preferences;
     String            customerID, my_customerID, format, current_time, current_date_strng;
     ConnectivityDetector cd;
-    HashMap<String, String> data_home = new HashMap<>();
+
     CoordinatorLayout coordinatorlayout;
     Snackbar          snackbar;
     ProgressDialog    dialog;
@@ -79,23 +82,28 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     Date              current_date;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     MidPointAdapter adater;
-    List<Getter_setter>       feedItemList       = new ArrayList<>();
-    List<GetterSetter_Driver> feedItemList_model = new ArrayList<>();
-    ArrayList<String>         array_image        = new ArrayList<>();
-    Chat_Database             chat_database      ;
+    List<Getter_setter> list = new ArrayList<>();
 
-    HashMap<Integer, GetterSetter_Driver> data = new HashMap<>();
-
+    ArrayList<String> array_image = new ArrayList<>();
+    Chat_Database chat_database;
+    public static boolean is_drivertab_visible = false;
 
     Context con;
+
+    // Trip id with there corresponding reuest counts
+    HashMap<String, String> trip_request_map ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.tab_my_ride, container, false);
-        con=getActivity();
+        con = getActivity();
 
         chat_database = new Chat_Database(con);
+
+
+        trip_request_map = new HashMap<>();
+
 
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -108,12 +116,13 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
         cd = new ConnectivityDetector(getActivity().getApplicationContext());
-        adater = new MidPointAdapter();
 
         findviewbyID(view);
 
-//       Log.e("Chat All Data", "...." + chat_database.get_chat_all_data());
-//        Log.e("Data count","...." + chat_database.get_unread_messages_count("1010", "212"));
+        //       Log.e("Chat All Data", "...." + chat_database.get_chat_all_data());
+        //        Log.e("Data count","...." + chat_database.get_unread_messages_count("1010", "212"));
+
+        method_current_time();
 
         return view;
     }
@@ -146,7 +155,8 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
             @Override
             public void onClick(View v)
             {
-                HitServiceEarlierSearc();
+                //                HitServiceEarlierSearc();
+                refresh();
 
             }
         });
@@ -167,11 +177,9 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                     Intent is = new Intent(getActivity(), Ride_Details.class);
                     //                    Intent is = new Intent(getActivity(), Chat_Activity.class);
 
-                    is.putExtra(GlobalConstants.KeyNames.TripId.toString(), feedItemList.get(position).getTrip_id());
+                    is.putExtra(GlobalConstants.KeyNames.TripId.toString(), list.get(position).getTrip_id());
                     is.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), preferences.getString("CustomerId", null));
-                    Log.e("DriversId","  "+preferences.getString("CustomerId", null));
-
-
+                    Log.e("DriversId", "  " + preferences.getString("CustomerId", null));
 
                     startActivity(is);
                     getActivity().overridePendingTransition(0, R.anim.push_down_out);
@@ -181,11 +189,27 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     }
 
     @Override
-    public void onResume()
+    public void setMenuVisibility(final boolean visible)
     {
-        super.onResume();
+        super.setMenuVisibility(visible);
+        if (visible)
+        {
+            is_drivertab_visible=true;
+        }
+        else
+        {
+            is_drivertab_visible=false;
+        }
 
-        method_current_time();
+
+        Log.e("Driver Tab",""+is_drivertab_visible);
+    }
+
+
+
+    public void refresh()
+    {
+        trip_request_map=chat_database.get_tripid_unread_req_count_data();
         HitServiceEarlierSearc();
     }
 
@@ -251,6 +275,9 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                     JSONObject object = new JSONObject(output);
                     if (object.getString("Status").equalsIgnoreCase("success"))
                     {
+                        chat_database.delete_chat(TripID, "");
+                        chat_database.delete_trip_request("",TripID);
+
                         HitServiceEarlierSearc();
                         snackbar_method("Ride deleted successfully.");
                     }
@@ -273,7 +300,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
      */
     private void HitServiceEarlierSearc()
     {
-        data_home.put("CustomerId", customerID);
+        //        data_home.put("CustomerId", customerID);
 
         if (!cd.isConnectingToInternet())
         {
@@ -330,10 +357,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                         }
                         else
                         {
-                            feedItemList.clear();
-                            feedItemList_model.clear();
-
-                            data.clear();
+                            List<Getter_setter> feedItemList = new ArrayList<>();
 
                             for (int i = 0; i < arr.length(); i++)
                             {
@@ -368,7 +392,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                                 {
                                     JSONArray arr2 = jsonobject.getJSONArray("RequestAcceptModelList");
 
-                                    Log.e("arr length", arr2.length() + "");
+                                    //                                    Log.e("arr length", arr2.length() + "");
 
                                     ArrayList<HashMap<String, String>> child_list = new ArrayList<>();
 
@@ -395,12 +419,11 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
 
                                 feedItemList.add(item);
                             }
-                        }
-                        adater = new MidPointAdapter();
-                        list_home_recent.setAdapter(adater);
-                        adater.notifyDataSetChanged();
 
-                        GlobalConstants.setListViewHeightBasedOnItems(list_home_recent, feedItemList.size());
+                            notify(feedItemList);
+                        }
+
+                        //                        GlobalConstants.setListViewHeightBasedOnItems(list_home_recent, feedItemList.size());
                     }
                     catch (Exception ex)
                     {
@@ -418,6 +441,25 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                 snackbar_method("No Ride to show");
             }
         }
+    }
+
+    public void notify(List<Getter_setter> feedItemList)
+    {
+
+
+        if (list.size() == 0)
+        {
+            list=feedItemList;
+            adater = new MidPointAdapter(feedItemList);
+            list_home_recent.setAdapter(adater);
+        }
+        else
+        {
+            list=feedItemList;
+            adater.set_data(feedItemList);
+            adater.notifyDataSetInvalidated();
+        }
+
     }
 
     @Override
@@ -474,15 +516,19 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
      */
     private class MidPointAdapter extends BaseAdapter
     {
-        public MidPointAdapter()
+
+        List<Getter_setter> local_list;
+
+        public MidPointAdapter(List<Getter_setter> feedItemList)
         {
             super();
+            local_list = feedItemList;
         }
 
         @Override
         public int getCount()
         {
-            return feedItemList.size();
+            return local_list.size();
         }
 
         @Override
@@ -509,24 +555,21 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View           v        = inflater.inflate(R.layout.custom_list_find_ride2, parent, false);
 
-            TextView  txt_day = (TextView) v.findViewById(R.id.txt_day);
+            TextView txt_day = (TextView) v.findViewById(R.id.txt_day);
 
             TextView txt_from = (TextView) v.findViewById(R.id.txt_from);
-            TextView txt_to = (TextView) v.findViewById(R.id.txt_to);
+            TextView txt_to   = (TextView) v.findViewById(R.id.txt_to);
             v.findViewById(R.id.txt_driver_name).setVisibility(View.GONE);
-            TextView txt_vw_ride_type = (TextView) v.findViewById(R.id.txt_vw_ride_type);
-            TextView txt_car_name     = (TextView) v.findViewById(R.id.txt_car_name);
-            TextView txtv_message_count     = (TextView) v.findViewById(R.id.txtv_message_count);
+            TextView txt_vw_ride_type   = (TextView) v.findViewById(R.id.txt_vw_ride_type);
+            TextView txt_car_name       = (TextView) v.findViewById(R.id.txt_car_name);
+            TextView txtv_message_count = (TextView) v.findViewById(R.id.txtv_message_count);
+            TextView txtv_request_count = (TextView) v.findViewById(R.id.txtv_request_count);
             v.findViewById(R.id.txt_flag).setVisibility(View.GONE);
-
-
-
 
             img_driver_img = (ImageView) v.findViewById(R.id.img_driver_img);
             ImageView img_vehicle = (ImageView) v.findViewById(R.id.img_man);
 
             v.findViewById(R.id.img_phn).setVisibility(View.GONE);
-
 
             LinearLayout rel_my_ride_edit = (LinearLayout) v.findViewById(R.id.rel_my_ride_edit);
 
@@ -538,15 +581,14 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
             txt_vw_ride_type.setVisibility(View.VISIBLE);
             rel_my_ride_edit.setVisibility(View.VISIBLE);
 
-            final Getter_setter feedItem = feedItemList.get(position);
-
+            final Getter_setter feedItem = local_list.get(position);
 
             //    txt_day.setText(feedItem.getLeaving_date()+"     "+ feedItem.getLeaving_time());
 
-            long count =chat_database.get_unread_messages_count(feedItem.getTrip_id(), "");
-            if(count>0)
+            long count = chat_database.get_unread_messages_count(feedItem.getTrip_id(), "");
+            if (count > 0)
             {
-                txtv_message_count.setText(""+count);
+                txtv_message_count.setText("" + count);
             }
             else
             {
@@ -554,29 +596,53 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
             }
 
 
+
+            if(trip_request_map.get(feedItem.getTrip_id()) != null)
+            {
+                long req_count = Long.parseLong(trip_request_map.get(feedItem.getTrip_id()));
+
+                Log.e("req_count", "" + req_count);
+                if (req_count > 0)
+                {
+                    txtv_request_count.setText("" + req_count);
+                }
+                else
+                {
+                    txtv_request_count.setVisibility(View.GONE);
+                }
+
+            }
+            else
+            {
+                txtv_request_count.setVisibility(View.GONE);
+            }
+
+
+
+
+
+
             if (feedItem.getIs_regular() != null)
             {
                 String is_regular_basis = feedItem.getIs_regular().equals("false") ? "Ride Type" + "\n" + "One Time" : "Riding Type" + "\n" + "Daily";
                 txt_vw_ride_type.setText(is_regular_basis);
 
-                String date_day_str= feedItem.getIs_regular().equals("false")? feedItem.getLeaving_date() : feedItem.getRegulardays();
+                String date_day_str = feedItem.getIs_regular().equals("false") ? feedItem.getLeaving_date() : feedItem.getRegulardays();
                 //      Log.e("date_day_str ","date_day_str  "+date_day_str+"   "+feedItem.getLeaving_date()+"  gggg   "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +"  One Time") );
 
-                txt_day.setText(date_day_str+"     "+ feedItem.getLeaving_time());
+                txt_day.setText(date_day_str + "     " + feedItem.getLeaving_time());
             }
-
-
 
             if (feedItem.getLeaving_from() != null)
             {
-                txt_from.setText((feedItem.getLeaving_from()));
+                txt_from.setText(feedItem.getLeaving_from());
             }
             if (feedItem.getLeaving_to() != null)
             {
                 txt_to.setText((feedItem.getLeaving_to()));
             }
 
-            txt_car_name.setText("Type : "+feedItem.getVehicle_type()+"\n"+"Name : "+feedItem.getVehicle_name() +"\n"+"Number : "+ feedItem.getVehicle_number() );
+            txt_car_name.setText("Type : " + feedItem.getVehicle_type() + "\n" + "Name : " + feedItem.getVehicle_name() + "\n" + "Number : " + feedItem.getVehicle_number());
 
             int id = feedItem.getVehicle_type().equals("Bike") ? R.mipmap.bike : R.mipmap.car;
             img_vehicle.setBackgroundResource(id);
@@ -605,15 +671,15 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
 
                 try
                 {
-                    Log.e("FEEDITEM date_backend ","Leaving Date"+feedItem.getLeaving_date());
+                    //                    Log.e("FEEDITEM date_backend ","Leaving Date"+feedItem.getLeaving_date());
                     date_backend = sdf.parse(feedItem.getLeaving_date());
                 }
                 catch (ParseException e)
                 {
                     e.printStackTrace();
                 }
-                Log.e("date_backend"," datedate"+date_backend);// Date of leavingDate
-                Log.e("current_date"," current_date"+current_date);
+                //                Log.e("date_backend"," datedate"+date_backend);// Date of leavingDate
+                //                Log.e("current_date"," current_date"+current_date);
                 // Log.e("current_date"," current_date"+date_backend.before(current_date));
                 if (date_backend.before(current_date))
                 {
@@ -682,7 +748,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                 @Override
                 public void onClick(View v)
                 {
-                    Getter_setter feedItem = feedItemList.get(position);
+                    Getter_setter feedItem = local_list.get(position);
                     Intent        is       = null;
                     Log.e("feedItem.regular()", feedItem.getIs_regular());
                     if (feedItem.getIs_regular().equals("false"))
@@ -748,21 +814,15 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                 }
             });
 
+
+
             return v;
         }
 
-        @Override
-        public void notifyDataSetChanged()
+        public void set_data(List<Getter_setter> _data)
         {
-            super.notifyDataSetChanged();
+            this.local_list = _data;
         }
-
-        @Override
-        public void notifyDataSetInvalidated()
-        {
-            super.notifyDataSetInvalidated();
-        }
-
     }
 
     /**
@@ -783,5 +843,52 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    DriverRides_BroadcastReceiver receiver;
+    boolean is_receiver_registered = false;
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        //
+        refresh();
+
+
+        if(!is_receiver_registered)
+        {
+            if(receiver==null)
+            {
+
+                receiver=new DriverRides_BroadcastReceiver();
+            }
+            getActivity().registerReceiver(receiver, new IntentFilter(Utills_G.refresh_drivertab));
+            is_receiver_registered=true;
+        }
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        if (receiver != null)
+        {
+            getActivity().unregisterReceiver(receiver);
+        }
+    }
+
+    private class DriverRides_BroadcastReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+
+            Log.e("Reached"," EEEEEEEEEE");
+            refresh();
+        }
     }
 }

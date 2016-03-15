@@ -216,17 +216,14 @@
                     android:layout_margin = "5dp"
                     android:orientation = "horizontal">
 
-                    <Button
+                    <TextView
                         android:id = "@+id/btn_one"
                         android:layout_width = "0dp"
-                        android:layout_height = "wrap_content"
-                        android:layout_gravity = "center"
+                        android:layout_height = "50dp"
                         android:layout_marginRight = "5dp"
                         android:layout_weight = "1"
                         android:background = "@color/yellow_old"
                         android:gravity = "center"
-                        android:padding = "5dp"
-                        android:text = "Accept"
                         android:textColor = "@color/black"
                         android:textStyle = "bold"/>
 
@@ -240,12 +237,10 @@
                         <TextView
                             android:id = "@+id/btn_two"
                             android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
+                            android:layout_height = "50dp"
                             android:layout_centerInParent="true"
                             android:layout_marginLeft = "5dp"
                             android:gravity = "center"
-                            android:padding = "5dp"
-                            android:text = "Decline"
                             android:textColor = "@color/black"
                             android:textStyle = "bold"/>
 
@@ -270,14 +265,14 @@
                 </LinearLayout>
 
             </RelativeLayout>
-            <Button
+            <TextView
                 android:id = "@+id/btn_three"
                 android:layout_width = "match_parent"
-                android:layout_height = "wrap_content"
+                android:layout_height = "50dp"
                 android:layout_below = "@+id/rel_time"
                 android:layout_margin = "5dp"
                 android:background = "@color/yellow_old"
-                android:padding = "5dp"
+                android:gravity="center"
                 android:text = "Locate me on map"
                 android:textColor = "@color/black"
                 android:textStyle = "bold"/>

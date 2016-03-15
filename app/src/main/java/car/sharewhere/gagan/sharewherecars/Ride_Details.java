@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -51,8 +52,9 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
     Context           con;
     SharedPreferences preferences;
-    String            customerID, my_customer_name, TripID;
-    public static String my_customerID;
+    String            customerID, my_customer_name;
+
+    public static String my_customerID,TripID;
 
     TextView txt_day_date,txt_driver_name, txt_car_name, txt_mobile_nmber, txt_leaving_from, txt_leaving_to, txt_return_time, txt_departure_date, txt_depart_time, txt_return_date, txt_days, txt_toolbar, txt_gcm_cancel, txt_locatn_send;
     TextView txt_total_seats, txt_seat_rate, txt_vehicle_type, txt_vehicle_name, txt_vehicle_number,txtv_message_count;
@@ -64,12 +66,22 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
 
     CheckBox chk_sunday, chk_monday, chk_tuesday, chk_wednsday, chk_thursday, chk_Friday, chk_saturday;
-    Button         btn_request;
+    TextView         btn_request;
     TextView btn_decline;
     RelativeLayout rel_decline;
     ListView       list_my_rides_users;
     String fromWhere = "";
     Chat_Database chat_database;
+
+    //*************************************New ********************************
+
+
+    LinearLayout lnr_returndate,lnr_return_time,return_date_lnr;
+    TextView txt_return_day_date,txt_return_date_day,txt_retrn_time,txt_return_time_;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -153,7 +165,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         profile_img = (ImageView) findViewById(R.id.profile_img);
         imgv_call = (ImageView) findViewById(R.id.imgv_call);
 
-        btn_request = (Button) findViewById(R.id.btn_request);
+        btn_request = (TextView) findViewById(R.id.btn_request);
         btn_decline = (TextView) findViewById(R.id.btn_decline);
         rel_decline = (RelativeLayout) findViewById(R.id.rel_decline);
 
@@ -208,6 +220,18 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 //        btn_decline.setVisibility(View.GONE);
         rel_decline.setVisibility(View.GONE);
         btn_request.setVisibility(View.GONE);
+
+
+
+
+        lnr_returndate = (LinearLayout) findViewById(R.id.lnr_returndate);
+        lnr_return_time = (LinearLayout) findViewById(R.id.lnr_return_time);
+        return_date_lnr = (LinearLayout) findViewById(R.id.return_date_lnr);
+
+        txt_return_day_date = (TextView) findViewById(R.id.txt_return_day_date);
+        txt_return_date_day = (TextView) findViewById(R.id.txt_return_date_day);
+        txt_retrn_time = (TextView) findViewById(R.id.txt_retrn_time);
+        txt_return_time_ = (TextView) findViewById(R.id.txt_return_time_);
 
     }
 
@@ -375,6 +399,45 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         // Departure details will be show for both Driver and Rider
         cardv_departure_details.setVisibility(View.VISIBLE);
 
+
+        if(bean_ride_details.getIsRegulerBasis().equals("false"))
+        {
+            if(bean_ride_details.getRoundTrip().equalsIgnoreCase("true"))
+            {
+                lnr_returndate.setVisibility(ViewGroup.VISIBLE);
+                lnr_return_time.setVisibility(ViewGroup.VISIBLE);
+
+
+                txt_return_date_day.setText(bean_ride_details.getReturnDate());
+                txt_return_time_.setText(bean_ride_details.getReturnTime());
+            }
+
+            txt_departure_date.setText(bean_ride_details.getDepartureDate());
+
+        }
+        else
+        {
+
+            if(bean_ride_details.getRoundTrip().equalsIgnoreCase("true"))
+            {
+                lnr_returndate.setVisibility(ViewGroup.VISIBLE);
+                lnr_return_time.setVisibility(ViewGroup.VISIBLE);
+
+                String day_date_str = bean_ride_details.getRegulerDays().contains(",") ? "Return Days" : "Return Day";
+                txt_return_day_date.setText(day_date_str);
+                txt_return_date_day.setText(bean_ride_details.getRegulerDays());
+
+                txt_return_time_.setText(bean_ride_details.getReturnTime());
+            }
+
+            String day_date_str = bean_ride_details.getRegulerDays().contains(",") ? "Leaving Days" : "Leaving Day";
+            // Log.e("day_date_str",""+day_date_str);
+            txt_day_date.setText(day_date_str);
+            txt_departure_date.setText(bean_ride_details.getRegulerDays());
+
+        }
+
+
         if (!my_customerID.equals(bean_ride_details.getCustomerId())) // if i am rider
         {
             txt_toolbar.setText("Owner Profile");
@@ -420,12 +483,18 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
             // Round trip details
             if (bean_ride_details.getRoundTrip().equals("true"))
             {
+
                 cardv_return_details.setVisibility(View.VISIBLE);
 
                 String[] separated = bean_ride_details.getReturnDate().split("T");
                 txt_return_date.setText(separated[0]);
 
                 txt_return_time.setText(bean_ride_details.getReturnTime());
+
+
+                //HideDeparture Details Return DAte and Time LinearLayout
+                lnr_returndate.setVisibility(ViewGroup.GONE);
+                lnr_return_time.setVisibility(ViewGroup.GONE);
 
             }
             else
@@ -481,6 +550,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
                 long count =chat_database.get_unread_messages_count(TripID, "");
                 if(count>0)
                 {
+                    txtv_message_count.setVisibility(View.VISIBLE);
                     txtv_message_count.setText(""+count);
                 }
                 else
@@ -582,8 +652,8 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         txt_leaving_from.setText(mid_point_list.get(0).get("Points"));
         txt_leaving_to.setText(mid_point_list.get(mid_point_list.size() - 1).get("Points"));
 
-//        txt_departure_date.setText(bean_ride_details.getDepartureDate());
-        if(bean_ride_details.getIsRegulerBasis().equals("false"))
+
+       /* if(bean_ride_details.getIsRegulerBasis().equals("false"))
         {
 
             txt_departure_date.setText(bean_ride_details.getDepartureDate());
@@ -594,7 +664,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
             // Log.e("day_date_str",""+day_date_str);
             txt_day_date.setText(day_date_str);
             txt_departure_date.setText(bean_ride_details.getRegulerDays());
-        }
+        }*/
 
 
 
@@ -726,6 +796,8 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
                         if (request_type.equals("CancelByRider"))
                         {
+                            chat_database.delete_chat(bean_ride_details.getTripId(),my_customerID);
+
                             finish();
                         }
                         else if(request_type.equals("NewRequest"))
@@ -806,6 +878,8 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
     protected void onResume()
     {
 
+        preferences.edit().putBoolean("is_ridedetails_opened", true).apply();
+
         refresh();
         Log.e("onResume"," is_receiver_registered "+is_receiver_registered+"nnnnnn "+receiver);
         super.onResume();
@@ -823,8 +897,17 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+        preferences.edit().putBoolean("is_ridedetails_opened", false).apply();
+    }
+
+    @Override
     protected void onDestroy()
     {
+
+        preferences.edit().putBoolean("is_ridedetails_opened", false).apply();
         super.onDestroy();
         if(receiver!=null)
         {

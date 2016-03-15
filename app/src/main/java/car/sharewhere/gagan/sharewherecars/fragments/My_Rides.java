@@ -1,8 +1,9 @@
 package car.sharewhere.gagan.sharewherecars.fragments;
 
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,14 +20,15 @@ import car.sharewhere.gagan.Tabs.Driver_Rides_Tab;
 import car.sharewhere.gagan.Tabs.Rider_Rides_Tab;
 import car.sharewhere.gagan.sharewherecars.R;
 
-
-public class My_Rides extends FragmentG {
+public class My_Rides extends FragmentG
+{
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    Context con;
+    Context           con;
+    SharedPreferences preferences;
 
-
-    public My_Rides() {
+    public My_Rides()
+    {
     }
 
     @Override
@@ -34,6 +36,9 @@ public class My_Rides extends FragmentG {
     {
         View view = inflater.inflate(R.layout.home_new, container, false);
         con = getActivity();
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(con);
+
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -44,6 +49,27 @@ public class My_Rides extends FragmentG {
         return view;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        preferences.edit().putBoolean("is_myride_opened", true).apply();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        preferences.edit().putBoolean("is_myride_opened", false).apply();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        preferences.edit().putBoolean("is_myride_opened", false).apply();
+    }
 
     private void setupViewPager(ViewPager viewPager)
     {
@@ -52,8 +78,6 @@ public class My_Rides extends FragmentG {
         adapter.addFrag(new Rider_Rides_Tab(), "Rides as Rider");
         viewPager.setAdapter(adapter);
     }
-
-
 
     class ViewPagerAdapter extends FragmentPagerAdapter
     {

@@ -59,7 +59,7 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:autoLink="all"
-            android:background="@mipmap/phone_box"
+            android:background="@drawable/grey_border"
             android:inputType="phone"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"

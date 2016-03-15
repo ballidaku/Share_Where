@@ -32,15 +32,29 @@
                     android:text = "Departure Date"
                     android:textColor = "#000000"/>
 
+                <TextView
+                    android:id = "@+id/txtv_request_count"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:text = ""
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@mipmap/request"
+                    android:textColor = "#000"/>
+
+
                   <TextView
                       android:id = "@+id/txtv_message_count"
-                      android:layout_width = "25dp"
-                      android:layout_height = "25dp"
+                      android:layout_width = "wrap_content"
+                      android:layout_height = "wrap_content"
                       android:text = ""
                       android:gravity="center"
                       android:textStyle="bold"
-                      android:background="@drawable/badge"
-                      android:textColor = "#FFF"/>
+                      android:drawablePadding="5dp"
+                      android:layout_marginLeft="10dp"
+                      android:drawableLeft="@mipmap/ic_message"
+                      android:textColor = "#000"/>
 
 
                 <TextView
@@ -170,7 +184,7 @@
                         android:layout_height = "wrap_content"
                         android:layout_weight = "1"
                         android:hint = "Maruti K10"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="15dp"
                         android:textColor = "@color/black"/>
 
                     <TextView
@@ -179,7 +193,7 @@
                         android:layout_height = "wrap_content"
                         android:gravity = "center"
                         android:text = "Mini Cab"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="15dp"
                         android:textColor = "@color/black"
                         android:visibility = "visible"/>
 
@@ -190,6 +204,9 @@
                     android:id = "@+id/rel_my_ride_edit"
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
                     android:visibility = "visible">
 
                     <LinearLayout
@@ -203,6 +220,7 @@
                             android:layout_height = "wrap_content"
                             android:src = "@android:drawable/ic_menu_edit"
                             android:tint = "@color/black"
+
                             app:backgroundTint = "@color/yellow_old"/>
 
                     </LinearLayout>

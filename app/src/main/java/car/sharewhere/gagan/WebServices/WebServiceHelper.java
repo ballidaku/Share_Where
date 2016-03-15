@@ -122,8 +122,8 @@ public class WebServiceHelper
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setReadTimeout(15000);
-            con.setConnectTimeout(15000);
+//            con.setReadTimeout(15000);
+//            con.setConnectTimeout(15000);
             // optional default is GET
             con.setRequestMethod("GET");
 

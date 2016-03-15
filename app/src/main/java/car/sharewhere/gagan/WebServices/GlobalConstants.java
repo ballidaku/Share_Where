@@ -62,8 +62,8 @@ public class GlobalConstants {
     public static final String Available_Seats = "available_seat";
     public static final String Rate_seat = "rate";
     public static final String Vehicle_number = "vehicle_number";
-    public static String lat="0.0";
-    public static  String longitude="0.0";
+   /* public static String lat="0.0";
+    public static  String longitude="0.0";*/
 
     public static Toast    t;
 
@@ -112,14 +112,14 @@ public class GlobalConstants {
 
 
 
-    public static String latitude(double LATITUDE) {
+/*    public static String latitude(double LATITUDE) {
         lat = String.valueOf(LATITUDE);
         return lat;
     }
     public static String longitude(double LONGITUDE) {
         longitude = String.valueOf(LONGITUDE);
         return longitude;
-    }
+    }*/
 
 
     public static void show_Toast(String text, Context con)

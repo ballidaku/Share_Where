@@ -54,7 +54,7 @@ import car.sharewhere.gagan.utills.CircleTransform;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
 import car.sharewhere.gagan.utills.Utills_G;
 
-public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Location_Notifier
+public class Find_A_Ride extends FragmentG implements View.OnClickListener, Location_Notifier
 {
     TextView             txt_date;
     ImageView            img_date;
@@ -69,7 +69,7 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
 
     ConnectivityDetector cd;
     SharedPreferences    preferences;
-//    ProgressDialog       dialog;
+    //    ProgressDialog       dialog;
     Snackbar             snackbar;
     CoordinatorLayout    coordinatorLayout;
     AppLocationService   appLocationService;
@@ -84,8 +84,7 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
     MidPointAdapter adater;
     String          my_customerID;
 
-
-    private GetCurrentLocation  google_location;
+    private GetCurrentLocation google_location;
 
     public Find_A_Ride()
     {
@@ -168,22 +167,15 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
     @Override
     public void LOCATION_NOTIFIER(Location latlng)
     {
-         String address_current = "";
-         String lat, longitude;
+        String address_current = "";
+
 
         if (cd.isConnectingToInternet())
         {
 
-            address_current = Utills_G.address(getActivity(), latlng.getLatitude(), latlng.getLongitude());
-            lat = GlobalConstants.latitude(latlng.getLatitude());
-            longitude = GlobalConstants.longitude(latlng.getLongitude());
-
-            address_current = address_current.trim();
-            address_current = address_current.replace(" ", "");
-            Log.e("address replace", "" + address_current);
-
-            address_current.replace(System.getProperty("line.separator"), "");
-            Log.e("add line replace", "" + address_current);
+            address_current = Utills_G.address(getActivity(), latlng.getLatitude(), latlng.getLongitude()).trim();
+            /*address_current = address_current.trim().replace(" ", "");
+            address_current.replace(System.getProperty("line.separator"), "");*/
 
             SharedPreferences.Editor editor = preferences.edit();
             if (!address_current.equals(""))
@@ -191,11 +183,12 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
                 editor.putString("current_city", address_current);
             }
 
+            Log.e("Current city in Find a Ride",""+address_current);
 
-            editor.putString("current_lat", lat);
-            editor.putString("current_long", longitude);
+            editor.putString("current_lat", String.valueOf(latlng.getLatitude()));
+            editor.putString("current_long", String.valueOf(latlng.getLongitude()));
             editor.apply();
-//            Log.e("location details are ", "latitude   " + latlng.getLatitude() + "  longitutde " + latlng.getLongitude());
+
 
         }
         else
@@ -233,18 +226,16 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
     {
         super.onResume();
 
-        String current_city = preferences.getString("current_city", null);
-        String current_lat  = preferences.getString("current_lat", null);
-        String current_long = preferences.getString("current_long", null);
-        if (current_city != null)
+        String current_city = preferences.getString("current_city", "");
+        String current_lat  = preferences.getString("current_lat", "");
+        String current_long = preferences.getString("current_long", "");
+
+        if (current_city.length() > 0)
         {
-            if (current_city.length() > 0)
-            {
-                autocompleteFrom.setText(current_city);
-                strng_lat_from = current_lat;
-                strng_long_from = current_long;
-                autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
-            }
+            autocompleteFrom.setText(current_city);
+            strng_lat_from = current_lat;
+            strng_long_from = current_long;
+            autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
         }
 
         if (autocompleteTo.getText().toString().length() < 1)
@@ -449,6 +440,9 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
                 }
             }
         });
+
+
+
     }
 
     /**
@@ -524,7 +518,7 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
         else
         {
             String url = "http://112.196.34.42:9091/Trip/GetTripByLatLong?Latitude=" + preferences.getString("current_lat", "0.0") +
-                      "&Longitude=" +preferences.getString("current_long", "0.0") + "&CustomerId=" + customerID;
+                      "&Longitude=" + preferences.getString("current_long", "0.0") + "&CustomerId=" + customerID;
             Log.e("url==", url);
 
           /*  Json_AsnycTask task = new Json_AsnycTask(getActivity(), "http://112.196.34.42:9091/Trip/GetTripByLatLong?Latitude=" + track.getLatitude() +
@@ -718,6 +712,7 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
             ImageView img_vehicle      = (ImageView) v.findViewById(R.id.img_man);
             TextView  txt_vw_ride_type = (TextView) v.findViewById(R.id.txt_vw_ride_type);
             v.findViewById(R.id.txtv_message_count).setVisibility(View.GONE);
+            v.findViewById(R.id.txtv_request_count).setVisibility(View.GONE);
 
             v.findViewById(R.id.rel_my_ride_edit).setVisibility(View.GONE);
 
@@ -741,10 +736,10 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener  , Lo
                 String is_regular_basis = bean_ride_details.getIsRegulerBasis().equals("false") ? "Ride Type" + "\n" + "One Time" : "Riding Type" + "\n" + "Daily";
                 txt_vw_ride_type.setText(is_regular_basis);
 
-                String date_day_str= bean_ride_details.getIsRegulerBasis().equals("false")? bean_ride_details.getDepartureDate() : bean_ride_details.getRegulerDays();
+                String date_day_str = bean_ride_details.getIsRegulerBasis().equals("false") ? bean_ride_details.getDepartureDate() : bean_ride_details.getRegulerDays();
                 //      Log.e("date_day_str ","date_day_str  "+date_day_str+"   "+feedItem.getLeaving_date()+"  gggg   "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +"  One Time") );
 
-                txt_day.setText(date_day_str+"     "+  bean_ride_details.getDepartureTime());
+                txt_day.setText(date_day_str + "     " + bean_ride_details.getDepartureTime());
             }
 
             txt_car_name.setText("Type : " + bean_ride_details.getVehicleType() + "\n" + "Name : " + bean_ride_details.getVehicleName() + "\n" + "Number : " + bean_ride_details.getVehicleNo());

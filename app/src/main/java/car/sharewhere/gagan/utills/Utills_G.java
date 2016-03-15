@@ -1,6 +1,8 @@
 package car.sharewhere.gagan.utills;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -10,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,25 +56,36 @@ public class Utills_G
     public static String address(Context con, double LATITUDE, double LONGITUDE)
     {
         String   strAdd   = "";
-        Geocoder geocoder = new Geocoder(con, Locale.getDefault());
+
         try
         {
+
+
+            Geocoder geocoder = new Geocoder(con, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null)
             {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
+                Log.e("addresses in Util ", "" + addresses);
 
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++)
+                Address returnedAddress = addresses.get(0);
+//                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++)
                 {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+//                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+
+                    strAdd = strAdd.isEmpty() ? returnedAddress.getAddressLine(i) :strAdd + ", " + returnedAddress.getAddressLine(i);
+
+
+
+
                 }
-                strAdd = strReturnedAddress.toString();
-                Log.w("urrentloctionaddress", "" + strReturnedAddress.toString());
+//                strAdd = strReturnedAddress.toString();
+                Log.e("urrentloctionaddress", "" + strAdd);
             }
             else
             {
-                Log.w("Current loction address", "No Address returned!");
+                Log.e("Current loction address", "No Address returned!");
             }
         }
         catch (Exception e)
@@ -80,6 +94,49 @@ public class Utills_G
             Log.w("Currentloctionaddress", "Canont get Address!");
         }
         return strAdd;
+    }
+
+    public void hide_keyboard(Context con)
+    {
+        try
+        {
+            InputMethodManager inputMethodManager = (InputMethodManager) con.getSystemService(con.INPUT_METHOD_SERVICE);
+            if (inputMethodManager.isAcceptingText())
+            {
+                inputMethodManager.hideSoftInputFromWindow(((Activity) con).getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+       /* if(con instanceof  Activity)
+        {
+            inputMethodManager.hideSoftInputFromWindow(((Activity) con).getCurrentFocus().getWindowToken(), 0);
+        }
+        else  if(con instanceof  Fragment)
+        {
+            inputMethodManager.hideSoftInputFromWindow(((Home) con).getActivity().getCurrentFocus().getWindowToken(), 0);
+        }*/
+
+
+
+
+       /* View view = con.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)con.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }*/
+    }
+
+    public static void cancelNotification(Context ctx, int notifyId)
+    {
+        String              ns   = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
     }
 
     //dialog onw button
@@ -180,12 +237,41 @@ public class Utills_G
         con.sendBroadcast(intent);
     }
 
-
     public static String refresh_chat = "com.refresh_chat";
+
     public static void refresh_chat_BroadcastReceiver(Context con)
     {
 
         Intent intent = new Intent(Utills_G.refresh_chat);
+        con.sendBroadcast(intent);
+    }
+
+    public static String refresh_drivertab = "com.refresh_drivertab";
+
+    public static void refresh_DriverTab_BroadcastReceiver(Context con)
+    {
+
+        Intent intent = new Intent(Utills_G.refresh_drivertab);
+        con.sendBroadcast(intent);
+    }
+
+    public static String refresh_ridertab = "com.refresh_ridertab";
+
+    public static void refresh_RiderTab_BroadcastReceiver(Context con)
+    {
+
+        Intent intent = new Intent(Utills_G.refresh_ridertab);
+        con.sendBroadcast(intent);
+    }
+
+
+
+    public static String refresh_OfferRide = "com.refresh_offerride";
+
+    public static void refresh_OfferRide_BroadcastReceiver(Context con)
+    {
+
+        Intent intent = new Intent(Utills_G.refresh_OfferRide);
         con.sendBroadcast(intent);
     }
 

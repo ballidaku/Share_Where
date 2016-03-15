@@ -538,7 +538,7 @@ ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:92:
 activity#car.sharewhere.gagan.sharewherecars.Just_Once_offerRide
 ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:99:9-105:20
 	android:windowSoftInputMode
-		ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:104:13-56
+		ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:104:13-69
 	android:screenOrientation
 		ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:102:13-51
 	android:label
@@ -550,7 +550,7 @@ ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:99:
 activity#car.sharewhere.gagan.sharewherecars.RegularBasis
 ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:106:9-112:20
 	android:windowSoftInputMode
-		ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:111:13-56
+		ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:111:13-69
 	android:screenOrientation
 		ADDED from /home/sharan/Desktop/Share_Where/app/src/main/AndroidManifest.xml:109:13-51
 	android:label

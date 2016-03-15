@@ -32,7 +32,6 @@
                     <LinearLayout
                         android:layout_width = "match_parent"
                         android:layout_height = "wrap_content"
-                        android:background = "@mipmap/profilefield"
                         android:orientation = "horizontal">
 
                         <ImageView
@@ -305,6 +304,70 @@
                                 android:layout_weight = "4"
                                 android:text = "No Entered time"/>
                         </LinearLayout>
+                        <!--Return Date /Day -->
+                        <LinearLayout
+                            android:id = "@+id/lnr_returndate"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_margin = "10dp"
+                            android:orientation = "horizontal"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/txt_return_day_date"
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_weight = "2"
+                                android:text = "Return Date"/>
+
+                            <ImageView
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_weight = "0.3"
+                                android:src = "@mipmap/calendar"/>
+
+                            <TextView
+                                android:id = "@+id/txt_return_date_day"
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_marginLeft = "10dp"
+                                android:layout_weight = "4"
+                                android:text = "No Entered date"/>
+                        </LinearLayout>
+
+                        <!--Return time-->
+                        <LinearLayout
+                            android:id = "@+id/lnr_return_time"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "10dp"
+                            android:layout_marginLeft = "10dp"
+                            android:layout_marginRight = "10dp"
+                            android:layout_marginTop = "10dp"
+                            android:visibility="gone"
+                            android:orientation = "horizontal">
+
+                            <TextView
+                                android:id="@+id/txt_retrn_time"
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_weight = "2"
+                                android:text = "Return Time"/>
+
+                            <ImageView
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_weight = "0.3"
+                                android:src = "@mipmap/clock"/>
+
+                            <TextView
+                                android:id = "@+id/txt_return_time_"
+                                android:layout_width = "0dp"
+                                android:layout_height = "wrap_content"
+                                android:layout_marginLeft = "10dp"
+                                android:layout_weight = "4"
+                                android:text = "No Entered time"/>
+                        </LinearLayout>
 
 
                         <!-- Type-->
@@ -487,6 +550,7 @@
 
                         <!--return date-->
                         <LinearLayout
+                            android:id="@+id/return_date_lnr"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
                             android:layout_margin = "10dp"
@@ -615,14 +679,15 @@
                             android:layout_centerInParent = "true"
                             android:gravity = "center">
 
-                            <Button
+                            <TextView
                                 android:id = "@+id/btn_request"
                                 android:layout_width = "0dp"
-                                android:layout_height = "wrap_content"
+                                android:layout_height = "50dp"
                                 android:layout_marginRight = "5dp"
                                 android:layout_weight = "1"
                                 android:gravity = "center"
-                                android:padding = "5dp"
+                                android:padding = "10dp"
+                                android:clickable="true"
                                 android:text = "Request To Ride"
                                 android:background="@color/yellow_old"
                                 android:textColor="@color/black"
@@ -645,9 +710,10 @@
                             <RelativeLayout
                                 android:id = "@+id/rel_decline"
                                 android:layout_width = "0dp"
-                                android:layout_height = "match_parent"
+                                android:layout_height = "50dp"
                                 android:layout_weight = "1"
                                 android:clickable="true"
+                                android:padding="10dp"
                                 android:background = "@color/yellow_old">
 
                                 <TextView
@@ -657,7 +723,6 @@
                                     android:layout_centerInParent="true"
                                     android:layout_marginLeft = "5dp"
                                     android:gravity = "center"
-                                    android:padding = "5dp"
                                     android:text = "Decline"
                                     android:clickable="false"
                                     android:textColor = "@color/black"
@@ -672,7 +737,6 @@
                                     android:gravity="center"
                                     android:layout_alignParentRight="true"
                                     android:layout_marginRight="10dp"
-
                                     android:layout_centerVertical="true"
                                     android:textColor = "#FFF"
                                     android:textStyle = "bold"/>
@@ -689,7 +753,7 @@
                 <TextView
                     android:id = "@+id/txt_gcm_cancel"
                     android:layout_width = "wrap_content"
-                    android:layout_height = "wrap_content"
+                    android:layout_height = "50dp"
                     android:layout_gravity = "center"
                     android:layout_marginBottom = "30dp"
                     android:text = "Cancel Request"

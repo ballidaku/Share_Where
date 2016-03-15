@@ -112,14 +112,14 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.DesignDemo"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:name="car.sharewhere.gagan.sharewherecars.RegularBasis"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.DesignDemo"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:name="car.sharewhere.gagan.sharewherecars.LicenceDummy"

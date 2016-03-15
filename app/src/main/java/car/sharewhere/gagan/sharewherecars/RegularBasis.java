@@ -62,8 +62,8 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
     TextView txt_depart_tym, txt_return_tytm, txt_depart_set_tym, txt_return_set_tym, txt_days_data;
     TextView txt_car_top, txtvwcar_name, tvw_car_ype, txt_vw_txt_carnmbr, btn_single_trip, btn_round_trip;
     ImageView img_depart_tym, img_add_days;
-    RelativeLayout rel_return;
-    EditText       edt_car_name, edt_car_number, txt_number_Seats, txt_rate_per_seat, edt_car_type;
+    LinearLayout rel_return;
+    EditText     edt_car_name, edt_car_number, txt_number_Seats, txt_rate_per_seat, edt_car_type;
     static String static_string = "";
     private Calendar calendar;
     private int      year, month, day;
@@ -81,7 +81,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
     private RadioButton radioButton;
     ProgressDialog dialog;
     RelativeLayout lnr_vehicle_nmber;
-    ListView       list_midpoint;
+    //    ListView       list_midpoint;
     ArrayList<String> array_midPoints          = new ArrayList<>();
     ArrayList<String> array_midPoints_to_show  = new ArrayList<>();
     ArrayList<String> array_midPoints_add_city = new ArrayList<>();
@@ -104,15 +104,19 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
     String thursdy = "";
     String fridy   = "";
     String strdy   = "";
-    Intent          get_intent;
-    MidPointAdapter adater;
-    TextView txtv_currency;
+    Intent       get_intent;
+    //    MidPointAdapter adater;
+    TextView     txtv_currency;
+    Context      con;
+    LinearLayout lay_mid_point;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.just_once_final);
+
+        con = this;
 
         setActionBar();
         findViewbyID();
@@ -133,7 +137,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         customerID = preferences.getString("CustomerId", null);
 
         cd = new ConnectivityDetector(RegularBasis.this);
-        adater = new MidPointAdapter();
+        //        adater = new MidPointAdapter();
 
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -205,7 +209,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         txt_return_set_tym = (TextView) findViewById(R.id.txt_departure_time);
         img_depart_tym = (ImageView) findViewById(R.id.depart_calender_img);
         img_add_days = (ImageView) findViewById(R.id.img_add_days);
-        rel_return = (RelativeLayout) findViewById(R.id.rel_return);
+        rel_return = (LinearLayout) findViewById(R.id.rel_return);
         edt_car_name = (EditText) findViewById(R.id.edt_car_name);
         edt_car_type = (EditText) findViewById(R.id.edt_car_type);
         edt_car_number = (EditText) findViewById(R.id.edt_car_number);
@@ -239,7 +243,9 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
 
         txtv_currency = (TextView) findViewById(R.id.txtv_currency);
 
-        list_midpoint = (ListView) findViewById(R.id.list_mid);
+        lay_mid_point = (LinearLayout) findViewById(R.id.lay_mid_point);
+
+        //        list_midpoint = (ListView) findViewById(R.id.list_mid);
 
         txt_depart_tym.setText("Departure Time");
         txt_depart_set_tym.setHint("Set time");
@@ -630,24 +636,38 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                 {
                     if (get_text_midpnt.length() > 0)
                     {
-                        if (get_text_midpnt.contains(","))
+
+                        boolean is_this_value_exists = false;
+                        for (int i = 0; i < array_midPoints_to_show.size(); i++)
                         {
-                                    /*get_text_midpnt = get_text_midpnt.replace(",", "");
-                                    get_text_midpnt_to_show = get_text_midpnt_to_show.replace(",", "");*/
+                            if (array_midPoints_to_show.get(i).equalsIgnoreCase(get_text_midpnt_to_show))
+                            {
+                                is_this_value_exists = true;
+                            }
                         }
-                        if (get_text_midpnt_to_show != null)
+
+                        if (is_this_value_exists == false)
                         {
                             array_midPoints.add(get_text_midpnt);
                             array_midPoints_to_show.add(get_text_midpnt_to_show);
-                            adater = new MidPointAdapter();
+
+                            add_mid_points(get_text_midpnt_to_show);
+
+
+                         /*   adater = new MidPointAdapter();
                             list_midpoint.setAdapter(adater);
                             adater.notifyDataSetChanged();
-                            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());
+                            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());*/
+
                             autocomplete_new_entry_midpnt.setText("");
 
                             //Added
                             strngmid_lat = "0.0";
                             strng_mid_long = "0.0";
+                        }
+                        else
+                        {
+                            snackbar_method("This location already added.");
                         }
                     }
                     else
@@ -704,15 +724,15 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             {
                 snackbar_method("Seat available cannot be 0");
             }
-            else if (txt_rate_per_seat.getText().toString().trim().length() <= 0)
+           /* else if (txt_rate_per_seat.getText().toString().trim().length() <= 0)
             {
                 snackbar_method("Enter seat cost");
 
-            }
-            else if (!seat_RateValidation(txt_rate_per_seat.getText().toString().trim()))
+            }*/
+           /* else if (!seat_RateValidation(txt_rate_per_seat.getText().toString().trim()))
             {
                 snackbar_method("Please enter appropriate  seat rate.");
-            }
+            }*/
 
             else if (edt_car_name.getText().toString().length() <= 0)
             {
@@ -777,7 +797,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             {
                 snackbar_method("Seat available cannot be 0");
             }
-            else if (txt_rate_per_seat.getText().toString().length() <= 0)
+           /* else if (txt_rate_per_seat.getText().toString().length() <= 0)
             {
                 snackbar_method("Enter seat cost");
 
@@ -785,7 +805,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             else if (!seat_RateValidation(txt_rate_per_seat.getText().toString().trim()))
             {
                 snackbar_method("Please enter appropriate  seat rate.");
-            }
+            }*/
 
             else if (edt_car_name.getText().toString().length() <= 0)
             {
@@ -1191,12 +1211,14 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
                     // Log.e("Reg array_midPoints", "" + array_midPoints);
                     String[] stationsName_ = mid_stationsNames(mid_stationsArray[i]);
                     array_midPoints_to_show.add(stationsName_[0]);
+
+                    add_mid_points(stationsName_[0]);
                 }
             }
 
             //  Log.e("Regular BasisMidpoints",""+array_midPoints_to_show);
-            list_midpoint.setAdapter(adater);
-            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());
+          /*  list_midpoint.setAdapter(adater);
+            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());*/
 
         }
 
@@ -1592,7 +1614,6 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         Button set    = (Button) dialog.findViewById(R.id.btn_set);
         radioGroup = (RadioGroup) dialog.findViewById(R.id.radiogrp);
 
-
         cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -1616,85 +1637,38 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
         dialog.show();
     }
 
-    /**
-     @MidPointAdapter
-     */
-    private class MidPointAdapter extends BaseAdapter
+    public void add_mid_points(String location_name)
     {
 
-        public MidPointAdapter()
+        LayoutInflater inflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View v = inflater.inflate(R.layout.custom_midpnt, null);
+
+        final TextView add_txt_tolist = (TextView) v.findViewById(R.id.autocmplete_mid);
+        ImageView      img_cros       = (ImageView) v.findViewById(R.id.img_cros);
+
+        add_txt_tolist.setText(location_name);
+
+        img_cros.setOnClickListener(new View.OnClickListener()
         {
-            super();
-        }
-
-        @Override
-        public int getCount()
-        {
-
-            // Log.e("Get COunt","CCCCCCC"+array_midPoints_to_show.size());
-            return array_midPoints_to_show.size();
-        }
-
-        @Override
-        public Object getItem(int position)
-        {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return 0;
-        }
-
-        @Override
-        public boolean hasStableIds()
-        {
-            return super.hasStableIds();
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent)
-        {
-            LayoutInflater inflater = LayoutInflater.from(RegularBasis.this);
-            View           v        = inflater.inflate(R.layout.custom_midpnt, parent, false);
-
-            TextView  add_txt_tolist = (TextView) v.findViewById(R.id.autocmplete_mid);
-            ImageView img_cros       = (ImageView) v.findViewById(R.id.img_cros);
-
-            // Log.e("Midpoint","****" +array_midPoints_to_show);
-            if (array_midPoints_to_show != null)
+            @Override
+            public void onClick(View v)
             {
-                add_txt_tolist.setText(array_midPoints_to_show.get(position));
-            }
-
-            img_cros.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
+                for (int i = 0; i < array_midPoints_to_show.size(); i++)
                 {
+                    if (array_midPoints_to_show.get(i).equalsIgnoreCase(add_txt_tolist.getText().toString().trim()))
+                    {
+                        array_midPoints.remove(i);
+                        array_midPoints_to_show.remove(i);
 
-                    array_midPoints.remove(position);
-                    array_midPoints_to_show.remove(position);
-                    notifyDataSetChanged();
-                    GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints_to_show.size());
+                        lay_mid_point.removeViewAt(i);
+                    }
                 }
-            });
 
-            return v;
-        }
+            }
+        });
 
-        @Override
-        public void notifyDataSetChanged()
-        {
-            super.notifyDataSetChanged();
-        }
-
-        @Override
-        public void notifyDataSetInvalidated()
-        {
-            super.notifyDataSetInvalidated();
-        }
+        lay_mid_point.addView(v);
 
     }
 
@@ -1826,7 +1800,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
             RegularBasis.this.finish();
         }
     }
-
+/*
     //Added Validations for Seat Rate
     private boolean seat_RateValidation(String seat_Rate)
     {
@@ -1870,7 +1844,7 @@ public class RegularBasis extends AppCompatActivity implements Asnychronus_notif
 
         return without_decimalNumber(st);
 
-    }
+    }*/
     //=========MidStations Name==============
 
     private String[] mid_stationsNames(String midStations)

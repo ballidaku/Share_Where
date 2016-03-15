@@ -3,6 +3,7 @@ package car.sharewhere.gagan.WebServices;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -18,31 +19,36 @@ import java.util.Locale;
 import car.sharewhere.gagan.model.Latlng_data;
 
 /**
- * Created by gagandeep on 14/10/15.
- */
+ Created by gagandeep on 14/10/15. */
 
+public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable
+{
 
-public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable {
-
-    public  static List<Latlng_data> resultList = new ArrayList<>();
+    public static List<Latlng_data> resultList = new ArrayList<>();
     private Context con;
 
-    public GetCityHelperG_(Context context, int textViewResourceId) {
+    public GetCityHelperG_(Context context, int textViewResourceId)
+    {
 
         super(context, textViewResourceId);
         con = context;
     }
 
     @Override
-    public int getCount() {
+    public int getCount()
+    {
         return resultList.size();
     }
 
     @Override
-    public String getItem(int index) {
-        try {
+    public String getItem(int index)
+    {
+        try
+        {
             return resultList.get(index).getAddress();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
 
         }
         return "";
@@ -50,26 +56,30 @@ public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable 
     }
 
     @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
+    public Filter getFilter()
+    {
+        Filter filter = new Filter()
+        {
             @Override
-            protected FilterResults performFiltering(final CharSequence constraint) {
+            protected FilterResults performFiltering(final CharSequence constraint)
+            {
                 FilterResults filterResults = new FilterResults();
-                if (constraint != null) {
+                if (constraint != null)
+                {
                     // Retrieve the autocomplete results.
-                    if (!fetchingAddress) {
+                    if (!fetchingAddress)
+                    {
 
-//                        new AsyncTask<Void, Void, Void>()
-//                        {
-//
-//                            @Override
-//                            protected Void doInBackground(Void... voids)
-//                            {
+                        //                        new AsyncTask<Void, Void, Void>()
+                        //                        {
+                        //
+                        //                            @Override
+                        //                            protected Void doInBackground(Void... voids)
+                        //                            {
                         resultList = GetAddressByString(con, constraint.toString());
-//                                return null;
-//                            }
-//                        }.execute();
-
+                        //                                return null;
+                        //                            }
+                        //                        }.execute();
 
                     }
 
@@ -81,15 +91,22 @@ public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable 
             }
 
             @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                try {
+            protected void publishResults(CharSequence constraint, FilterResults results)
+            {
+                try
+                {
 
-                    if (results != null && results.count > 0) {
+                    if (results != null && results.count > 0)
+                    {
                         notifyDataSetChanged();
-                    } else {
+                    }
+                    else
+                    {
                         notifyDataSetInvalidated();
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     // TODO: handle exception
                 }
             }
@@ -97,34 +114,47 @@ public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable 
         return filter;
     }
 
-
     boolean fetchingAddress = false;
 
-    private List<Latlng_data> GetAddressByString(Context con, final String addressssss) {
+    private List<Latlng_data> GetAddressByString(Context con, final String addressssss)
+    {
 
         fetchingAddress = true;
-        String addressReturn = "";
-        Geocoder geocoder = new Geocoder(con, Locale.getDefault());
+        String   addressReturn = "";
+        Geocoder geocoder      = new Geocoder(con, Locale.getDefault());
 
         List<Latlng_data> dataList = new ArrayList<>();
-        List<Address> addresses;
-        try {
+        List<Address>     addresses;
+        try
+        {
 
             addresses = geocoder.getFromLocationName(addressssss, 3);
 
+            Log.e("addresses", "" + addresses);
+
             Latlng_data l = null;
 
-            for (int i = 0; i < addresses.size(); i++) {
+            for (int i = 0; i < addresses.size(); i++)
+            {
 
                 int getMAxAddrss = addresses.get(i).getMaxAddressLineIndex();
 
-                for (int g = 0; g < getMAxAddrss; g++) {
-                    addressReturn = addressReturn + "," + addresses.get(i).getAddressLine(g);
+                Log.e("getMAxAddrss",""+getMAxAddrss);
+
+                for (int g = 0; g <= getMAxAddrss; g++)
+                {
+
+
+                    addressReturn = addressReturn + ", " + addresses.get(i).getAddressLine(g);
+                    Log.e("addressReturn", "" + addresses.get(i).getAddressLine(g));
                 }
                 addressReturn = addressReturn.substring(1, addressReturn.length());
+
+                Log.e("addressReturn2", "" + addressReturn);
+
                 // addrss[i] = addressReturn;
                 l = new Latlng_data();
-                l.setAddress(addressReturn);
+                l.setAddress(addressReturn.trim());
                 l.setLat(addresses.get(0).getLatitude());
                 l.setLng(addresses.get(0).getLongitude());
                 // locations_.add(addressReturn);
@@ -133,32 +163,35 @@ public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable 
                 dataList.add(l);
             }
 
-
-            if (addresses.isEmpty()) {
+            if (addresses.isEmpty())
+            {
                 dataList = getLocationFromString(addressssss);
             }
 
-
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             dataList = getLocationFromString(addressssss);
 
-        } catch (Error e) {
+        }
+        catch (Error e)
+        {
             dataList = getLocationFromString(addressssss);
         }
         fetchingAddress = false;
-
 
         return dataList;
 
     }
 
-
     // Directly access google map for location
-    public List<Latlng_data> getLocationFromString(String address) {
+    public List<Latlng_data> getLocationFromString(String address)
+    {
 
         List<Latlng_data> Ldata = new ArrayList<Latlng_data>();
 
-        try {
+        try
+        {
             String URL = "http://maps.google.com/maps/api/geocode/json?address=" + URLEncoder.encode(address, "UTF-8") + "&en&sensor=false";
 
             JSONObject jsonObject = new JSONObject(new WebServiceHelper().performGetCall(URL));
@@ -166,7 +199,8 @@ public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable 
             JSONArray results = jsonObject.getJSONArray("results");
 
             Latlng_data l;
-            for (int j = 0; j < results.length(); j++) {
+            for (int j = 0; j < results.length(); j++)
+            {
 
                 l = new Latlng_data();
 
@@ -182,19 +216,22 @@ public class GetCityHelperG_ extends ArrayAdapter<String> implements Filterable 
                 Ldata.add(l);
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return Ldata;
-        } catch (Error e) {
+        }
+        catch (Error e)
+        {
             return Ldata;
         }
 
         return Ldata;
     }
-    public Latlng_data set_LAT_Lng_value(int position) {
+
+    public Latlng_data set_LAT_Lng_value(int position)
+    {
         return resultList.get(position);
     }
-
-
-
 
 }

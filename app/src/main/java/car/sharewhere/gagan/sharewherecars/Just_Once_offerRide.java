@@ -69,14 +69,14 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
     ConnectivityDetector cd;
     SharedPreferences    preferences;
     static String static_string = "";
-    RelativeLayout rel_return, lnr_vehicle_nmber;
+    RelativeLayout  lnr_vehicle_nmber;
     ImageView img_add_mid_pnt, img_calender_depart, img_clk_depart, img_return_calender, img_return_clk;
     EditText edt_car_name, edt_car_number, txt_number_Seats, txt_rate_per_seat, edt_car_type;
     RadioGroup     radioGroup;
     RadioButton    radioButton;
     ProgressDialog dialog;
     StringBuilder  datebuilder;
-    LinearLayout   lnr_depart_date, lnr_return_clk, lnr_main_days, lnr_rate, lnr_clk_depart, lnr_return_date, lnr_vw_seat_nmbr, lnr_depart_time_regular;
+    LinearLayout   lnr_depart_date, lnr_return_clk, lnr_main_days, lnr_rate, lnr_clk_depart, lnr_return_date, lnr_vw_seat_nmbr, lnr_depart_time_regular,rel_return;
     int curent_year, current_mnth, current_day;
     Date date_depart, date_return, time_depart, current_time_date, timeCompare_depart, timeCompare_return, test;
     Date depart_date = null;
@@ -84,8 +84,8 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
     Date date2       = null;
 
     int trip_ = 0;
-    ListView          list_midpoint;
-    MidPointAdapter   adater;
+    //    ListView          list_midpoint;
+    //    MidPointAdapter   adater;
     ArrayList<String> array_midPoints, array_mid_pnt_to_show, array_midPoints_add_city;
     String Points_to_post, customerID, auto_from, auto_to, get_trip_id, get_intent_depart_time, get_intent_return_time;
     CoordinatorLayout coordinatorLayout;
@@ -107,13 +107,17 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
 
     SharedPreferences.Editor editor;
 
-    TextView txtv_currency;
+    TextView     txtv_currency;
+    Context      con;
+    LinearLayout lay_mid_point;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.just_once_final);
+
+        con = this;
 
         View view = this.getCurrentFocus();
         if (view != null)
@@ -133,13 +137,16 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         array_mid_pnt_to_show = new ArrayList<>();
         array_midPoints_add_city = new ArrayList<>();
 
-        adater = new MidPointAdapter();
+        //        adater = new MidPointAdapter();
         //track = new GPSTracker();
 
         findViewbyID();
         setActionBar();
 
         addListenerOnButton();
+
+
+        autocompleteTo.performClick();
 
         Log.e("Symbol", "" + preferences.getString("currency_symbol", null));
         txtv_currency.setText(preferences.getString("currency_symbol", "\u20B9"));
@@ -172,7 +179,7 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         btn_cancel_ride = (Button) findViewById(R.id.btn_cancel);
         btn_line_select = (Button) findViewById(R.id.line_select);
         btn_line_cancel = (Button) findViewById(R.id.line_cancel);
-        rel_return = (RelativeLayout) findViewById(R.id.rel_return);
+        rel_return = (LinearLayout) findViewById(R.id.rel_return);
         //  linear_mid_point = (LinearLayout) findViewById(R.id.linear_mid);
         lnr_main_days = (LinearLayout) findViewById(R.id.lnr_main_days);
 
@@ -193,12 +200,14 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         tvw_car_ype = (TextView) findViewById(R.id.txt_v_car_tye);
         txt_vw_txt_carnmbr = (TextView) findViewById(R.id.txt_vw_txt_carnmbr);
         lnr_vehicle_nmber = (RelativeLayout) findViewById(R.id.lnr_vehicle_nmber);
-        list_midpoint = (ListView) findViewById(R.id.list_mid);
+        //        list_midpoint = (ListView) findViewById(R.id.list_mid);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
         txtv_currency = (TextView) findViewById(R.id.txtv_currency);
 
         lnr_main_days.setVisibility(View.GONE);
+
+        lay_mid_point = (LinearLayout) findViewById(R.id.lay_mid_point);
 
         //Initialize Calendar
         calendar = Calendar.getInstance();
@@ -326,6 +335,9 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
 
             }
         });
+
+
+
 
     }
 
@@ -534,6 +546,27 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
             autocompleteFrom.setSelection(autocompleteFrom.length());
             strng_lat_from = preferences.getString("current_lat", "0.0");
         }
+        if (from == null)
+        {
+            String current_city = preferences.getString("current_city", null);
+            String current_lat = preferences.getString("current_lat", null);
+            String current_long = preferences.getString("current_long", null);
+            if (current_city != null)
+            {
+                if (current_city.length() > 0)
+                {
+                    autocompleteFrom.setText(current_city);
+                    strng_lat_from = current_lat;
+                    strng_long_from = current_long;
+                    autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
+                }
+            }
+        }
+
+
+
+
+
         if (get_intent_depart_time != null)
         {
             txt_departure_time.setText(get_intent_depart_time);
@@ -693,32 +726,21 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
 
                     String[] stationsName_ = mid_stationsNames(mid_stationsArray[i]);
                     array_mid_pnt_to_show.add(stationsName_[0]);
+
+                    add_mid_points(stationsName_[0]);
                 }
             }
 
-            list_midpoint.setAdapter(adater);
-            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_mid_pnt_to_show.size());
+
+
+            //            list_midpoint.setAdapter(adater);
+            //            GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_mid_pnt_to_show.size());
 
         }
 
         //=========Added Above============================
 
-        if (from == null)
-        {
-            String current_city = preferences.getString("current_city", null);
-            String current_lat = preferences.getString("current_lat", null);
-            String current_long = preferences.getString("current_long", null);
-            if (current_city != null)
-            {
-                if (current_city.length() > 0)
-                {
-                    autocompleteFrom.setText(current_city);
-                    strng_lat_from = current_lat;
-                    strng_long_from = current_long;
-                    autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
-                }
-            }
-        }
+
 
         if (static_string.equals("round"))
         {
@@ -1296,24 +1318,38 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
             {
                 if (get_text_midpnt.length() > 0)
                 {
-                    if (get_text_midpnt.contains(","))
+                    boolean is_this_value_exists = false;
+                    for (int i = 0; i < array_mid_pnt_to_show.size(); i++)
                     {
+                        if (array_mid_pnt_to_show.get(i).equalsIgnoreCase(get_text_midpnt_to_show))
+                        {
+                            is_this_value_exists = true;
+                        }
                     }
 
-                    if (get_text_midpnt != null)
+                    if (is_this_value_exists == false)
                     {
-
                         array_midPoints.add(get_text_midpnt);
                         array_mid_pnt_to_show.add(get_text_midpnt_to_show);
-                        list_midpoint.setAdapter(adater);
-                        adater.notifyDataSetChanged();
-                        GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints.size());
+
+                        add_mid_points(get_text_midpnt_to_show);
+
+                        //                        list_midpoint.setAdapter(adater);
+
+                        //                        adater.notifyDataSetChanged();
+                        //
+                        //                        GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints.size());
+
                         autocomplete_new_entry_midpnt.setText("");
                         //Added
                         strngmid_lat = "0.0";
                         strng_mid_long = "0.0";
-
                     }
+                    else
+                    {
+                        snackbar_method("This location already added.");
+                    }
+
                 }
                 else
                 {
@@ -1357,8 +1393,8 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         {
             Log.e("Exception e", "@@@@@@@@@@@" + e.toString());
         }
-        Log.e("checking", "" + (date_depart.equals(date_latest) && !test.after(testlatest)));
-        Log.e("time_depart", "" + time_depart);
+//        Log.e("checking", "" + (date_depart.equals(date_latest) && !test.after(testlatest)));
+//        Log.e("time_depart", "" + time_depart);
         //        Log.e("latest_datetime", "" + latest_datetime);
         //        Log.e("Log check", "" + (test.after(testlatest)));
         //        Log.e("Log check", "" + (!test.after(testlatest)));
@@ -1430,14 +1466,14 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
             {
                 snackbar_method("Seat available cannot be 0");
             }
-            else if (txt_rate_per_seat.getText().toString().length() <= 0)
+            /*else if (txt_rate_per_seat.getText().toString().length() <= 0)
             {
                 snackbar_method("Enter seat cost");
-            }
-            else if (!seat_RateValidation(txt_rate_per_seat.getText().toString().trim()))
+            }*/
+           /* else if (!seat_RateValidation(txt_rate_per_seat.getText().toString().trim()))
             {
                 snackbar_method("Please enter appropriate  seat rate.");
-            }
+            }*/
             else if ((edt_car_name.getText().toString().trim()).length() <= 0)
             {
                 snackbar_method("Enter vehicle name");
@@ -1558,14 +1594,14 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
             {
                 snackbar_method("Seat available cannot be 0");
             }
-            else if (txt_rate_per_seat.getText().toString().length() <= 0)
+           /* else if (txt_rate_per_seat.getText().toString().length() <= 0)
             {
                 snackbar_method("Enter seat cost");
             }
             else if (!seat_RateValidation(txt_rate_per_seat.getText().toString().trim()))
             {
                 snackbar_method("Please enter appropriate  seat rate.");
-            }
+            }*/
             else if ((edt_car_name.getText().toString().trim()).length() <= 0)
             {
                 snackbar_method("Enter vehicle name");
@@ -1677,12 +1713,16 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         data_ofer_ride.put("DepartureDate", txt_departure_date.getText().toString());
         data_ofer_ride.put("VehicleType", tvw_car_ype.getText().toString());
         data_ofer_ride.put("LeavingDate", txt_departure_date.getText().toString());
+
         data_ofer_ride.put("LeavingFrom", auto_from + ":" + strng_lat_from + ":" + strng_long_from);
+
         data_ofer_ride.put("DepartureTime", txt_departure_time.getText().toString());
         data_ofer_ride.put("CustomerId", customerID);
-        data_ofer_ride.put("NoOfSeats", txt_number_Seats.getText().toString());
+        data_ofer_ride.put("NoOfSeats", txt_number_Seats.getText().toString().trim().isEmpty()?"0": txt_number_Seats.getText().toString().trim());
         data_ofer_ride.put("VehicleNo", edt_car_number.getText().toString());
+
         data_ofer_ride.put("LeavingTo", auto_to + ":" + strng_lat_to + ":" + strng_long_to);
+
         data_ofer_ride.put("LeavingTime", txt_departure_time.getText().toString().trim());
         if (txt_car_top.getText().toString().equals("Car Information"))
         {
@@ -1900,8 +1940,6 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         Button set    = (Button) dialog.findViewById(R.id.btn_set);
         radioGroup = (RadioGroup) dialog.findViewById(R.id.radiogrp);
 
-
-
         cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -1925,84 +1963,41 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         dialog.show();
     }
 
-    /**
-     @MidPointAdapter
-     */
-
-    private class MidPointAdapter extends BaseAdapter
+    public void add_mid_points(String location_name)
     {
-        public MidPointAdapter()
+
+        LayoutInflater inflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View v = inflater.inflate(R.layout.custom_midpnt, null);
+
+       final TextView  add_txt_tolist = (TextView) v.findViewById(R.id.autocmplete_mid);
+        ImageView img_cros       = (ImageView) v.findViewById(R.id.img_cros);
+
+
+        add_txt_tolist.setText(location_name);
+
+
+        img_cros.setOnClickListener(new View.OnClickListener()
         {
-            super();
-        }
-
-        @Override
-        public int getCount()
-        {
-
-            //            Log.e("Get COunt","CCCCCCC"+array_midPoints.size());
-            return array_midPoints.size();
-        }
-
-        @Override
-        public Object getItem(int position)
-        {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return 0;
-        }
-
-        @Override
-        public boolean hasStableIds()
-        {
-            return super.hasStableIds();
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent)
-        {
-            Log.e("Get View", "getView" + array_midPoints.size());
-            LayoutInflater inflater = LayoutInflater.from(Just_Once_offerRide.this);
-            View           v        = inflater.inflate(R.layout.custom_midpnt, parent, false);
-
-            TextView  add_txt_tolist = (TextView) v.findViewById(R.id.autocmplete_mid);
-            ImageView img_cros       = (ImageView) v.findViewById(R.id.img_cros);
-
-            if (array_mid_pnt_to_show != null)
+            @Override
+            public void onClick(View v)
             {
-                add_txt_tolist.setText(array_mid_pnt_to_show.get(position));
-            }
-
-            img_cros.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
+                for (int i = 0; i < array_mid_pnt_to_show.size(); i++)
                 {
-                    array_midPoints.remove(position);
-                    array_mid_pnt_to_show.remove(position);
-                    notifyDataSetChanged();
-                    GlobalConstants.setListViewHeightBasedOnItems(list_midpoint, array_midPoints.size());
+                    if (array_mid_pnt_to_show.get(i).equalsIgnoreCase(add_txt_tolist.getText().toString().trim()))
+                    {
+                        array_midPoints.remove(i);
+                        array_mid_pnt_to_show.remove(i);
+
+                        lay_mid_point.removeViewAt(i);
+                    }
                 }
-            });
 
-            return v;
-        }
 
-        @Override
-        public void notifyDataSetChanged()
-        {
-            super.notifyDataSetChanged();
-        }
+            }
+        });
 
-        @Override
-        public void notifyDataSetInvalidated()
-        {
-            super.notifyDataSetInvalidated();
-        }
+        lay_mid_point.addView(v);
 
     }
 
@@ -2234,7 +2229,7 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
 
     }
 
-    //Added Validations for Seat Rate
+/*    //Added Validations for Seat Rate
     private boolean seat_RateValidation(String seat_Rate)
     {
 
@@ -2278,7 +2273,7 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
 
         Log.e("decimal Return", "" + without_decimalNumber(st) + " 55555   " + st);
         return without_decimalNumber(st);
-    }
+    }*/
     //=========MidStations Name==============
 
     private String[] mid_stationsNames(String midStations)

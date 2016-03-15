@@ -44,6 +44,7 @@ import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
 import car.sharewhere.gagan.utills.CircleTransform;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
+import car.sharewhere.gagan.utills.Utills_G;
 
 public class ProfileActivity extends AppCompatActivity implements Asnychronus_notifier
 {
@@ -65,9 +66,11 @@ public class ProfileActivity extends AppCompatActivity implements Asnychronus_no
     ConnectivityDetector cd;
     Snackbar snackbar;
     private CoordinatorLayout coordinatorLayout;
-    TextView txt_toolbar_done,txt_phone;
+    TextView txt_toolbar_done, txt_phone;
     ProgressDialog dialog;
 
+    Utills_G utills_g = new Utills_G();
+    Context con;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -75,77 +78,88 @@ public class ProfileActivity extends AppCompatActivity implements Asnychronus_no
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+
+        con=this;
+
         setActionBar();
         findViewbyID();
-
 
         /**
          * initialisations
          */
         cd = new ConnectivityDetector(ProfileActivity.this);
-        preferences = PreferenceManager
-                .getDefaultSharedPreferences(ProfileActivity.this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this);
         set_sharedpref_data();
 
         View view = this.getCurrentFocus();
-        if(view!=null){
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (view != null)
+        {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
     }
 
-
     /**
      *shared prefrence set values
      */
-    private void set_sharedpref_data(){
+    private void set_sharedpref_data()
+    {
         pref_mobile = preferences.getString("mobile_no", null);
-        pref_lastname=preferences.getString("last_name", null);
-        pref_firstname=preferences.getString("first_name", null);
-        pref_photopath=preferences.getString("photo_path", null);
-        pref_aboutme=preferences.getString("about_me", null);
-        pref_carinfo=preferences.getString("car_info", null);
-        customerid=preferences.getString("CustomerId",null);
+        pref_lastname = preferences.getString("last_name", null);
+        pref_firstname = preferences.getString("first_name", null);
+        pref_photopath = preferences.getString("photo_path", null);
+        pref_aboutme = preferences.getString("about_me", null);
+        pref_carinfo = preferences.getString("car_info", null);
+        customerid = preferences.getString("CustomerId", null);
 
-        if(pref_firstname!=null){
-            String strng_nul="null";
-            if(!pref_firstname.equals("")){
-                if(!pref_firstname.equals(strng_nul)){
+        if (pref_firstname != null)
+        {
+            String strng_nul = "null";
+            if (!pref_firstname.equals(""))
+            {
+                if (!pref_firstname.equals(strng_nul))
+                {
                     txt_name.setText(pref_firstname);
                 }
 
             }
         }
 
-        if(pref_mobile!=null){
+        if (pref_mobile != null)
+        {
             txt_phone.setText(pref_mobile);
         }
 
-        if(pref_aboutme!=null){
-            if(!pref_aboutme.equals("")){
-                if( !pref_aboutme.equals("null") ){
-                    if(!pref_aboutme.equals("'null'")){
+        if (pref_aboutme != null)
+        {
+            if (!pref_aboutme.equals(""))
+            {
+                if (!pref_aboutme.equals("null"))
+                {
+                    if (!pref_aboutme.equals("'null'"))
+                    {
                         edt_aboutme.setText(pref_aboutme);
                     }
                 }
             }
         }
-        if(selectedPath!=null){
+        if (selectedPath != null)
+        {
             Picasso.with(ProfileActivity.this).load(new File(selectedPath)).skipMemoryCache().
-                    transform(new CircleTransform()).error(R.mipmap.ic_default_pic_rounded).
-                    into(profile_img);
+                      transform(new CircleTransform()).error(R.mipmap.ic_default_pic_rounded).
+                      into(profile_img);
         }
-        else if(pref_photopath!=null){
+        else if (pref_photopath != null)
+        {
             Picasso.with(this).load(pref_photopath).transform(new CircleTransform()).into(profile_img);
         }
 
-        if(pref_carinfo!=null){
+        if (pref_carinfo != null)
+        {
             edt_car_name.setText(pref_carinfo);
         }
     }
-
-
 
     /**
      *id's initialisations
@@ -403,8 +417,23 @@ public class ProfileActivity extends AppCompatActivity implements Asnychronus_no
         changed_photopath=img_str;
         return img_str;
     }
+/*
+    @Override
+    protected void onDestroy()
+    {
+        hide_keyborad();
+        super.onDestroy();
 
 
+    }
+
+    public void hide_keyborad()
+    {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        imm.hideSoftInputFromWindow(profile_img.getWindowToken(), 0);
+
+    }*/
 
 
     /***

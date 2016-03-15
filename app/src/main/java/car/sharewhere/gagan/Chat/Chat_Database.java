@@ -7,20 +7,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import car.sharewhere.gagan.utills.Utills_G;
 
 /**
  Created by sharan on 19/10/15. */
@@ -55,9 +51,6 @@ public class Chat_Database extends SQLiteOpenHelper
     private String DB_PATH;
 
     private static String DB_NAME = "chat_database.db";
-    public SQLiteDatabase myDataBase;
-
-    String table_name;
 
     public Chat_Database(Context context)
     {
@@ -70,7 +63,7 @@ public class Chat_Database extends SQLiteOpenHelper
             DB_PATH = Environment.getDataDirectory() + "/data/" + con.getPackageName() + "/databases/";
             Log.e("info", " mycontext.getPackageName() " + con.getPackageName());
             // delete();
-//            createdatabase();
+            //            createdatabase();
             //opendatabase();
         }
         catch (Exception e)
@@ -173,10 +166,30 @@ public class Chat_Database extends SQLiteOpenHelper
                       "sender_id TEXT ," +
                       "reciever_id TEXT ," +
                       "message TEXT," +
-                      "time DATETIME DEFAULT CURRENT_TIMESTAMP,"+
-                      "tripId TEXT,"+
+                      "time DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                      "tripId TEXT," +
                       "message_status TEXT)";
             db.execSQL(query);
+            Log.e(LOGCAT, "TABLE_CREATED");
+
+            String query1 = "CREATE TABLE trip_request_data (id INTEGER PRIMARY KEY ," +
+                      "CustomerId TEXT," +
+                      "CustomerMoboleNo TEXT ," +
+                      "CustomerName TEXT ," +
+                      "CustomerPhoto TEXT," +
+                      "DepartureDate TEXT," +
+                      "DriverId TEXT," +
+                      "Flag TEXT," +
+                      "LeavingFrom TEXT," +
+                      "LeavingTo TEXT," +
+                      "Message TEXT," +
+                      "RequestId TEXT," +
+                      "RiderId TEXT," +
+                      "tripId TEXT," +
+                      "time DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                      "request_status TEXT)";
+
+            db.execSQL(query1);
             Log.e(LOGCAT, "TABLE_CREATED");
         }
 
@@ -195,6 +208,9 @@ public class Chat_Database extends SQLiteOpenHelper
 */
     }
 
+    //    ******************************************************* Messages    *********************************************************
+
+    // Save message data
     public void save_message(HashMap<String, String> map)
     {
         SQLiteDatabase database = this.getWritableDatabase();
@@ -213,11 +229,12 @@ public class Chat_Database extends SQLiteOpenHelper
 
     }
 
+    // Get chat data between two users
     public ArrayList<HashMap<String, String>> get_chat_data(String other_user_id, String tripId)
     {
 
         ArrayList<HashMap<String, String>> list     = new ArrayList<>();
-        String                             query    = "SELECT * FROM chat_data where  ( sender_id =" + other_user_id + " or  reciever_id =" + other_user_id +") and tripId ="+tripId+ " order by time";
+        String                             query    = "SELECT * FROM chat_data where  ( sender_id =" + other_user_id + " or  reciever_id =" + other_user_id + ") and tripId =" + tripId + " order by time";
         SQLiteDatabase                     database = this.getWritableDatabase();
         Cursor                             cursor   = database.rawQuery(query, null);
 
@@ -244,7 +261,107 @@ public class Chat_Database extends SQLiteOpenHelper
         return list;
     }
 
+    // Get Unread Message Count
+    public long get_unread_messages_count(String tripId, String other_user_id)
+    {
+        long cnt = 0;
+        try
+        {
+            String query;
+            if (tripId.isEmpty() && other_user_id.isEmpty())
+            {
+                query = "SELECT COUNT(*) FROM chat_data where message_status = 'UR'";
+            }
+            else if (!tripId.isEmpty() && other_user_id.isEmpty())
+            {
+                query = "SELECT COUNT(*) FROM chat_data WHERE message_status = 'UR' and tripId = " + tripId;
+            }
+            else
+            {
+                query = "SELECT COUNT(*) FROM chat_data WHERE message_status = 'UR' and tripId = " + tripId + " and  sender_id= " + other_user_id;
+            }
 
+            SQLiteDatabase db = this.getReadableDatabase();
+            SQLiteStatement s = db.compileStatement(query);
+            cnt = s.simpleQueryForLong();
+
+            db.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return cnt;
+    }
+
+    // Get  tripID count whose message are unread
+    public long get_trip_count()
+    {
+        long cnt = 0;
+        try
+        {
+            String query = "SELECT COUNT(DISTINCT tripId) FROM chat_data where message_status = 'UR'";
+            SQLiteDatabase db = this.getReadableDatabase();
+            SQLiteStatement s = db.compileStatement(query);
+            cnt = s.simpleQueryForLong();
+
+            db.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return cnt;
+    }
+
+    //  Get Message Sender count whose messages are unread
+    public long get_sender_count(String my_id)
+    {
+        long cnt = 0;
+        try
+        {
+            String query = "SELECT COUNT(DISTINCT sender_id) FROM chat_data where reciever_id = " + my_id + " and message_status = 'UR'";
+            SQLiteDatabase db = this.getReadableDatabase();
+            SQLiteStatement s = db.compileStatement(query);
+            cnt = s.simpleQueryForLong();
+
+            db.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return cnt;
+    }
+
+    // Update unread messages to read
+    public void change_unread_to_read(String tripId, String other_user_id)
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        //        String         query    = "UPDATE `chat_data` SET `message_status` = 'R' WHERE `message_status` = 'UR' AND tripId = " + tripId + " and  sender_id= " + other_user_id;
+        //        database.execSQL(query);
+
+        ContentValues args = new ContentValues();
+        args.put("message_status", "R");
+
+        int cursor = database.update("chat_data", args, "message_status = 'UR' AND tripId = " + tripId + " and  sender_id= " + other_user_id, null);
+
+        Log.e("change_unread_to_read in database", "" + cursor);
+
+        database.close();
+
+        // clear notifications when we open chat module
+        if (cursor > 0)
+        {
+            Utills_G.cancelNotification(con, 1000);
+        }
+
+    }
+
+    //Get all chat data
     public ArrayList<HashMap<String, String>> get_chat_all_data()
     {
 
@@ -276,46 +393,137 @@ public class Chat_Database extends SQLiteOpenHelper
         return list;
     }
 
-    public void delete_chat(String chat_id)
+    public void delete_chat(String tripId,String other_user_id)
     {
-        SQLiteDatabase database    = this.getWritableDatabase();
-        String         deleteQuery = "DELETE FROM  chat_data where chat_id='" + chat_id + "'";
+        SQLiteDatabase database = this.getWritableDatabase();
 
-        database.execSQL(deleteQuery);
+        int count;
+        if(other_user_id.isEmpty())
+        {
+            String[] deleteQu = {tripId};
+            count = database.delete("chat_data", "tripId=?", deleteQu);
+        }
+        else
+        {
+//            String[] deleteQu = {tripId,other_user_id};
+            String[] deleteQu = {tripId,other_user_id,other_user_id};
+//            count = database.delete("chat_data", "tripId=? AND ( 'sender_id' OR 'reciever_id' ) =?", deleteQu);
+//            count = database.delete("chat_data", "tripId=? AND  reciever_id=?", deleteQu);
+            count = database.delete("chat_data", "tripId=? AND (sender_id=? OR reciever_id=?)", deleteQu);
+        }
         database.close();
-        Toast.makeText(con, "Deleted", Toast.LENGTH_SHORT).show();
+
+        // clear notifications when we open chat module
+        if (count > 0)
+        {
+            Utills_G.cancelNotification(con, 1000);
+        }
+
+        //        Toast.makeText(con, "Deleted "+cursor, Toast.LENGTH_SHORT).show();
     }
 
-    public void delete_all_chat(String other_user_id)
-    {
-        SQLiteDatabase database    = this.getWritableDatabase();
-        String         deleteQuery = "DELETE FROM  chat_data where sender_id='" + other_user_id + " or  reciever_id =" + other_user_id;
+    //    ****************************************************************************************************************************
 
-        database.execSQL(deleteQuery);
+    //    *******************************************************Trip Request*********************************************************
+
+    // Save request data
+    public void save_requests(HashMap<String, String> map)
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues  values   = new ContentValues();
+
+        values.put("CustomerId", map.get("CustomerId"));
+        values.put("CustomerMoboleNo", map.get("CustomerMoboleNo"));
+        values.put("CustomerName", map.get("CustomerName"));
+        values.put("CustomerPhoto", map.get("CustomerPhoto"));
+        values.put("DepartureDate", map.get("DepartureDate"));
+        values.put("DriverId", map.get("DriverId"));
+
+        values.put("Flag", map.get("Flag"));
+        values.put("LeavingFrom", map.get("LeavingFrom"));
+        values.put("LeavingTo", map.get("LeavingTo"));
+        values.put("Message", map.get("Message"));
+        values.put("RequestId", map.get("RequestId"));
+        values.put("RiderId", map.get("RiderId"));
+        values.put("TripId", map.get("TripId"));
+        values.put("request_status", map.get("request_status"));
+
+        database.insert("trip_request_data", null, values);
+
         database.close();
-        Toast.makeText(con, "Deleted", Toast.LENGTH_SHORT).show();
+
     }
 
+    // Get all distinct trip requests with corresponding count of unread requests
+    public HashMap<String, String> get_tripid_unread_req_count_data()
+    {
 
-    public long get_unread_messages_count(String tripId,String other_user_id)
+        HashMap<String, String> map      = new HashMap<>();
+        String                  query    = "SELECT COUNT(request_status) ,tripId  FROM trip_request_data GROUP BY tripId";
+        SQLiteDatabase          database = this.getWritableDatabase();
+        Cursor                  cursor   = database.rawQuery(query, null);
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                map.put(cursor.getString(1), cursor.getString(0));
+            }
+            while (cursor.moveToNext());
+
+        }
+
+        return map;
+    }
+
+    // Get all request data
+    public ArrayList<HashMap<String, String>> get_request_all_data()
+    {
+
+        ArrayList<HashMap<String, String>> list     = new ArrayList<>();
+        String                             query    = "SELECT * FROM trip_request_data order by time";
+        SQLiteDatabase                     database = this.getWritableDatabase();
+        Cursor                             cursor   = database.rawQuery(query, null);
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put("local_request_id", cursor.getString(0));
+                map.put("CustomerId", cursor.getString(1));
+                map.put("CustomerMoboleNo", cursor.getString(2));
+                map.put("CustomerName", cursor.getString(3));
+                map.put("CustomerPhoto", cursor.getString(4));
+                map.put("DepartureDate", cursor.getString(5));
+                map.put("DriverId", cursor.getString(6));
+                map.put("Flag", cursor.getString(7));
+                map.put("LeavingFrom", cursor.getString(8));
+                map.put("LeavingTo", cursor.getString(9));
+                map.put("Message", cursor.getString(10));
+                map.put("RequestId", cursor.getString(11));
+                map.put("RiderId", cursor.getString(12));
+                map.put("TripId", cursor.getString(13));
+                map.put("time", cursor.getString(14));
+                map.put("request_status", cursor.getString(15));
+
+                list.add(map);
+            }
+            while (cursor.moveToNext());
+
+        }
+        //Log.e("lang", ""+list);
+        return list;
+    }
+
+    //  Get all Request Unread Count
+    public long get_unread_request_count()
     {
         long cnt = 0;
         try
         {
-            String query;
-            if(tripId.isEmpty() && other_user_id.isEmpty())
-            {
-                 query = "SELECT COUNT(*) FROM chat_data where message_status = 'UR'";
-            }
-            else if(!tripId.isEmpty() && other_user_id.isEmpty())
-            {
-                query = "SELECT COUNT(*) FROM chat_data WHERE message_status = 'UR' and tripId = "+tripId;
-            }
-            else
-            {
-                query = "SELECT COUNT(*) FROM chat_data WHERE message_status = 'UR' and tripId = "+tripId+" and  sender_id= " + other_user_id;
-            }
-
+            String query = "SELECT COUNT(*) FROM trip_request_data where request_status = 'UR'";
             SQLiteDatabase db = this.getReadableDatabase();
             SQLiteStatement s = db.compileStatement(query);
             cnt = s.simpleQueryForLong();
@@ -330,19 +538,72 @@ public class Chat_Database extends SQLiteOpenHelper
         return cnt;
     }
 
-    public void change_unread_to_read(String tripId,String other_user_id)
+    // Get  tripID count whose requests are unread
+    public long get_trip_request_count()
     {
+        long cnt = 0;
+        try
+        {
+            String query = "SELECT COUNT(DISTINCT tripId) FROM trip_request_data where request_status = 'UR'";
+            SQLiteDatabase db = this.getReadableDatabase();
+            SQLiteStatement s = db.compileStatement(query);
+            cnt = s.simpleQueryForLong();
 
-        SQLiteDatabase database    = this.getWritableDatabase();
-        String query="UPDATE `chat_data` SET `message_status` = 'R' WHERE `message_status` = 'UR' AND tripId = "+tripId+" and  sender_id= " + other_user_id;
+            db.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-        database.execSQL(query);
+        return cnt;
+    }
+
+    // Delete particular request
+    public void delete_trip_request(String RequestId,String tripId)
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        //        String         deleteQuery = "DELETE FROM  trip_request_data where RequestId='" + RequestId + "'";
+        //        database.execSQL(deleteQuery);
+
+        int      count=0;
+        if(!RequestId.isEmpty())
+        {
+            String[] deleteQu = {RequestId};
+            count   = database.delete("trip_request_data", "RequestId=?", deleteQu);
+        }
+        else
+        {
+            String[] deleteQu = {tripId};
+            count   = database.delete("trip_request_data", "tripId=?", deleteQu);
+        }
+
         database.close();
+
+        // clear notifications when we open chat module
+        if (count > 0)
+        {
+            Utills_G.cancelNotification(con, 2000);
+        }
+
+        //        Toast.makeText(con, "Deleted "+cursor, Toast.LENGTH_SHORT).show();
+    }
+
+    //    ****************************************************************************************************************************
+
+    public void delete_all_chat(String other_user_id)
+    {
+        SQLiteDatabase database    = this.getWritableDatabase();
+        String         deleteQuery = "DELETE FROM  chat_data where sender_id='" + other_user_id + " or  reciever_id =" + other_user_id;
+
+        database.execSQL(deleteQuery);
+        database.close();
+        Toast.makeText(con, "Deleted", Toast.LENGTH_SHORT).show();
     }
 
 
 /*	public void get_insert()
-	{
+    {
 		String query="SELECT * FROM item_english ";
 		SQLiteDatabase database = this.getWritableDatabase();
 		Cursor cursor= database.rawQuery(query, null);
@@ -372,8 +633,8 @@ public class Chat_Database extends SQLiteOpenHelper
 
 
 	}*/
-	/*public void insert_new()
-	{
+    /*public void insert_new()
+    {
 
 
 		String query="SELECT * FROM stater_salad_vegetarian where language='"+ "greek" +"'";

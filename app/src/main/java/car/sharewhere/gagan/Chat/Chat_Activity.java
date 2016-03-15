@@ -35,7 +35,6 @@ import car.sharewhere.gagan.utills.Utills_G;
 public class Chat_Activity extends AppCompatActivity implements View.OnClickListener
 {
     Context       con;
-    Chat_Database database;
     ListView      listv_chat;
 
     ArrayList<HashMap<String, String>> list = new ArrayList<>();
@@ -71,7 +70,6 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.smilly).setOnClickListener(this);
         edtv_msg = (EditText) findViewById(R.id.edtv_msg);
 
-        database = new Chat_Database(this);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(con);
 
@@ -142,7 +140,7 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
 
     public void refresh(String who)
     {
-        set_chat_data(database.get_chat_data(other_user_id, TripId), who);
+        set_chat_data(chat_database.get_chat_data(other_user_id, TripId), who);
     }
 
     Chat_sharan_Adapter adapter;
@@ -170,7 +168,7 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
 
                 }
 
-                listv_chat.invalidateViews();
+                adapter.notifyDataSetChanged();
 
             }
             listv_chat.smoothScrollToPosition(adapter.getCount());
@@ -223,7 +221,7 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
                 map.put("tripId", TripId);
                 map.put("message_status", "R");
 
-                database.save_message(map);
+                chat_database.save_message(map);
 
                 edtv_msg.setText("");
 

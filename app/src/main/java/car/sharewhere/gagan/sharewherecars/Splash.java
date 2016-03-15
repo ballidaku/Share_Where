@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -33,19 +35,22 @@ import java.util.Locale;
 import java.util.Map;
 
 import car.sharewhere.gagan.utills.CommonUtilities;
+import car.sharewhere.gagan.utills.Dialogs;
 
 public class Splash extends AppCompatActivity
 {
-    String               symbol;
+//    String               symbol;
     GoogleCloudMessaging gcm;
     SharedPreferences    preferences;
-    String countryCode = "";
+//    String countryCode = "";
     public String lat, longitude;
     LocationManager locationManager;
 
     //Added
-    SharedPreferences.Editor editor;
+//    SharedPreferences.Editor editor;
 
+    Dialogs dialogs = new Dialogs();
+    Context con;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,15 +59,17 @@ public class Splash extends AppCompatActivity
 
         setContentView(R.layout.activity_splash);
 
+        con = this;
+
         preferences = PreferenceManager.getDefaultSharedPreferences(Splash.this);
-        editor = preferences.edit();
+//        editor = preferences.edit();
 
     }
 
     /**
      registeration for GCM
      */
-    private void registerInBackground()
+   /* private void registerInBackground()
     {
 
         new AsyncTask<Void, Void, String>()
@@ -113,59 +120,10 @@ public class Splash extends AppCompatActivity
             }
         }.execute(null, null, null);
     }
+*/
 
-    public void turnGPSOn()
-    {
 
-        final Dialog dialog = new Dialog(Splash.this);
-
-        dialog.getWindow().addFlags(Window.FEATURE_NO_TITLE);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.mobile_custom_verify);
-        dialog.setCancelable(false);
-
-        TextView       text       = (TextView) dialog.findViewById(R.id.text);
-        Button         ok         = (Button) dialog.findViewById(R.id.ok);
-        Button         cancel     = (Button) dialog.findViewById(R.id.cancel);
-        final EditText edt_mobile = (EditText) dialog.findViewById(R.id.text_mobile);
-        edt_mobile.setVisibility(View.GONE);
-
-        text.setText(("Enable GPS to get your location"));
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-
-        ok.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-
-                dialog.dismiss();
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                dialog.dismiss();
-                finish();
-            }
-        });
-
-        dialog.show();
-    }
-
-    private String GetCountryCode_CurrencySymbol()
+/*    private String GetCountryCode_CurrencySymbol()
     {
         String CountryID = "";
 
@@ -189,9 +147,9 @@ public class Splash extends AppCompatActivity
             }
         }
         return countryCode;
-    }
+    }*/
 
-    private void currency_Symbol(Map<Currency, Locale> map, String countryCode)
+/*    private void currency_Symbol(Map<Currency, Locale> map, String countryCode)
     {
 
         Locale   locale   = new Locale("EN", countryCode);
@@ -235,9 +193,9 @@ public class Splash extends AppCompatActivity
             Log.e("Symbol Else", "" + preferences.getString("currency_symbol", "null"));
         }
 
-    }
+    }*/
 
-    //==========
+/*    //==========
     //========Currency Symbol=======
     public static Map<Currency, Locale> getCurrencyLocaleMap()
     {
@@ -255,8 +213,7 @@ public class Splash extends AppCompatActivity
             }
         }
         return map;
-    }
-
+    }*/
     @Override
     protected void onResume()
     {
@@ -266,22 +223,22 @@ public class Splash extends AppCompatActivity
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
         {
-            turnGPSOn();
+            dialogs.turnGPSOn(con);
             //  return;
         }
         else
         {
-            Log.e("    MoVE 2222", "===========");
-            countryCode = GetCountryCode_CurrencySymbol();
+
+     /*       countryCode = GetCountryCode_CurrencySymbol();
             editor.putString("country_code", countryCode);
             editor.apply();
-            Log.e("country_code", "===========" + preferences.getString("country_code", ""));
+            Log.e("country_code", "===========" + preferences.getString("country_code", ""));*/
 
-            int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+            /*int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
             if (status == ConnectionResult.SUCCESS)
             {
-                registerInBackground();
+//                registerInBackground();
             }
             else
             {
@@ -293,18 +250,43 @@ public class Splash extends AppCompatActivity
                 }
                 return;
             }
-
+*/
             android.os.Handler h = new android.os.Handler();
             h.postDelayed(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    startActivity(new Intent(Splash.this, Registeration.class));
-                    finish();
+                   /* startActivity(new Intent(Splash.this, Registeration.class));
+                    finish();*/
+
+                    isAlreadyLogin();
                 }
             }, 3000);
         }
+    }
+
+    private void isAlreadyLogin()
+    {
+
+        String get_mobile_verify = preferences.getString("mobile_verify", "");
+
+        Log.e("get_mobile_verify", "..." + get_mobile_verify);
+        Log.e("mobilenumber", "..." + preferences.getString("mobile_no", null));
+
+        if (get_mobile_verify.equals("true"))
+        {
+            Intent i = new Intent(con, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+        else
+        {
+            Intent i = new Intent(con, Registeration.class);
+            startActivity(i);
+            finish();
+        }
+
     }
 
 }
