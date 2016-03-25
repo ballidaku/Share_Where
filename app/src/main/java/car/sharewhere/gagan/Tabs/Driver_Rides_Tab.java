@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -46,19 +48,17 @@ import java.util.List;
 
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
-import car.sharewhere.gagan.Chat.Chat_Activity;
 import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
+import car.sharewhere.gagan.sharewherecars.Just_Once_offerRide;
 import car.sharewhere.gagan.sharewherecars.MainActivity;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.RegularBasis;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
-import car.sharewhere.gagan.sharewherecars.Just_Once_offerRide;
 import car.sharewhere.gagan.utills.CircleTransform;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
-import car.sharewhere.gagan.utills.GetterSetter_Driver;
 import car.sharewhere.gagan.utills.Getter_setter;
 import car.sharewhere.gagan.utills.Utills_G;
 
@@ -76,8 +76,8 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     ConnectivityDetector cd;
 
     CoordinatorLayout coordinatorlayout;
-    Snackbar          snackbar;
-    ProgressDialog    dialog;
+//    Snackbar          snackbar;
+    //    ProgressDialog    dialog;
     Button            btn_ofer_ride;
     Date              current_date;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -91,20 +91,23 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     Context con;
 
     // Trip id with there corresponding reuest counts
-    HashMap<String, String> trip_request_map ;
+    HashMap<String, String> trip_request_map;
+
+    Animation animRotate;
+    View view;
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.tab_my_ride, container, false);
+        view = inflater.inflate(R.layout.tab_my_ride, container, false);
         con = getActivity();
 
         chat_database = new Chat_Database(con);
 
-
         trip_request_map = new HashMap<>();
-
-
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         editor = preferences.edit();
@@ -123,6 +126,8 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
         //        Log.e("Data count","...." + chat_database.get_unread_messages_count("1010", "212"));
 
         method_current_time();
+
+        animRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
 
         return view;
     }
@@ -262,7 +267,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     public void Delete_Service(final String TripID)
     {
 
-        String url = "http://112.196.34.42:9091/Trip/DeleteTrip?TripId=" + TripID;
+        String url = GlobalConstants.Url+"Trip/DeleteTrip?TripId=" + TripID;
 
         GlobalConstants.execute(new Super_AsyncTask(getActivity(), url, new Super_AsyncTask_Interface()
         {
@@ -275,11 +280,16 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                     JSONObject object = new JSONObject(output);
                     if (object.getString("Status").equalsIgnoreCase("success"))
                     {
+
+//                        snackbar_method(object.getString("Message"));
+
+                        Utills_G.showToast(object.getString("Message"),getActivity(),false);
+
                         chat_database.delete_chat(TripID, "");
                         chat_database.delete_trip_request("",TripID);
 
                         HitServiceEarlierSearc();
-                        snackbar_method("Ride deleted successfully.");
+
                     }
                     else
                     {
@@ -295,6 +305,8 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
 
     }
 
+//    *******************************************************************************************************************************
+
     /**
      @HitService(AllRides)
      */
@@ -304,16 +316,19 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
 
         if (!cd.isConnectingToInternet())
         {
-            snackbar_method("No internet connection!");
+            show_message("Your internet connection seems to be disable.");
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(getActivity(), "http://112.196.34.42:9091/Trip/GetAllTripByCustomerID?CustomerId=" + customerID, GlobalConstants.GET_SERVICE_METHOD1, null);
+            Json_AsnycTask task = new Json_AsnycTask(getActivity(), GlobalConstants.Url+"Trip/GetAllTripByCustomerID?CustomerId=" + customerID, GlobalConstants.GET_SERVICE_METHOD1, null);
             task.setOnResultsListener(this);
             task.execute();
-            dialog = ProgressDialog.show(getActivity(), "", "Fetching your rides. Please wait...", true);
+
+            show_message("Fetching your rides. Please wait...");
+
+            /*dialog = ProgressDialog.show(getActivity(), "", "Fetching your rides. Please wait...", true);
             dialog.setCancelable(true);
-            dialog.show();
+            dialog.show();*/
         }
     }
 
@@ -322,46 +337,54 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     {
         Log.e("response home get trip", "Login==" + result);
         {
-            dialog.dismiss();
-            Log.e("response 1 driver test", "Login==" + result);
+            /*dialog.dismiss();*/
+//            Log.e("response 1 driver test", "Login==" + result);
             if (result != null)
             {
-                if (result.length() == 0)
-                {
-                    list_home_recent.setVisibility(View.GONE);
-                }
+
                 if (result.optString("Message").equals("Internal Server Error."))
                 {
-                    snackbar_method("Try Again!! Internal server error");
+                    show_message("Try Again!! Internal server error");
+//                    snackbar_method("Try Again!! Internal server error");
 
                 }
                 else if (result.optString("Status").equals("success"))
                 {
 
-                    list_home_recent.setVisibility(View.VISIBLE);
-                    txt_no_ride.setVisibility(View.GONE);
-                    img_vw_reload.setVisibility(View.GONE);
-                    btn_ofer_ride.setVisibility(View.GONE);
+
                     array_image.clear();
                     try
                     {
                         JSONArray arr = result.getJSONArray("Message");
                         if (arr.length() == 0)
                         {
-                            snackbar_method("No Ride to show");
+//                            snackbar_method("No Ride to show");
 
                             list_home_recent.setVisibility(View.GONE);
                             txt_no_ride.setVisibility(View.VISIBLE);
                             img_vw_reload.setVisibility(View.VISIBLE);
                             btn_ofer_ride.setVisibility(View.VISIBLE);
+
+                           img_vw_reload.clearAnimation();
+
+                            list.clear();
+
+                            show_message("You have no rides to show.");
+
                         }
                         else
                         {
+
+                            list_home_recent.setVisibility(View.VISIBLE);
+                            txt_no_ride.setVisibility(View.GONE);
+                            img_vw_reload.setVisibility(View.GONE);
+                            btn_ofer_ride.setVisibility(View.GONE);
+
+
                             List<Getter_setter> feedItemList = new ArrayList<>();
 
                             for (int i = 0; i < arr.length(); i++)
                             {
-                                list_home_recent.setVisibility(View.VISIBLE);
 
                                 JSONObject jsonobject = arr.getJSONObject(i);
 
@@ -433,12 +456,13 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                 }
                 else if (result.optString("Status").equals("error"))
                 {
-                    snackbar_method("No Ride to show");
+
+                    show_message("Error in connecting. Please try later.");
                 }
             }
             else
             {
-                snackbar_method("No Ride to show");
+                show_message("Error in connecting. Please try later.");
             }
         }
     }
@@ -472,7 +496,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
     public void onResultsSucceeded_Post_Method1(JSONObject result)
     {
         Log.e("response home del trip", "del==" + result);
-        dialog.dismiss();
+//        dialog.dismiss();
         if (result != null)
         {
             if (result.optString("Status").equals("success"))
@@ -678,9 +702,9 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
                 {
                     e.printStackTrace();
                 }
-                //                Log.e("date_backend"," datedate"+date_backend);// Date of leavingDate
-                //                Log.e("current_date"," current_date"+current_date);
-                // Log.e("current_date"," current_date"+date_backend.before(current_date));
+                                Log.e("date_backend",".. "+date_backend);// Date of leavingDate
+                                Log.e("current_date",".."+current_date);
+                 Log.e("current_date"," current_date"+date_backend.before(current_date));
                 if (date_backend.before(current_date))
                 {
 
@@ -830,7 +854,7 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
      */
     private void snackbar_method(String text)
     {
-        snackbar = Snackbar.make(coordinatorlayout, text, Snackbar.LENGTH_LONG).setAction("Ok", new View.OnClickListener()
+      /*  snackbar = Snackbar.make(coordinatorlayout, text, Snackbar.LENGTH_LONG).setAction("Ok", new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -842,7 +866,11 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
         View     sbView   = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
-        snackbar.show();
+        snackbar.show();*/
+
+        Snackbar.make(coordinatorlayout,text,Snackbar.LENGTH_LONG).show();
+
+        Log.e("Snackbar","Snackbar Driver");
     }
 
     DriverRides_BroadcastReceiver receiver;
@@ -889,6 +917,33 @@ public class Driver_Rides_Tab extends Fragment implements Asnychronus_notifier
 
             Log.e("Reached"," EEEEEEEEEE");
             refresh();
+        }
+    }
+
+
+    public void show_message(String message)
+    {
+        if(list.size() == 0)
+        {
+            txt_no_ride.setText(message);
+
+            if(message.equalsIgnoreCase("Fetching your rides. Please wait..."))
+            {
+                img_vw_reload.startAnimation(animRotate);
+            }
+
+        }
+        else
+        {
+            if(message.equalsIgnoreCase("Fetching your rides. Please wait..."))
+            {
+                snackbar_method("Refreshing your rides. Please wait...");
+            }
+            else
+            {
+                snackbar_method(message);
+            }
+
         }
     }
 }

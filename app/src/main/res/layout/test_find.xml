@@ -17,6 +17,7 @@
         <include layout = "@layout/actionbar_toolbar"/>
 
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
             android:background = "@color/gray_backgroundfb"
@@ -30,11 +31,11 @@
                 <LinearLayout
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
+                    android:background = "@color/black"
                     android:orientation = "horizontal"
                     android:paddingLeft = "20dp"
                     android:paddingRight = "20dp"
-                    android:paddingTop = "10dp"
-                    android:background = "@color/black">
+                    android:paddingTop = "10dp">
 
                     <android.support.design.widget.TextInputLayout
                         xmlns:app = "http://schemas.android.com/apk/res-auto"
@@ -65,7 +66,7 @@
                             android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:drawableEnd = "@mipmap/cancel"
                             android:drawableRight = "@mipmap/cancel"
-                            android:hint = "Leaving from"
+                            android:hint = "Leaving From"
                             android:imeOptions = "actionNext"
                             android:inputType = "textCapWords"
                             android:textColor = "@color/white"
@@ -89,10 +90,10 @@
                 <LinearLayout
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
+                    android:background = "@color/black"
                     android:orientation = "vertical"
                     android:paddingLeft = "20dp"
-                    android:paddingRight = "20dp"
-                    android:background = "@color/black">
+                    android:paddingRight = "20dp">
 
                     <android.support.design.widget.TextInputLayout
                         xmlns:app = "http://schemas.android.com/apk/res-auto"
@@ -228,8 +229,8 @@
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
                     android:layout_gravity = "center"
-                    android:padding = "5dp"
                     android:gravity = "center"
+                    android:padding = "5dp"
                     android:text = "RIDES IN RANGE"
                     android:textColor = "@color/black"
                     android:textSize = "15sp"
@@ -245,7 +246,18 @@
                     android:dividerHeight = "10dp"
                     android:fastScrollEnabled = "true"
                     android:nestedScrollingEnabled = "true"
+                    android:visibility="gone"
                     android:scrollbars = "none"/>
+
+                <LinearLayout
+                    android:id="@+id/llay_rides"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "0dp"
+                    android:layout_weight="1"
+                    android:orientation = "vertical">
+
+
+                </LinearLayout>
 
 
             </LinearLayout>

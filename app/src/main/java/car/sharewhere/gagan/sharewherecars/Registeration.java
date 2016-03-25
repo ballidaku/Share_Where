@@ -60,9 +60,8 @@ import java.util.Map;
 import car.sharewhere.gagan.Location.GiveMeLocationS;
 import car.sharewhere.gagan.Location.Location_Interface;
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
-import car.sharewhere.gagan.utills.CommonUtilities;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
 import car.sharewhere.gagan.utills.Utills_G;
 
@@ -136,7 +135,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
          */
         FacebookSdk.setApplicationId("1049198945111554");
 
-        getmac_Adres();
+        macAddress=getmac_Adres();
 
         /**
          * shared preferences
@@ -311,17 +310,18 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
     {
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo    wInfo       = wifiManager.getConnectionInfo();
-        macAddress = wInfo.getMacAddress();
-        if (macAddress != null)
+       String mac = wInfo.getMacAddress();
+        if (mac != null)
         {
-            Log.e("mac adres=", macAddress);
-            return macAddress;
+            Log.e("mac adres=", mac);
+            return mac;
         }
         else
         {
-            Log.e("MAC ADDRESS ", "MMMM " + macAddress);
+            Log.e("MAC ADDRESS ", "MMMM " + mac);
             //return "";
-            return getmac_Adres();
+//            return getmac_Adres();
+            return "12345";
         }
 
     }
@@ -673,7 +673,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         else
         {
 
-            final Json_AsnycTask tsk = new Json_AsnycTask(Registeration.this, GlobalConstants.URL_REGISTER_LOGIN + GlobalConstants.LOGIN_CONSTANT, GlobalConstants.POST_SERVICE_METHOD1, data_login);
+            final Json_AsnycTask tsk = new Json_AsnycTask(Registeration.this, GlobalConstants.Url+"Customer/ValidateUserCustomer", GlobalConstants.POST_SERVICE_METHOD1, data_login);
             tsk.setOnResultsListener(this);
             tsk.execute();
 
@@ -712,7 +712,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.URL_REGISTER_LOGIN + GlobalConstants.REGISTER_CONSTANT, GlobalConstants.POST_SERVICE_METHOD2, data_registration);
+            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.Url+"Customer/SaveCustomer", GlobalConstants.POST_SERVICE_METHOD2, data_registration);
             task.setOnResultsListener(this);
             task.execute();
             progress.setVisibility(View.VISIBLE);
@@ -736,7 +736,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.RESEND_OTP, GlobalConstants.POST_SERVICE_METHOD4, hashmapresend_otp);
+            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.Url+"Customer/ReSendCode", GlobalConstants.POST_SERVICE_METHOD4, hashmapresend_otp);
             task.setOnResultsListener(this);
             task.execute();
             progress.setVisibility(View.VISIBLE);
@@ -760,7 +760,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         else
         {
 
-            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.MOBILE_VERIFICATION, GlobalConstants.POST_SERVICE_METHOD3, data_mobile);
+            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.Url+"Customer/ValidateMobileCode", GlobalConstants.POST_SERVICE_METHOD3, data_mobile);
             task.setOnResultsListener(this);
             task.execute();
             progress.setVisibility(View.VISIBLE);
@@ -799,12 +799,12 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
                 snackbar_method("Try Again!! Internal server error");
 
             }
-            else if (result.optString("Message").equals("Connection Timeout."))
+            else if (result.optString("Message").equals("Empty Response."))
             {
 
                 FacebookSdk.sdkInitialize(Registeration.this);
                 LoginManager.getInstance().logOut();
-                snackbar_method("Try Again!! Connection Timeout.");
+                snackbar_method(result.optString("Message"));
             }
             else if (result.optString("Message").contains("Email Id or Mobile"))
             {
@@ -1239,7 +1239,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.CHANGE_MOBILE_NUMBER, GlobalConstants.POST_SERVICE_METHOD5, data_login);
+            Json_AsnycTask task = new Json_AsnycTask(Registeration.this, GlobalConstants.Url+"Customer/ChangeMobileNo", GlobalConstants.POST_SERVICE_METHOD5, data_login);
             task.setOnResultsListener(this);
             task.execute();
             progress.setVisibility(View.VISIBLE);
@@ -1584,7 +1584,7 @@ public class Registeration extends FragmentActivity implements Asnychronus_notif
                         gcm = GoogleCloudMessaging.getInstance(Registeration.this);
 
                     }
-                    msg = gcm.register(CommonUtilities.SENDER_ID);
+                    msg = gcm.register(GlobalConstants.SENDER_ID);
 
                 }
                 catch (IOException e)

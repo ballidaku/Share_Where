@@ -10,16 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -30,10 +25,9 @@ import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
 import car.sharewhere.gagan.Chat.Chat_Activity;
 import car.sharewhere.gagan.Chat.Chat_Database;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
-import car.sharewhere.gagan.utills.Dialogs;
 import car.sharewhere.gagan.utills.Utills_G;
 
 /**
@@ -113,7 +107,7 @@ public class Ride_Details_Adapter extends BaseAdapter
 
         RelativeLayout rel_decline = (RelativeLayout) v.findViewById(R.id.rel_decline);
 
-        RelativeLayout rel_dest_ds = (RelativeLayout) v.findViewById(R.id.rel_dest_ds);
+        ( v.findViewById(R.id.rel_dest_ds)).setVisibility(View.GONE);;
         ImageView      img_phn     = (ImageView) v.findViewById(R.id.img_phn);
 
         txt_cancel.setPaintFlags(txt_cancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -121,7 +115,6 @@ public class Ride_Details_Adapter extends BaseAdapter
         btn_three.setVisibility(View.GONE);
         txt_chat.setVisibility(View.GONE);
         txt_cancel.setVisibility(View.GONE);
-        rel_dest_ds.setVisibility(View.GONE);
 
         long count = chat_database.get_unread_messages_count(list.get(position).get(GlobalConstants.KeyNames.TripId.toString()), list.get(position).get(GlobalConstants.KeyNames.CustomerId.toString()));
         if (count > 0)
@@ -277,7 +270,7 @@ public class Ride_Details_Adapter extends BaseAdapter
         map.put("IsRegulerBasis", IsRegulerBasis);
         map.put("RoundTrip", RoundTrip);
 
-        String url = "http://112.196.34.42:9091/Trip/TripRequest";
+        String url = GlobalConstants.Url+"Trip/TripRequest";
 
         GlobalConstants.execute(new Super_AsyncTask(con, map, url, new Super_AsyncTask_Interface()
         {
@@ -335,7 +328,7 @@ public class Ride_Details_Adapter extends BaseAdapter
 
         Log.e("Sharan HitService_Adress_message", "" + map);
 
-        String url = "http://112.196.34.42:9091/Trip/LocationShare";
+        String url = GlobalConstants.Url+"Trip/LocationShare";
 
         GlobalConstants.execute(new Super_AsyncTask(con, map, url, new Super_AsyncTask_Interface()
         {
@@ -365,5 +358,8 @@ public class Ride_Details_Adapter extends BaseAdapter
         }, true));
 
     }
+
+
+
 
 }

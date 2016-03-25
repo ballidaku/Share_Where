@@ -135,7 +135,7 @@
 
                         <TextView
                             android:id = "@+id/txt_from"
-                            android:layout_width = "125dp"
+                            android:layout_width = "wrap_content"
                             android:layout_height = "wrap_content"
                             android:layout_marginLeft = "5dp"
                             android:text = "Leaving from"
@@ -145,6 +145,7 @@
                     <LinearLayout
                         android:layout_width = "0dp"
                         android:layout_height = "wrap_content"
+                        android:paddingLeft="5dp"
                         android:layout_weight = "1">
 
                         <ImageView
@@ -152,6 +153,7 @@
                             android:layout_width = "wrap_content"
                             android:layout_height = "wrap_content"
                             android:layout_marginTop = "5dp"
+
                             android:background = "@mipmap/car"/>
 
                         <TextView
@@ -176,7 +178,7 @@
                     android:id = "@+id/rel_user_inform"
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
-                    android:padding = "10dp">
+                    android:padding="10dp">
 
                     <TextView
                         android:id = "@+id/txt_car_name"
@@ -206,7 +208,6 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginBottom="10dp"
                     android:visibility = "visible">
 
                     <LinearLayout
@@ -220,7 +221,8 @@
                             android:layout_height = "wrap_content"
                             android:src = "@android:drawable/ic_menu_edit"
                             android:tint = "@color/black"
-
+                            android:layout_margin="5dp"
+                            android:padding="2dp"
                             app:backgroundTint = "@color/yellow_old"/>
 
                     </LinearLayout>
@@ -238,6 +240,8 @@
                             android:layout_height = "wrap_content"
                             android:src = "@android:drawable/ic_delete"
                             android:tint = "@color/black"
+                            android:layout_margin="5dp"
+                            android:padding="2dp"
                             app:backgroundTint = "@color/yellow_old"/>
                     </LinearLayout>
 

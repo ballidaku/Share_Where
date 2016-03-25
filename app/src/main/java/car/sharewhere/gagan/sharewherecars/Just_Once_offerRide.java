@@ -19,19 +19,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -50,7 +47,7 @@ import java.util.HashMap;
 
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
 import car.sharewhere.gagan.WebServices.GetCityHelperG_;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
 import car.sharewhere.gagan.model.Latlng_data;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
@@ -1405,28 +1402,30 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         {
             if (autocompleteFrom.getText().toString().length() <= 0)
             {
-                snackbar_method("Enter departure point");
-            }
-            else if (autocompleteTo.getText().toString().length() <= 0)
-            {
-                snackbar_method("Enter destination point");
+                snackbar_method("Enter Leaving From");
             }
             else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0") || strng_lat_from.equals(""))
             {
-                snackbar_method("Select leaving point from dropdown only");
+                snackbar_method("Select Leaving From point from dropdown only");
             }
+            else if (autocompleteTo.getText().toString().length() <= 0)
+            {
+                snackbar_method("Enter Leaving To");
+            }
+
             else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0") || strng_lat_to.equals(""))
             {
-                snackbar_method("Select leaving to from dropdown only");
+                snackbar_method("Select Leaving To point from dropdown only");
+
             }
             else if (txt_departure_date.getText().toString().length() <= 0)
             {
-                snackbar_method("Enter departure date");
+                snackbar_method("Enter Departure Date");
             }
             else if (txt_departure_time.getText().toString().length() <= 0)
             {
 
-                snackbar_method("Enter departure time");
+                snackbar_method("Enter Departure Time");
             }
             else if (date_depart.equals(date_latest) && !test.after(testlatest))
             {
@@ -1514,19 +1513,21 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         {
             if (autocompleteFrom.getText().toString().length() <= 0)
             {
-                snackbar_method("Enter departure point");
-            }
-            else if (autocompleteTo.getText().toString().length() <= 0)
-            {
-                snackbar_method("Enter destination point");
+                snackbar_method("Enter Leaving From");
             }
             else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0") || strng_lat_from.equals(""))
             {
-                snackbar_method("Select leaving point from dropdown only");
+                snackbar_method("Select Leaving From point from dropdown only");
             }
+            else if (autocompleteTo.getText().toString().length() <= 0)
+            {
+                snackbar_method("Enter Leaving To");
+            }
+
             else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0") || strng_lat_to.equals(""))
             {
-                snackbar_method("Select leaving to from dropdown only");
+                snackbar_method("Select Leaving To point from dropdown only");
+
             }
             else if (txt_departure_date.getText().toString().length() <= 0)
             {
@@ -1656,7 +1657,7 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(Just_Once_offerRide.this, "http://112.196.34.42:9091/Trip/DeleteTrip?TripId=" + get_trip_id, GlobalConstants.GET_SERVICE_METHOD1, null);
+            Json_AsnycTask task = new Json_AsnycTask(Just_Once_offerRide.this, GlobalConstants.Url+"Trip/DeleteTrip?TripId=" + get_trip_id, GlobalConstants.GET_SERVICE_METHOD1, null);
             task.setOnResultsListener(this);
             task.execute();
             dialog = ProgressDialog.show(Just_Once_offerRide.this, "", "Deleting. Please wait...", true);
@@ -1739,12 +1740,18 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         }
         else
         {
+
+
             if (btn_select_ride.getText().toString().equals("SAVE CHANGES"))
             {
+
+
                 data_ofer_ride.put("TripID", get_trip_id);
-                final Json_AsnycTask tsk = new Json_AsnycTask(Just_Once_offerRide.this, "http://112.196.34.42:9091/Trip/UpdateTrip", GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
+                final Json_AsnycTask tsk = new Json_AsnycTask(Just_Once_offerRide.this, GlobalConstants.Url+"Trip/UpdateTrip", GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
                 tsk.setOnResultsListener(this);
                 tsk.execute();
+
+
                 dialog = ProgressDialog.show(Just_Once_offerRide.this, "", "Loading. Please wait...", true);
                 dialog.setCancelable(false);
                 dialog.show();
@@ -1752,8 +1759,9 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
             else
             {
 
+
                 Log.e("Just data_ofer_ride ", "" + data_ofer_ride);
-                final Json_AsnycTask tsk = new Json_AsnycTask(Just_Once_offerRide.this, GlobalConstants.OFFER_RIDE, GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
+                final Json_AsnycTask tsk = new Json_AsnycTask(Just_Once_offerRide.this, GlobalConstants.Url+"Trip/SaveTrip", GlobalConstants.POST_SERVICE_METHOD1, data_ofer_ride);
                 tsk.setOnResultsListener(this);
                 tsk.execute();
                 dialog = ProgressDialog.show(Just_Once_offerRide.this, "", "Loading. Please wait...", true);
@@ -2190,6 +2198,8 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
                 showdialogcartype();
                 break;
             case R.id.btn_select:
+
+                hide_keyboard(v);
                 method_check_validations();
                 break;
             //            case R.id.img_add_midpnt:
@@ -2220,6 +2230,7 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
                 break;
 
             case R.id.btn_cancel:
+                hide_keyboard(v);
                 btn_cancel_method();
                 break;
             default:
@@ -2281,6 +2292,15 @@ public class Just_Once_offerRide extends AppCompatActivity implements Asnychronu
         String[] stationsName_ = midStations.split(":");
 
         return stationsName_;
+    }
+
+
+    //Hide Keyboard
+
+    public void hide_keyboard(View v)
+    {
+        InputMethodManager imm = (InputMethodManager) con.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
 }

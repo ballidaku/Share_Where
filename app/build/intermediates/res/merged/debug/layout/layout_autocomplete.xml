@@ -6,6 +6,7 @@
     android:background = "@color/white"
     android:gravity = "center_vertical"
     android:padding = "4dp"
+    android:text="sfdsdg grtgfrtgrtgtry trrty  tr rty rty rtyrty rt trb tr tr tytrytrytrytrytyryt yyhthrtyrtyrtyrty rty rty rtyr y tryt t t rt rty rt t rt rt"
     android:textAppearance = "?android:attr/textAppearanceMediumInverse"
     android:textColor = "@color/black"/>
 <!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/layout/layout_autocomplete.xml -->

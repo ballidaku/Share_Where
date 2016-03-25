@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -40,7 +42,7 @@ import java.util.List;
 
 import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
@@ -62,27 +64,31 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
     ConnectivityDetector cd;
 
     CoordinatorLayout coordinatorlayout;
-    Snackbar          snackbar;
-    ProgressDialog    dialog;
+//    Snackbar          snackbar;
+    //    ProgressDialog    dialog;
     Button            btn_ofer_ride;
     Date              current_date;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     MidPointAdapter adater;
 
-    ArrayList<String>   array_image      = new ArrayList<String>();
-    ArrayList<String>   array_name       = new ArrayList<String>();
-    ArrayList<String>   array_number     = new ArrayList<String>();
-    ArrayList<String>   array_customerId = new ArrayList<String>();
-    ArrayList<String>   array_riderID    = new ArrayList<String>();
-    ArrayList<String>   array_driverId   = new ArrayList<String>();
-    ArrayList<String>   array_flag       = new ArrayList<String>();
-    ArrayList<String>   array_requestID  = new ArrayList<String>();
+    ArrayList<String> array_image      = new ArrayList<String>();
+    ArrayList<String> array_name       = new ArrayList<String>();
+    ArrayList<String> array_number     = new ArrayList<String>();
+    ArrayList<String> array_customerId = new ArrayList<String>();
+    ArrayList<String> array_riderID    = new ArrayList<String>();
+    ArrayList<String> array_driverId   = new ArrayList<String>();
+    ArrayList<String> array_flag       = new ArrayList<String>();
+    ArrayList<String> array_requestID  = new ArrayList<String>();
 
     Chat_Database chat_database;
 
-   public static boolean is_ridertab_visible=false;
+    public static boolean is_ridertab_visible = false;
 
-    List<Getter_setter>       list       = new ArrayList<>();
+    List<Getter_setter> list = new ArrayList<>();
+
+    Animation animRotate;
+
+    boolean is_fragment_visible=false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -101,9 +107,10 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
         cd = new ConnectivityDetector(getActivity());
 
-
         findviewbyID(view);
         method_current_time();
+
+        animRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
 
         return view;
     }
@@ -157,6 +164,8 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
     public void setMenuVisibility(final boolean visible)
     {
         super.setMenuVisibility(visible);
+
+        is_fragment_visible=visible;
         if (visible)
         {
             is_ridertab_visible=true;
@@ -167,7 +176,7 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
         }
 
 
-        Log.e("Rider Tab", "" + is_ridertab_visible);
+//        Log.e("Rider Tab", "" + is_ridertab_visible);
     }
 
 
@@ -231,16 +240,18 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
 
         if (!cd.isConnectingToInternet())
         {
-            snackbar_method("No internet connection!");
+            show_message("Your internet connection seems to be disable.");
         }
         else
         {
-            Json_AsnycTask task = new Json_AsnycTask(getActivity(), "http://112.196.34.42:9091/Trip/GetRiderDetail", GlobalConstants.POST_SERVICE_METHOD1, data_home);
+            Json_AsnycTask task = new Json_AsnycTask(getActivity(), GlobalConstants.Url+"Trip/GetRiderDetail", GlobalConstants.POST_SERVICE_METHOD1, data_home);
             task.setOnResultsListener(this);
             task.execute();
-            dialog = ProgressDialog.show(getActivity(), "", "Fetching your rides. Please wait...", true);
+
+            show_message("Fetching your rides. Please wait...");
+           /* dialog = ProgressDialog.show(getActivity(), "", "Fetching your rides. Please wait...", true);
             dialog.setCancelable(true);
-            dialog.show();
+            dialog.show();*/
         }
     }
 
@@ -258,26 +269,21 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
     {
         Log.e("response rider", "Login==" + result);
         {
-            dialog.dismiss();
+//            dialog.dismiss();
 
             if (result != null)
             {
-                if (result.length() == 0)
-                {
-                    list_home_recent.setVisibility(View.GONE);
-                }
+
                 if (result.optString("Message").equals("Internal Server Error."))
                 {
-                    snackbar_method("Try Again!! Internal server error");
+                    show_message("Try Again!! Internal server error");
 
                 }
                 else if (result.optString("Status").equals("success"))
                 {
 
-                    list_home_recent.setVisibility(View.VISIBLE);
-                    txt_no_ride.setVisibility(View.GONE);
-                    img_vw_reload.setVisibility(View.GONE);
-                    btn_ofer_ride.setVisibility(View.GONE);
+
+
                     array_image.clear();
                     array_name.clear();
                     array_number.clear();
@@ -292,19 +298,30 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
                         JSONArray arr = result.getJSONArray("Message");
                         if (arr.length() == 0)
                         {
-                            snackbar_method("No Ride to show");
+//                            snackbar_method("No Ride to show");
 
                             list_home_recent.setVisibility(View.GONE);
                             txt_no_ride.setVisibility(View.VISIBLE);
                             img_vw_reload.setVisibility(View.VISIBLE);
                             btn_ofer_ride.setVisibility(View.VISIBLE);
+
+                            img_vw_reload.clearAnimation();
+
+                            list.clear();
+
+                            show_message("You have no rides to show.");
                         }
                         else
                         {
+                            list_home_recent.setVisibility(View.VISIBLE);
+                            txt_no_ride.setVisibility(View.GONE);
+                            img_vw_reload.setVisibility(View.GONE);
+                            btn_ofer_ride.setVisibility(View.GONE);
+
                             List<Getter_setter> feedItemList     = new ArrayList<>();
                             for (int i = 0; i < arr.length(); i++)
                             {
-                                list_home_recent.setVisibility(View.VISIBLE);
+
 
                                 JSONObject jsonobject = arr.getJSONObject(i);
                                 Getter_setter item = new Getter_setter();
@@ -332,6 +349,7 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
                                 item.setLeaving_from(jsonobject.optString("LeavingFrom"));
                                 item.setMobile_number(jsonobject.optString("CustomerMobileNo"));
                                 item.setTrip_id(jsonobject.optString("TripId"));
+                                item.setTrip_status(jsonobject.optString("TripStatus"));
 
                                 array_requestID.add(jsonobject.optString("RequestId"));
                                 array_flag.add(jsonobject.optString("RequestStatus"));
@@ -386,12 +404,12 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
                 }
                 else if (result.optString("Status").equals("error"))
                 {
-                    snackbar_method("No Ride to show");
+                    show_message("Error in connecting. Please try later.");
                 }
             }
             else
             {
-                snackbar_method("No Ride to show");
+                show_message("Error in connecting. Please try later.");
             }
         }
     }
@@ -491,7 +509,7 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
             TextView txt_vw_ride_type = (TextView) v.findViewById(R.id.txt_vw_ride_type);
             TextView txt_car_name     = (TextView) v.findViewById(R.id.txt_car_name);
             TextView txtv_message_count     = (TextView) v.findViewById(R.id.txtv_message_count);
-            v.findViewById(R.id.txt_flag).setVisibility(View.GONE);
+            TextView  txt_flag         = (TextView) v.findViewById(R.id.txt_flag);
 
             img_driver_img = (ImageView) v.findViewById(R.id.img_driver_img);
             ImageView img_vehicle = (ImageView) v.findViewById(R.id.img_man);
@@ -521,6 +539,9 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
             }
 
 
+
+
+
 //            txt_day.setText(feedItem.getLeaving_date() + "     " + feedItem.getLeaving_time());
 
             if (feedItem.getImage() != null)
@@ -535,11 +556,11 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
             {
                 String is_regular_basis = feedItem.getIs_regular().equals("false") ? "Ride Type" + "\n" + "One Time" : "Riding Type" + "\n" + "Daily";
                 txt_vw_ride_type.setText(is_regular_basis);
-                Log.e("Riders",""+feedItem.getRegulardays());
+//                Log.e("Riders",""+feedItem.getRegulardays());
                 String date_day_str= feedItem.getIs_regular().equals("false")? feedItem.getLeaving_date() : feedItem.getRegulardays();
-                Log.e("Rider ","date_day_str "+date_day_str+" "+feedItem.getLeaving_date()+" gggg "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +" One Time") );
+//                Log.e("Rider ","date_day_str "+date_day_str+" "+feedItem.getLeaving_date()+" gggg "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +" One Time") );
 
-                txt_day.setText(date_day_str+" "+ feedItem.getLeaving_time());
+                txt_day.setText(date_day_str + " " + feedItem.getLeaving_time());
             }
 
             if (feedItem.getLeaving_from() != null)
@@ -550,6 +571,18 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
             {
                 txt_to.setText((feedItem.getLeaving_to()));
             }
+
+
+            if (feedItem.getTrip_status().equals("1"))
+            {
+                txt_flag.setText("Accepted");
+            }
+            if (feedItem.getTrip_status().equals("5"))
+            {
+                txt_flag.setText("Pending");
+            }
+
+
 
             txt_car_name.setText("Type : " + feedItem.getVehicle_type() + "\n" + "Name : " + feedItem.getVehicle_name() + "\n" + "Number : " + feedItem.getVehicle_number());
 
@@ -627,7 +660,7 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
      */
     private void snackbar_method(String text)
     {
-        snackbar = Snackbar.make(coordinatorlayout, text, Snackbar.LENGTH_LONG).setAction("Ok", new View.OnClickListener()
+        /*snackbar = Snackbar.make(coordinatorlayout, text, Snackbar.LENGTH_LONG).setAction("Ok", new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -639,7 +672,12 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
         View     sbView   = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
-        snackbar.show();
+        snackbar.show();*/
+
+        Snackbar.make(coordinatorlayout,text,Snackbar.LENGTH_LONG).show();
+
+        Log.e("Snackbar", "Snackbar Rider");
+
     }
 
 
@@ -689,4 +727,29 @@ public class Rider_Rides_Tab extends Fragment implements Asnychronus_notifier
             refresh();
         }
     }
+
+    public void show_message(String message)
+    {
+        if(list.size() == 0)
+        {
+            txt_no_ride.setText(message);
+
+            if(message.equalsIgnoreCase("Fetching your rides. Please wait..."))
+            {
+                img_vw_reload.startAnimation(animRotate);
+            }
+        }
+        else if(is_fragment_visible==true)
+        {
+            if(message.equalsIgnoreCase("Fetching your rides. Please wait..."))
+            {
+                snackbar_method("Refreshing your rides. Please wait...");
+            }
+            else
+            {
+                snackbar_method(message);
+            }
+        }
+    }
+
 }

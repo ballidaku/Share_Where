@@ -591,14 +591,20 @@ public class Chat_Database extends SQLiteOpenHelper
 
     //    ****************************************************************************************************************************
 
-    public void delete_all_chat(String other_user_id)
+    public void delete_database(Context con)
     {
-        SQLiteDatabase database    = this.getWritableDatabase();
-        String         deleteQuery = "DELETE FROM  chat_data where sender_id='" + other_user_id + " or  reciever_id =" + other_user_id;
 
-        database.execSQL(deleteQuery);
+        con.deleteDatabase(DB_NAME);
+
+
+
+       /* SQLiteDatabase database    = this.getWritableDatabase();
+        database.execSQL("DROP TABLE IF EXISTS tablename");
+
+        database.execSQL("DROP TABLE IF EXISTS tablename");
+
         database.close();
-        Toast.makeText(con, "Deleted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(con, "Deleted", Toast.LENGTH_SHORT).show();*/
     }
 
 

@@ -7,8 +7,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 
-import car.sharewhere.gagan.WebServices.GlobalConstants;
-import car.sharewhere.gagan.sharewherecars.R;
+import car.sharewhere.gagan.utills.GlobalConstants;
 
 /**
  Created by sharan on 10/9/15. */

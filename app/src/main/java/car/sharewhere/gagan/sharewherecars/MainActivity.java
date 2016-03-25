@@ -26,12 +26,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,10 +44,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
+import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
+import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.Location.GiveMeLocationS;
 import car.sharewhere.gagan.Location.Location_Interface;
 import car.sharewhere.gagan.WebServices.Asnychronus_notifier;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.WebServices.Json_AsnycTask;
 import car.sharewhere.gagan.sharewherecars.fragments.AboutUs;
 import car.sharewhere.gagan.sharewherecars.fragments.Find_A_Ride;
@@ -65,10 +66,9 @@ import car.sharewhere.gagan.utills.Utills_G;
 public class MainActivity extends AppCompatActivity implements Asnychronus_notifier
 {
 
-    DrawerLayout             mDrawerLayout;
-    NavigationView           navigationView;
-    SharedPreferences        preferences;
-
+    DrawerLayout      mDrawerLayout;
+    NavigationView    navigationView;
+    SharedPreferences preferences;
 
     String pref_photopath, name_header, customerID, mobile_verify_code, gcm_flag, gcm_pic, gcm_leaving_from, gcm_leaving_to, gcm_name, gcm_trip_id, gcm_customer_id, gcm_mobile, gcm_requestID, gcm_reider_id, gcm_driver_id, gcm_message, gcm_lat, gcm_long, gcm_driver_rider, city_name_to_send, map_locate_intent_string;
 
@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
     CoordinatorLayout coordinatorLayout;
     Snackbar          snackbar;
 
-    ArrayList<String> array_auto = new ArrayList<String>();
     ProgressDialog progress;
 
     //    Utills_G utills_g = new Utills_G();
@@ -95,7 +94,8 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
 
     LocationManager locationManager;
 
-    Dialogs dialogs = new Dialogs();
+    Dialogs         dialogs         = new Dialogs();
+    GlobalConstants globalConstants = new GlobalConstants();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -111,26 +111,17 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
-        //        track = new GPSTracker(MainActivity.this);
-        array_auto.add("I have reached");
-        array_auto.add("When will you reach here");
-        array_auto.add("I will be there in 10 mins");
 
-        /**
-         * @DrawerContents
-         */
 
         int                       width  = getResources().getDisplayMetrics().widthPixels / 2;
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
-        params.width = width+(width/2);
+        params.width = width + (width / 2);
         navigationView.setLayoutParams(params);
         setupDrawerContent(navigationView);
         header = getLayoutInflater().inflate(R.layout.nav_header, navigationView, false);
         navigationView.addHeaderView(header);
 
-        /**
-         * @SharedPref
-         */
+
         preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         my_customer_name = preferences.getString("first_name", null);
@@ -152,9 +143,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             e.printStackTrace();
         }
 
-        /**
-         * @Customize_HeaderText
-         */
+
         img_header_profile = (ImageView) header.findViewById(R.id.imgProfilePic);
         txt_header_name = (TextView) header.findViewById(R.id.txtvUserName);
         if (name_header != null && !name_header.equals(""))
@@ -170,17 +159,20 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             @Override
             public void onClick(View view)
             {
-                mDrawerLayout.closeDrawers();
+
                 transitionToActivity(MainActivity.this, ProfileActivity.class, header.findViewById(R.id.imgProfilePic), header.findViewById(R.id.txtvUserName));
+                mDrawerLayout.closeDrawers();
             }
         });
 
         getIntent_gcm_method();
         city_name_to_send = preferences.getString("current_city", txt_header_name.getText().toString());
 
-        if (gcm_flag != null && !status.equalsIgnoreCase("msg") && !gcm_flag.equalsIgnoreCase("5"))
+        if (gcm_flag != null &&
+                  !status.equalsIgnoreCase("msg") &&
+                  !gcm_flag.equalsIgnoreCase("5"))
         {
-                        Log.e("flag", gcm_flag);
+            Log.e("flag", gcm_flag);
             showdialog();
         }
 
@@ -221,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         super.onResume();
 
         //        utills_g.hide_keyboard(con);
-//        hide_keyborad();
+        //        hide_keyborad();
     }
 
     @Override
@@ -252,9 +244,6 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             }
         });
 
-
-
-
     }
 
     private void getIntent_gcm_method()
@@ -263,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         gcm_pic = getIntent().getStringExtra("customer_pic");
         gcm_name = getIntent().getStringExtra("customer_name");
         gcm_requestID = getIntent().getStringExtra("customer_requestID");
-        gcm_trip_id = getIntent().getStringExtra("customer_trip_id_gcm");
+
         gcm_customer_id = getIntent().getStringExtra("customer_sender_id_gcm");
 
         gcm_lat = getIntent().getStringExtra("customer_Latitude");
@@ -276,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         gcm_reider_id = getIntent().getStringExtra("customer_rider_id");
         gcm_driver_id = getIntent().getStringExtra("customer_driver_id");
 
+        gcm_trip_id = getIntent().getStringExtra(GlobalConstants.KeyNames.TripId.toString());
         status = getIntent().getStringExtra(GlobalConstants.KeyNames.Status.toString());
     }
 
@@ -317,32 +307,8 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                     public void onClick(View view)
                     {
                         Utills_G.global_dialog.dismiss();
-                        try
-                        {
-                            FacebookSdk.sdkInitialize(MainActivity.this);
-                            LoginManager.getInstance().logOut();
 
-                            preferences.edit().remove("email_id").apply();
-                            preferences.edit().remove("first_name").apply();
-                            preferences.edit().remove("last_name").apply();
-                            preferences.edit().remove("mobile_no").apply();
-                            preferences.edit().remove("photo_path").apply();
-                            preferences.edit().remove("about_me").apply();
-                            preferences.edit().remove("car_info").apply();
-                            preferences.edit().remove("photo_path").apply();
-                            preferences.edit().remove("CustomerId").apply();
-                            preferences.edit().remove("photos").apply();
-                            preferences.edit().remove("mobile_verify").apply();
-                            preferences.edit().remove("notification").apply();
-                            preferences.edit().remove("current_city").apply();
-                            preferences.edit().remove("current_lat").apply();
-                            preferences.edit().remove("current_long").apply();
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                        MainActivity.this.finish();
+                        HitSignOut_Request();
                     }
                 });
                 break;
@@ -361,15 +327,15 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
 
     private void transitionToActivity(Activity activity, Class target, View profilePic, View profileName)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             final Pair<View, String>[] pairs = TransitionHelper.createSafeTransitionParticipants(activity, false, new Pair<>(profilePic, activity.getString(R.string.profile_pic_transition)), new Pair<>(profileName, activity.getString(R.string.profile_name_transition)));
             startActivityG(activity, target, pairs);
         }
         else
-        {
+        {*/
             startActivity(new Intent(activity, target));
-        }
+//        }
     }
 
     private void startActivityG(Activity activity, Class target, Pair<View, String>[] pairs)
@@ -432,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             data_mobile.put("RoundTrip", "false");
             data_mobile.put("RequestId", gcm_requestID);
 
-            Json_AsnycTask task = new Json_AsnycTask(MainActivity.this, "http://112.196.34.42:9091/Trip/TripRequest", GlobalConstants.POST_SERVICE_METHOD1, data_mobile);
+            Json_AsnycTask task = new Json_AsnycTask(MainActivity.this, GlobalConstants.Url + "Trip/TripRequest", GlobalConstants.POST_SERVICE_METHOD1, data_mobile);
             task.setOnResultsListener(this);
             task.execute();
             progress = ProgressDialog.show(MainActivity.this, "", "Sending Request. Please wait...", true);
@@ -463,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             data_mobile.put("Flag", Flag);
             data_mobile.put("Status", Status);
             data_mobile.put("RequestId", gcm_requestID);
-            Json_AsnycTask task = new Json_AsnycTask(MainActivity.this, "http://112.196.34.42:9091/Trip/LocationShare", GlobalConstants.POST_SERVICE_METHOD2, data_mobile);
+            Json_AsnycTask task = new Json_AsnycTask(MainActivity.this, GlobalConstants.Url + "Trip/LocationShare", GlobalConstants.POST_SERVICE_METHOD2, data_mobile);
             task.setOnResultsListener(this);
             task.execute();
             progress = ProgressDialog.show(MainActivity.this, "", "Sending... Please wait...", true);
@@ -494,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
     @Override
     public void onResultsSucceeded_Post_Method2(JSONObject result)
     {
-//        Log.e("response noti..lat/long", result.toString());
+        //        Log.e("response noti..lat/long", result.toString());
         progress.dismiss();
         Log.e("response noti..lat/long", result.toString());
     }
@@ -542,9 +508,9 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         dialog.findViewById(R.id.txtv_message_count).setVisibility(View.GONE);
         ImageView img_driver_img = (ImageView) dialog.findViewById(R.id.img_driver_img);
 
-        final TextView   btn_one   = (TextView) dialog.findViewById(R.id.btn_one);
+        final TextView btn_one   = (TextView) dialog.findViewById(R.id.btn_one);
         final TextView btn_two   = (TextView) dialog.findViewById(R.id.btn_two);
-        final TextView   btn_three = (TextView) dialog.findViewById(R.id.btn_three);
+        final TextView btn_three = (TextView) dialog.findViewById(R.id.btn_three);
 
         final RelativeLayout rel_decline = (RelativeLayout) dialog.findViewById(R.id.rel_decline);
 
@@ -595,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             {
                 //Request Cancelled
                 rel_decline.setVisibility(View.GONE);
-                txt_chat.setText("Trip Deleted");
+                txt_chat.setText(gcm_message);
                 btn_one.setText("OK");
             }
             if (gcm_flag.equals("Driver") || gcm_flag.equals("Rider"))
@@ -853,7 +819,7 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
             }
             else
             {
-                Utills_G.showToast("Internet connection seems to be disable.",con,false);
+                Utills_G.showToast("Internet connection seems to be disable.", con, false);
             }
         }
 
@@ -862,12 +828,13 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
     //*********************************************** Fetching and sending location ****************************************************
 
     ProgressDialog fetching_location_dialog;
+
     private void GetLocation()
     {
 
         fetching_location_dialog = ProgressDialog.show(con, "", "Fetching your location.Please wait...", true);
 
-       new GiveMeLocationS(MainActivity.this, new Location_Interface()
+        new GiveMeLocationS(MainActivity.this, new Location_Interface()
         {
             @Override
             public void onTaskCompleted(Location location)
@@ -880,11 +847,11 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                         fetching_location_dialog.dismiss();
                     }
 
-                    Log.e("Sharan Latitude", ""+location.getLatitude());
-                    Log.e("Sharan Longitude", ""+location.getLongitude());
+                    Log.e("Sharan Latitude", "" + location.getLatitude());
+                    Log.e("Sharan Longitude", "" + location.getLongitude());
 
-                    String lat=String.valueOf(location.getLatitude());
-                    String lon=String.valueOf(location.getLongitude());
+                    String lat = String.valueOf(location.getLatitude());
+                    String lon = String.valueOf(location.getLongitude());
 
                     if (gcm_flag.equals("Driver"))
                     {
@@ -896,7 +863,6 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
                     }
                     dialog.dismiss();
 
-
                 }
                 catch (Exception ex)
                 {
@@ -906,5 +872,77 @@ public class MainActivity extends AppCompatActivity implements Asnychronus_notif
         });
 
     }
+
+    //*************************************************** SignOut ******************************************************
+
+    public void HitSignOut_Request()
+    {
+
+        String url = GlobalConstants.Url + "Customer/SignOut?CustomerId=" + customerID;
+
+        GlobalConstants.execute(new Super_AsyncTask(con, url, new Super_AsyncTask_Interface()
+        {
+            @Override
+            public void onTaskCompleted(String output)
+            {
+                try
+                {
+
+                    JSONObject object = new JSONObject(output);
+                    if (object.getString("Status").equalsIgnoreCase("success"))
+                    {
+
+                        Log.e("SignOut", "" + output);
+
+
+
+
+                        try
+                        {
+                            FacebookSdk.sdkInitialize(MainActivity.this);
+                            LoginManager.getInstance().logOut();
+
+                            //                            preferences.edit().clear().apply();
+
+                            preferences.edit().remove("email_id").apply();
+                            preferences.edit().remove("first_name").apply();
+                            preferences.edit().remove("last_name").apply();
+                            preferences.edit().remove("mobile_no").apply();
+                            preferences.edit().remove("photo_path").apply();
+                            preferences.edit().remove("about_me").apply();
+                            preferences.edit().remove("car_info").apply();
+                            preferences.edit().remove("photo_path").apply();
+                            preferences.edit().remove("CustomerId").apply();
+                            preferences.edit().remove("photos").apply();
+                            preferences.edit().remove("mobile_verify").apply();
+                            preferences.edit().remove("notification").apply();
+                            preferences.edit().remove("current_city").apply();
+                            preferences.edit().remove("current_lat").apply();
+                            preferences.edit().remove("current_long").apply();
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        globalConstants.logout(con);
+                        MainActivity.this.finish();
+
+                    }
+                    else
+                    {
+                        GlobalConstants.show_Toast(object.getString("Message"), con);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.e("Exception is", ex.toString());
+                }
+            }
+        }, true));
+
+    }
+
+    //**********************************************************************************************************************
 
 }

@@ -1,6 +1,5 @@
 package car.sharewhere.gagan.sharewherecars;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,7 +36,7 @@ import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
 import car.sharewhere.gagan.Chat.Chat_Activity;
 import car.sharewhere.gagan.Chat.Chat_Database;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.Adapters.Ride_Details_Adapter;
 import car.sharewhere.gagan.utills.Bean_Ride_Details;
 
@@ -54,20 +52,19 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
     SharedPreferences preferences;
     String            customerID, my_customer_name;
 
-    public static String my_customerID,TripID;
+    public static String my_customerID, TripID;
 
-    TextView txt_day_date,txt_driver_name, txt_car_name, txt_mobile_nmber, txt_leaving_from, txt_leaving_to, txt_return_time, txt_departure_date, txt_depart_time, txt_return_date, txt_days, txt_toolbar, txt_gcm_cancel, txt_locatn_send;
-    TextView txt_total_seats, txt_seat_rate, txt_vehicle_type, txt_vehicle_name, txt_vehicle_number,txtv_message_count;
-    ImageView    profile_img,imgv_call;
+    TextView txt_day_date, txt_driver_name, txt_car_name, txt_mobile_nmber, txt_leaving_from, txt_leaving_to, txt_return_time, txt_departure_date, txt_depart_time, txt_return_date, txt_days, txt_toolbar, txt_gcm_cancel, txt_locatn_send;
+    TextView txt_total_seats, txt_seat_rate, txt_vehicle_type, txt_vehicle_name, txt_vehicle_number, txtv_message_count;
+    ImageView profile_img, imgv_call;
 
     LinearLayout lnr_mid_point, lnr_date, lnr_time, lay_mid_points;
 
-     CardView cardv_profile,cardv_departure_details,cardv_return_details,cardv_find_regular/*,cardv_users_request*/;
-
+    CardView cardv_profile, cardv_departure_details, cardv_return_details, cardv_find_regular/*,cardv_users_request*/;
 
     CheckBox chk_sunday, chk_monday, chk_tuesday, chk_wednsday, chk_thursday, chk_Friday, chk_saturday;
-    TextView         btn_request;
-    TextView btn_decline;
+    TextView       btn_request;
+    TextView       btn_decline;
     RelativeLayout rel_decline;
     ListView       list_my_rides_users;
     String fromWhere = "";
@@ -75,13 +72,8 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
     //*************************************New ********************************
 
-
-    LinearLayout lnr_returndate,lnr_return_time,return_date_lnr;
-    TextView txt_return_day_date,txt_return_date_day,txt_retrn_time,txt_return_time_;
-
-
-
-
+    LinearLayout lnr_returndate, lnr_return_time, return_date_lnr;
+    TextView txt_return_day_date, txt_return_date_day, txt_retrn_time, txt_return_time_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -101,11 +93,15 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         customerID = getIntent().getStringExtra(GlobalConstants.KeyNames.CustomerId.toString());
         Log.e("Ride_Details", "   my_customerID  " + my_customerID);
         Log.e("Ride_Details", " customerID    " + customerID);
+
         TripID = getIntent().getStringExtra(GlobalConstants.KeyNames.TripId.toString());
+
+        Log.e("Trip ID in Ride Details", "" + TripID);
 
         try
         {
             fromWhere = getIntent().getStringExtra(GlobalConstants.KeyNames.fromWhere.toString());
+
         }
         catch (Exception e)
         {
@@ -160,7 +156,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         txt_vehicle_name = (TextView) findViewById(R.id.txt_vehicle_name);
         txt_vehicle_number = (TextView) findViewById(R.id.txt_vehicle_number);
         txt_vehicle_type = (TextView) findViewById(R.id.txt_vehicle_type);
-        txtv_message_count     = (TextView)findViewById(R.id.txtv_message_count);
+        txtv_message_count = (TextView) findViewById(R.id.txtv_message_count);
 
         profile_img = (ImageView) findViewById(R.id.profile_img);
         imgv_call = (ImageView) findViewById(R.id.imgv_call);
@@ -169,9 +165,6 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         btn_decline = (TextView) findViewById(R.id.btn_decline);
         rel_decline = (RelativeLayout) findViewById(R.id.rel_decline);
 
-
-
-
         lnr_date = (LinearLayout) findViewById(R.id.lnr_date);
         lnr_time = (LinearLayout) findViewById(R.id.lnr_time);
 
@@ -179,10 +172,9 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         cardv_departure_details = (CardView) findViewById(R.id.cardv_departure_details);
         cardv_return_details = (CardView) findViewById(R.id.cardv_return_details);
         cardv_find_regular = (CardView) findViewById(R.id.cardv_find_regular);
-//        cardv_users_request = (CardView) findViewById(R.id.cardv_users_request);
+        //        cardv_users_request = (CardView) findViewById(R.id.cardv_users_request);
 
         lnr_mid_point = (LinearLayout) findViewById(R.id.lnr_mid_point);
-
 
         lay_mid_points = (LinearLayout) findViewById(R.id.lay_mid_points);
 
@@ -195,8 +187,6 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         chk_saturday = (CheckBox) findViewById(R.id.chk_saturday);
 
         list_my_rides_users = (ListView) findViewById(R.id.list_my_rides_users);
-
-
 
         txt_gcm_cancel.setPaintFlags(txt_gcm_cancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         txt_locatn_send.setPaintFlags(txt_locatn_send.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -215,14 +205,11 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         cardv_find_regular.setVisibility(View.GONE);
         cardv_departure_details.setVisibility(View.GONE);
 
-//        cardv_users_request.setVisibility(View.GONE);
+        //        cardv_users_request.setVisibility(View.GONE);
 
-//        btn_decline.setVisibility(View.GONE);
+        //        btn_decline.setVisibility(View.GONE);
         rel_decline.setVisibility(View.GONE);
         btn_request.setVisibility(View.GONE);
-
-
-
 
         lnr_returndate = (LinearLayout) findViewById(R.id.lnr_returndate);
         lnr_return_time = (LinearLayout) findViewById(R.id.lnr_return_time);
@@ -258,28 +245,28 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public  void call_back()
+    public void call_back()
     {
 
-        if(fromWhere == null || fromWhere.isEmpty())
+        if (fromWhere == null || fromWhere.isEmpty())
         {
             finish();
         }
-        else if(fromWhere.equals(GlobalConstants.KeyNames.Notification.toString()))
+        else if (fromWhere.equals(GlobalConstants.KeyNames.Notification.toString()))
         {
-            Intent i=new Intent(con, MainActivity.class);
-            i.putExtra(GlobalConstants.KeyNames.fromWhere.toString(),GlobalConstants.KeyNames.Notification.toString());
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        }
-        else if(fromWhere.equals(GlobalConstants.KeyNames.Messages.toString()))
-        {
-            Intent i=new Intent(con, MainActivity.class);
-            i.putExtra(GlobalConstants.KeyNames.fromWhere.toString(),GlobalConstants.KeyNames.Messages.toString());
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        }
 
+            Intent i = new Intent(con, MainActivity.class);
+            i.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }
+        else if (fromWhere.equals(GlobalConstants.KeyNames.Messages.toString()))
+        {
+            Intent i = new Intent(con, MainActivity.class);
+            i.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Messages.toString());
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }
 
     }
 
@@ -313,7 +300,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
                 if (btn_request.getText().toString().equals("Send Request"))
                 {
                     Log.e("fff", "NewRequest");
-                    HitService_Request("NewRequest",1);
+                    HitService_Request("NewRequest", 1);
                 }
                 else if (btn_request.getText().toString().equals("Ask location on map"))
                 {
@@ -330,7 +317,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
             case R.id.txt_gcm_cancel:
 
-                HitService_Request("CancelByRider",0);
+                HitService_Request("CancelByRider", 0);
 
                 break;
 
@@ -339,10 +326,9 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
                 if (btn_decline.getText().toString().equals("Message"))
                 {
 
-
-                    Intent i=new Intent(con, Chat_Activity.class);
-                    i.putExtra(GlobalConstants.KeyNames.RiderId.toString(),my_customerID);
-                    i.putExtra(GlobalConstants.KeyNames.DriverId.toString(),bean_ride_details.getCustomerId());
+                    Intent i = new Intent(con, Chat_Activity.class);
+                    i.putExtra(GlobalConstants.KeyNames.RiderId.toString(), my_customerID);
+                    i.putExtra(GlobalConstants.KeyNames.DriverId.toString(), bean_ride_details.getCustomerId());
                     i.putExtra(GlobalConstants.KeyNames.CustomerPhoto.toString(), bean_ride_details.getCustomerPhoto());
                     i.putExtra(GlobalConstants.KeyNames.TripId.toString(), bean_ride_details.getTripId());
                     i.putExtra(GlobalConstants.KeyNames.RequestId.toString(), bean_ride_details.getRequestId());
@@ -399,14 +385,12 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         // Departure details will be show for both Driver and Rider
         cardv_departure_details.setVisibility(View.VISIBLE);
 
-
-        if(bean_ride_details.getIsRegulerBasis().equals("false"))
+        if (bean_ride_details.getIsRegulerBasis().equals("false"))
         {
-            if(bean_ride_details.getRoundTrip().equalsIgnoreCase("true"))
+            if (bean_ride_details.getRoundTrip().equalsIgnoreCase("true"))
             {
                 lnr_returndate.setVisibility(ViewGroup.VISIBLE);
                 lnr_return_time.setVisibility(ViewGroup.VISIBLE);
-
 
                 txt_return_date_day.setText(bean_ride_details.getReturnDate());
                 txt_return_time_.setText(bean_ride_details.getReturnTime());
@@ -418,7 +402,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         else
         {
 
-            if(bean_ride_details.getRoundTrip().equalsIgnoreCase("true"))
+            if (bean_ride_details.getRoundTrip().equalsIgnoreCase("true"))
             {
                 lnr_returndate.setVisibility(ViewGroup.VISIBLE);
                 lnr_return_time.setVisibility(ViewGroup.VISIBLE);
@@ -437,7 +421,6 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
         }
 
-
         if (!my_customerID.equals(bean_ride_details.getCustomerId())) // if i am rider
         {
             txt_toolbar.setText("Owner Profile");
@@ -445,7 +428,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
             cardv_profile.setVisibility(View.VISIBLE);
 
             cardv_find_regular.setVisibility(View.VISIBLE);
-//            lnr_vw_phn_call.setVisibility(View.VISIBLE);
+            //            lnr_vw_phn_call.setVisibility(View.VISIBLE);
 
             //image
             if (!bean_ride_details.getCustomerPhoto().equals("null") || bean_ride_details.getCustomerPhoto().isEmpty())
@@ -491,7 +474,6 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
                 txt_return_time.setText(bean_ride_details.getReturnTime());
 
-
                 //HideDeparture Details Return DAte and Time LinearLayout
                 lnr_returndate.setVisibility(ViewGroup.GONE);
                 lnr_return_time.setVisibility(ViewGroup.GONE);
@@ -512,24 +494,31 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
                 cardv_find_regular.setVisibility(View.GONE);
             }
 
-            /*TripStatus { Accept = 1, Decline = 2, New = 3, NotRespond = 4 ,NewRequest=5,CancelByRider=6,CancelByDriver=7}*/
+            /*TripStatus {
+            Accept = 1,
+            Decline = 2,
+            New = 3,0
+            NotRespond = 4
+             ,NewRequest=5,
+             CancelByRider=6,
+             CancelByDriver=7}*/
 
-            boolean is_you_send_request=false;
-            int flag_indes=0;
+            boolean is_you_send_request = false;
+            int flag_indes = 0;
 
-            ArrayList<HashMap<String,String>> local_list=bean_ride_details.getRequestAcceptModelList();
+            ArrayList<HashMap<String, String>> local_list = bean_ride_details.getRequestAcceptModelList();
 
             for (int i = 0; i < local_list.size(); i++)
             {
-                if(local_list.get(i).get("CustomerId").equals(my_customerID))
+                if (local_list.get(i).get("CustomerId").equals(my_customerID))
                 {
-                    is_you_send_request=true;
-                    flag_indes=i;
+                    is_you_send_request = true;
+                    flag_indes = i;
                     break;
                 }
             }
 
-            if(is_you_send_request)
+            if (is_you_send_request)
             {/*
                 if (bean_ride_details.getTripStatus().equals("0")) // No reqest is there
                 {
@@ -537,33 +526,34 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
                     btn_decline.setVisibility(View.GONE);
                     btn_request.setText("Send Request");
                 }
-                else*/ if (local_list.get(flag_indes).get("Flag").equals("1"))  //Accepted
-            {
+                else*/
+                if (local_list.get(flag_indes).get("Flag").equals("1"))  //Accepted
+                {
                     btn_request.setVisibility(View.VISIBLE);
-                rel_decline.setVisibility(View.VISIBLE);
-//                    btn_decline.setVisibility(View.VISIBLE);
+                    rel_decline.setVisibility(View.VISIBLE);
+                    //                    btn_decline.setVisibility(View.VISIBLE);
                     txt_gcm_cancel.setVisibility(View.VISIBLE);
 
                     btn_request.setText("Ask location on map");
                     btn_decline.setText("Message");
 
-                long count =chat_database.get_unread_messages_count(TripID, "");
-                if(count>0)
-                {
-                    txtv_message_count.setVisibility(View.VISIBLE);
-                    txtv_message_count.setText(""+count);
-                }
-                else
-                {
-                    txtv_message_count.setVisibility(View.GONE);
-                }
+                    long count = chat_database.get_unread_messages_count(TripID, "");
+                    if (count > 0)
+                    {
+                        txtv_message_count.setVisibility(View.VISIBLE);
+                        txtv_message_count.setText("" + count);
+                    }
+                    else
+                    {
+                        txtv_message_count.setVisibility(View.GONE);
+                    }
 
                 }
                 else if (local_list.get(flag_indes).get("Flag").equals("3") || local_list.get(flag_indes).get("Flag").equals("2"))  // Decline/New
                 {
                     btn_request.setVisibility(View.VISIBLE);
                     btn_request.setText("Send Request");
-//                    btn_decline.setVisibility(View.GONE);
+                    //                    btn_decline.setVisibility(View.GONE);
                     rel_decline.setVisibility(View.GONE);
 
                 }
@@ -571,28 +561,34 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
                 else if (local_list.get(flag_indes).get("Flag").equals("5"))   //New Request send by you and its response pending
                 {
                     btn_request.setVisibility(View.VISIBLE);
-//                    btn_decline.setVisibility(View.GONE);
+                    //                    btn_decline.setVisibility(View.GONE);
                     rel_decline.setVisibility(View.GONE);
                     btn_request.setText("Response Pending");
                 }
+            }
+            else if(bean_ride_details.getTripStatus().equals("8")) //Deleted by Driver
+            {
+                txt_gcm_cancel.setVisibility(View.INVISIBLE);
+                btn_request.setVisibility(View.VISIBLE);
+                //                btn_decline.setVisibility(View.GONE);
+                rel_decline.setVisibility(View.GONE);
+                btn_request.setText("Trip Deleted By Driver");
             }
             else
             {
                 txt_gcm_cancel.setVisibility(View.INVISIBLE);
                 btn_request.setVisibility(View.VISIBLE);
-//                btn_decline.setVisibility(View.GONE);
+                //                btn_decline.setVisibility(View.GONE);
                 rel_decline.setVisibility(View.GONE);
                 btn_request.setText("Send Request");
             }
-
-
 
         }
         else  // If i am driver
         {
             txt_toolbar.setText("Ride Details");
 
-//            btn_decline.setVisibility(View.GONE);
+            //            btn_decline.setVisibility(View.GONE);
             rel_decline.setVisibility(View.GONE);
             btn_request.setVisibility(View.GONE);
 
@@ -603,21 +599,18 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
             if (RequestAcceptModelList_list.size() > 0)
             {
 
-                Log.e("RequestAcceptModelList_list.size()",""+RequestAcceptModelList_list.size());
+                Log.e("RequestAcceptModelList_list.size()", "" + RequestAcceptModelList_list.size());
                 list_my_rides_users.setVisibility(View.VISIBLE);
-//                cardv_users_request.setVisibility(View.VISIBLE);
+                //                cardv_users_request.setVisibility(View.VISIBLE);
                 Ride_Details_Adapter adapter = new Ride_Details_Adapter(con, RequestAcceptModelList_list, bean_ride_details.getIsRegulerBasis(), bean_ride_details.getRoundTrip());
                 list_my_rides_users.setAdapter(adapter);
-                GlobalConstants.setListViewHeightBasedOnItems(list_my_rides_users,0);
+                GlobalConstants.setListViewHeightBasedOnItems(list_my_rides_users, 0);
 
             }
             else
             {
                 list_my_rides_users.setVisibility(View.GONE);
             }
-
-
-
 
         }
 
@@ -666,13 +659,9 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
             txt_departure_date.setText(bean_ride_details.getRegulerDays());
         }*/
 
-
-
-
-
         txt_depart_time.setText(bean_ride_details.getDepartureTime());
         txt_total_seats.setText(bean_ride_details.getNoOfSeats());
-        txt_seat_rate.setText(preferences.getString("currency_symbol", "\u20B9") + bean_ride_details.getRatePerSeat());
+        txt_seat_rate.setText(preferences.getString("currency_symbol", "\u20B9") +" "+ bean_ride_details.getRatePerSeat());
 
         txt_vehicle_type.setText(bean_ride_details.getVehicleType());
         txt_vehicle_name.setText(bean_ride_details.getVehicleName());
@@ -687,7 +676,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
     public void Get_Ride_Details_By_TripID()
     {
 
-        String url = "http://112.196.34.42:9091/Trip/GetTripByID?TripId=" + TripID + "&CustomerId=" + customerID;
+        String url = GlobalConstants.Url + "Trip/GetTripByID?TripId=" + TripID + "&CustomerId=" + customerID;
 
         GlobalConstants.execute(new Super_AsyncTask(con, url, new Super_AsyncTask_Interface()
         {
@@ -759,7 +748,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
     //**********************************************************************************************************************
 
-    public void HitService_Request(final String request_type,int refresh_screenflag)
+    public void HitService_Request(final String request_type, int refresh_screenflag)
     {
 
         HashMap<String, String> map = new HashMap<>();
@@ -768,8 +757,9 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         map.put("CustomerId", my_customerID);
         map.put("RequestType", request_type);
 
-        if(refresh_screenflag==1){
-            map.put("RequestID","0");
+        if (refresh_screenflag == 1)
+        {
+            map.put("RequestID", "0");
         }
         else
         {
@@ -780,7 +770,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
         Log.e("Sharan HitService_Request", "" + map);
 
-        String url = "http://112.196.34.42:9091/Trip/TripRequest";
+        String url = GlobalConstants.Url + "Trip/TripRequest";
 
         GlobalConstants.execute(new Super_AsyncTask(con, map, url, new Super_AsyncTask_Interface()
         {
@@ -796,11 +786,11 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
                         if (request_type.equals("CancelByRider"))
                         {
-                            chat_database.delete_chat(bean_ride_details.getTripId(),my_customerID);
+                            chat_database.delete_chat(bean_ride_details.getTripId(), my_customerID);
 
                             finish();
                         }
-                        else if(request_type.equals("NewRequest"))
+                        else if (request_type.equals("NewRequest"))
                         {
                             btn_request.setText("Response Pending");
                         }
@@ -839,7 +829,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
 
         Log.e("Sharan HitService_Adress_message", "" + map);
 
-        String url = "http://112.196.34.42:9091/Trip/LocationShare";
+        String url = GlobalConstants.Url + "Trip/LocationShare";
 
         GlobalConstants.execute(new Super_AsyncTask(con, map, url, new Super_AsyncTask_Interface()
         {
@@ -878,21 +868,24 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
     protected void onResume()
     {
 
+        Log.e("IS Ride Details Opened In Ride Details Before", "" + preferences.getBoolean("is_ridedetails_opened", false));
         preferences.edit().putBoolean("is_ridedetails_opened", true).apply();
 
+        Log.e("IS Ride Details Opened In Ride Details After", "" + preferences.getBoolean("is_ridedetails_opened", false));
+
         refresh();
-        Log.e("onResume"," is_receiver_registered "+is_receiver_registered+"nnnnnn "+receiver);
+        Log.e("onResume", " is_receiver_registered " + is_receiver_registered + "nnnnnn " + receiver);
         super.onResume();
 
-        if(!is_receiver_registered)
+        if (!is_receiver_registered)
         {
-            if(receiver==null)
+            if (receiver == null)
             {
 
-                receiver=new RideDetails_BroadcastReceiver();
+                receiver = new RideDetails_BroadcastReceiver();
             }
-            this.registerReceiver(receiver,new IntentFilter(Utills_G.ridedetails));
-            is_receiver_registered=true;
+            this.registerReceiver(receiver, new IntentFilter(Utills_G.ridedetails));
+            is_receiver_registered = true;
         }
     }
 
@@ -907,9 +900,9 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy()
     {
 
-        preferences.edit().putBoolean("is_ridedetails_opened", false).apply();
+        //        preferences.edit().putBoolean("is_ridedetails_opened", false).apply();
         super.onDestroy();
-        if(receiver!=null)
+        if (receiver != null)
         {
             this.unregisterReceiver(receiver);
         }
@@ -921,7 +914,7 @@ public class Ride_Details extends AppCompatActivity implements View.OnClickListe
         public void onReceive(Context context, Intent intent)
         {
 
-            Log.e("Reached"," EEEEEEEEEE");
+            Log.e("Reached", " EEEEEEEEEE");
             refresh();
         }
     }

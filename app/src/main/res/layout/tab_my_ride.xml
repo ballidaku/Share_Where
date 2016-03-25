@@ -44,7 +44,7 @@
                     android:layout_below="@+id/txt_no_ride"
                     android:layout_marginTop="100dp"
                     android:layout_centerHorizontal="true"
-                    android:background = "@mipmap/reload"/>
+                    android:src = "@mipmap/reload"/>
 
             </RelativeLayout>
             <Button

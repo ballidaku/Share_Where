@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,9 +22,8 @@ import java.util.HashMap;
 
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.Adapters.Chat_sharan_Adapter;
-import car.sharewhere.gagan.sharewherecars.MainActivity;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
@@ -147,6 +145,9 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
 
     public void set_chat_data(ArrayList<HashMap<String, String>> list, String who)
     {
+
+
+//        Log.e("Chat Data",""+list);
         try
         {
             if (this.list.size() == 0)
@@ -279,7 +280,7 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
 
         Log.e("Sharan HitService_Adress_message", "" + map);
 
-        String url = "http://112.196.34.42:9091/Trip/LocationShare";
+        String url = GlobalConstants.Url+"Trip/LocationShare";
 
         GlobalConstants.execute(new Super_AsyncTask(con, map, url, new Super_AsyncTask_Interface()
         {
@@ -351,7 +352,7 @@ public class Chat_Activity extends AppCompatActivity implements View.OnClickList
     {
         super.onDestroy();
 
-        preferences.edit().putBoolean("is_chat_opened", false).apply();
+//        preferences.edit().putBoolean("is_chat_opened", false).apply();
 
         if (receiver != null)
         {

@@ -1,8 +1,5 @@
 package car.sharewhere.gagan.utills;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +7,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
 
 /**

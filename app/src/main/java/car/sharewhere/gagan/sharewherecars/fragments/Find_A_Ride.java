@@ -1,7 +1,6 @@
 package car.sharewhere.gagan.sharewherecars.fragments;
 
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,15 +18,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -41,25 +43,24 @@ import java.util.HashMap;
 
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask;
 import car.sharewhere.gagan.Async_Thread.Super_AsyncTask_Interface;
-import car.sharewhere.gagan.Location.GetCurrentLocation;
-import car.sharewhere.gagan.Location.Location_Notifier;
+import car.sharewhere.gagan.Location.GiveMeLocationS;
+import car.sharewhere.gagan.Location.Location_Interface;
 import car.sharewhere.gagan.WebServices.GetCityHelperG_;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.model.Latlng_data;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
-import car.sharewhere.gagan.utills.AppLocationService;
 import car.sharewhere.gagan.utills.Bean_Ride_Details;
 import car.sharewhere.gagan.utills.CircleTransform;
 import car.sharewhere.gagan.utills.ConnectivityDetector;
 import car.sharewhere.gagan.utills.Utills_G;
 
-public class Find_A_Ride extends FragmentG implements View.OnClickListener, Location_Notifier
+public class Find_A_Ride extends FragmentG implements View.OnClickListener
 {
     TextView             txt_date;
     ImageView            img_date;
     AutoCompleteTextView autocompleteTo, autocompleteFrom;
-    ListView             list_find_ride;
+//    ListView             list_find_ride;
     FloatingActionButton fab_search;
 
     Calendar c;
@@ -72,7 +73,6 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
     //    ProgressDialog       dialog;
     Snackbar             snackbar;
     CoordinatorLayout    coordinatorLayout;
-    AppLocationService   appLocationService;
 
     GetCityHelperG_ GET_CITY_G;
     String strng_lat_from  = "0.0";
@@ -81,10 +81,13 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
     String strng_long_to   = "0.0";
     View view;
 
-    MidPointAdapter adater;
+//    MidPointAdapter adater;
     String          my_customerID;
 
-    private GetCurrentLocation google_location;
+    LinearLayout llay_rides;
+//    int last_click_on_item=0;
+    private static  int sy=0;
+    ScrollView scrollView;
 
     public Find_A_Ride()
     {
@@ -98,6 +101,11 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
 
         setActionBar(view, "Find a Ride");
         findViewbyID(view);
+
+//        last_click_on_item=0;
+        sy=0;
+
+        Log.e("Find Ride","onCreate");
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -147,54 +155,24 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
             photos_show = "no";
         }
 
-        appLocationService = new AppLocationService(getActivity());
+        GetLocation();
 
-        google_location = new GetCurrentLocation(getActivity());
-        google_location.setOnResultsListener(this);
-        if (cd.isConnectingToInternet() && google_location.mGoogleApiClient != null)
-        {
-            google_location.mGoogleApiClient.connect();
+        method_current_time();
 
-        }
-        else
+
+        String current_city = preferences.getString("current_city", "");
+        String current_lat  = preferences.getString("current_lat", "");
+        String current_long = preferences.getString("current_long", "");
+
+        if (current_city.length() > 0)
         {
-            Toast.makeText(getActivity(), "Check your internet connection", Toast.LENGTH_LONG).show();
+            autocompleteFrom.setText(current_city);
+            strng_lat_from = current_lat;
+            strng_long_from = current_long;
+            autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
         }
 
         return view;
-    }
-
-    @Override
-    public void LOCATION_NOTIFIER(Location latlng)
-    {
-        String address_current = "";
-
-
-        if (cd.isConnectingToInternet())
-        {
-
-            address_current = Utills_G.address(getActivity(), latlng.getLatitude(), latlng.getLongitude()).trim();
-            /*address_current = address_current.trim().replace(" ", "");
-            address_current.replace(System.getProperty("line.separator"), "");*/
-
-            SharedPreferences.Editor editor = preferences.edit();
-            if (!address_current.equals(""))
-            {
-                editor.putString("current_city", address_current);
-            }
-
-            Log.e("Current city in Find a Ride",""+address_current);
-
-            editor.putString("current_lat", String.valueOf(latlng.getLatitude()));
-            editor.putString("current_long", String.valueOf(latlng.getLongitude()));
-            editor.apply();
-
-
-        }
-        else
-        {
-            Toast.makeText(getActivity(), "No internet connection!", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -226,24 +204,12 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
     {
         super.onResume();
 
-        String current_city = preferences.getString("current_city", "");
-        String current_lat  = preferences.getString("current_lat", "");
-        String current_long = preferences.getString("current_long", "");
-
-        if (current_city.length() > 0)
-        {
-            autocompleteFrom.setText(current_city);
-            strng_lat_from = current_lat;
-            strng_long_from = current_long;
-            autocompleteFrom.setSelection(autocompleteFrom.getText().toString().length());
-        }
-
         if (autocompleteTo.getText().toString().length() < 1)
         {
             HitService_ByLat_Long();
         }
 
-        method_current_time();
+
     }
 
     private void method_current_time()
@@ -300,10 +266,13 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
         autocompleteFrom = (AutoCompleteTextView) view.findViewById(R.id.autocompleteFrom);
         txt_date = (TextView) view.findViewById(R.id.txt_date);
         fab_search = (FloatingActionButton) view.findViewById(R.id.fab_search);
-        list_find_ride = (ListView) view.findViewById(R.id.list_find_ride);
+//        list_find_ride = (ListView) view.findViewById(R.id.list_find_ride);
         img_date = (ImageView) view.findViewById(R.id.img_date);
 
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
+
+        scrollView=(ScrollView)view.findViewById(R.id.scrollView);
+        llay_rides = (LinearLayout) view.findViewById(R.id.llay_rides);
 
         view.findViewById(R.id.llay_date).setOnClickListener(this);
         view.findViewById(R.id.img_date_cancel).setOnClickListener(this);
@@ -380,7 +349,46 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
             }
         });
 
-        list_find_ride.setOnItemClickListener(new AdapterView.OnItemClickListener()
+   /*     scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener()
+        {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY)
+            {
+                last_click_on_item = scrollY;
+
+                Log.e("scrollX", "" + scrollX);
+                Log.e("scrollY", "" + scrollY);
+                Log.e("oldScrollX", "" + oldScrollX);
+                Log.e("oldScrollY", "" + oldScrollY);
+            }
+        });*/
+
+       /* scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener()
+        {
+
+            @Override
+            public void onScrollChanged()
+            {
+
+                int scrollX = scrollView.getScrollX(); //for horizontalScrollView
+                int scrollY = scrollView.getScrollY(); //for verticalScrollView
+
+                Log.e("scrollX", "" + scrollX);
+                Log.e("scrollY", "" + scrollY);
+
+                last_click_on_item = scrollY;
+
+
+
+
+            }
+        });
+*/
+
+
+
+
+     /*   list_find_ride.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -397,7 +405,7 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
                 startActivity(is);
                 getActivity().overridePendingTransition(0, R.anim.push_down_out);
             }
-        });
+        });*/
 
         /**
          * @SearcRideClick
@@ -407,32 +415,32 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
             @Override
             public void onClick(View v)
             {
-                InputMethodManager imm = (InputMethodManager) getActivity().
-                          getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                if (autocompleteTo.getText().toString().length() <= 0)
+                hide_keyboard(v);
+
+                if (autocompleteFrom.getText().toString().length() <= 0)
                 {
-                    snackbar_method_with_view("Enter Destination", v);
-                }
-                else if (autocompleteFrom.getText().toString().length() <= 0)
-                {
-                    snackbar_method_with_view("Enter leaving point", v);
+                    snackbar_method_with_view("Enter Leaving From", v);
                 }
                 else if (strng_lat_from.equals("0.0") || strng_lat_from.equals("0") || strng_lat_from.equals(""))
                 {
-                    snackbar_method_with_view("Select leaving point from dropdown only", v);
+                    snackbar_method_with_view("Select Leaving From point from dropdown only", v);
                 }
+                else if (autocompleteTo.getText().toString().length() <= 0)
+                {
+                    snackbar_method_with_view("Enter Leaving To", v);
+                }
+
                 else if (strng_lat_to.equals("0.0") || strng_lat_to.equals("0") || strng_lat_to.equals(""))
                 {
-                    snackbar_method_with_view("Select leaving point from dropdown only", v);
+                    snackbar_method_with_view("Select Leaving To point from dropdown only", v);
 
                 }
-                else if (txt_date.getText().toString().length() <= 0)
+                /*else if (txt_date.getText().toString().length() <= 0)
                 {
                     snackbar_method_with_view("Enter date to search for", v);
 
-                }
+                }*/
                 else
                 {
 
@@ -440,8 +448,6 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
                 }
             }
         });
-
-
 
     }
 
@@ -479,17 +485,6 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
     private void HitService_FindRide()
     {
 
-        HashMap<String, String> data_find_ride = new HashMap<>();
-
-        data_find_ride.put("LeavingFrom", autocompleteFrom.getText().toString());
-        data_find_ride.put("LeavingTo", autocompleteTo.getText().toString());
-        data_find_ride.put("LeavingFromLat", strng_lat_from);
-        data_find_ride.put("LeavingFromLong", strng_long_from);
-        data_find_ride.put("LeavingToLat", strng_lat_to);
-        data_find_ride.put("LeavingToLong", strng_long_to);
-        data_find_ride.put("DepartureDate", txt_date.getText().toString().trim());
-        data_find_ride.put("CustomerId", customerID);
-
         if (!cd.isConnectingToInternet())
         {
             snackbar_method("No internet connection!");
@@ -497,14 +492,20 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
         }
         else
         {
-            /*Json_AsnycTask task = new Json_AsnycTask(getActivity(), GlobalConstants.FIND_A_RIDE, GlobalConstants.POST_SERVICE_METHOD1, data_find_ride);
-            task.setOnResultsListener(this);
-            task.execute();
-            dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait...", true);
-            dialog.setCancelable(false);
-            dialog.show();*/
+            HashMap<String, String> data_find_ride = new HashMap<>();
 
-            Find_Ride_Details(GlobalConstants.FIND_A_RIDE, data_find_ride);
+            data_find_ride.put("LeavingFrom", autocompleteFrom.getText().toString());
+            data_find_ride.put("LeavingTo", autocompleteTo.getText().toString());
+            data_find_ride.put("LeavingFromLat", strng_lat_from);
+            data_find_ride.put("LeavingFromLong", strng_long_from);
+            data_find_ride.put("LeavingToLat", strng_lat_to);
+            data_find_ride.put("LeavingToLong", strng_long_to);
+            data_find_ride.put("DepartureDate", txt_date.getText().toString().trim());
+            data_find_ride.put("CustomerId", customerID);
+
+            Log.e("map", "" + data_find_ride);
+
+            Find_Ride_Details(GlobalConstants.Url + "Trip/GetAllTrips", data_find_ride);
         }
     }
 
@@ -517,14 +518,9 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
         }
         else
         {
-            String url = "http://112.196.34.42:9091/Trip/GetTripByLatLong?Latitude=" + preferences.getString("current_lat", "0.0") +
+            String url = GlobalConstants.Url + "Trip/GetTripByLatLong?Latitude=" + preferences.getString("current_lat", "0.0") +
                       "&Longitude=" + preferences.getString("current_long", "0.0") + "&CustomerId=" + customerID;
             Log.e("url==", url);
-
-          /*  Json_AsnycTask task = new Json_AsnycTask(getActivity(), "http://112.196.34.42:9091/Trip/GetTripByLatLong?Latitude=" + track.getLatitude() +
-                      "&Longitude=" + track.getLongitude() + "&CustomerId=" + customerID, GlobalConstants.GET_SERVICE_METHOD1, null);
-            task.setOnResultsListener(this);
-            task.execute();*/
 
             HashMap<String, String> data_find_ride = new HashMap<>();
 
@@ -537,6 +533,8 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
 
     public void Find_Ride_Details(String url, HashMap<String, String> map)
     {
+
+        scroll_to_last_location();
 
         if (map.isEmpty())
         {
@@ -562,6 +560,20 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
             }, true));
         }
 
+    }
+
+    private void scroll_to_last_location()
+    {
+        scrollView.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                autocompleteFrom.clearFocus();
+                autocompleteTo.clearFocus();
+                scrollView.scrollTo(0, sy);
+            }
+        });
     }
 
     ArrayList<Bean_Ride_Details> list_sharan = new ArrayList<>();
@@ -630,19 +642,23 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
                 if (list_sharan.isEmpty())
                 {
                     list_sharan = local_list_sharan;
-                    adater = new MidPointAdapter(list_sharan);
-                    list_find_ride.setAdapter(adater);
+                  /*  adater = new MidPointAdapter(list_sharan);
+                    list_find_ride.setAdapter(adater);*/
+
+                    set_data_like_list(list_sharan);
 
                 }
                 else
                 {
                     list_sharan = local_list_sharan;
-                    adater.addData(list_sharan);
-                    adater.notifyDataSetChanged();
+                   /* adater.addData(list_sharan);
+                    adater.notifyDataSetChanged();*/
+                    set_data_like_list(list_sharan);
+
                 }
 
                 //                adater.notifyDataSetChanged();
-                GlobalConstants.setListViewHeightBasedOnItems(list_find_ride, list_sharan.size());
+                //                GlobalConstants.setListViewHeightBasedOnItems(list_find_ride, 0);
 
             }
             else
@@ -656,8 +672,153 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
         }
     }
 
+    //*****************************************************Set list in for loop ***********************************************
+
+    public void set_data_like_list(ArrayList<Bean_Ride_Details> list)
+    {
+
+
+
+        llay_rides.removeAllViews();
+
+
+
+
+
+            for (int i = 0; i < list.size(); i++)
+            {
+
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                View v = inflater.inflate(R.layout.custom_list_find_ride2, null);
+
+                TextView txt_day = (TextView) v.findViewById(R.id.txt_day);
+                TextView txt_from = (TextView) v.findViewById(R.id.txt_from);
+                TextView txt_to = (TextView) v.findViewById(R.id.txt_to);
+                TextView txt_txt_driver_name = (TextView) v.findViewById(R.id.txt_driver_name);
+                ImageView img_driver_img = (ImageView) v.findViewById(R.id.img_driver_img);
+                ImageView img_phn = (ImageView) v.findViewById(R.id.img_phn);
+
+                TextView txt_car_name = (TextView) v.findViewById(R.id.txt_car_name);
+                TextView txt_flag = (TextView) v.findViewById(R.id.txt_flag);
+                ImageView img_vehicle = (ImageView) v.findViewById(R.id.img_man);
+                TextView txt_vw_ride_type = (TextView) v.findViewById(R.id.txt_vw_ride_type);
+                v.findViewById(R.id.txtv_message_count).setVisibility(View.GONE);
+                v.findViewById(R.id.txtv_request_count).setVisibility(View.GONE);
+
+                v.findViewById(R.id.rel_my_ride_edit).setVisibility(View.GONE);
+
+                final Bean_Ride_Details bean_ride_details = list.get(i);
+
+                // txt_day.setText(bean_ride_details.getDepartureDate() + "     " + bean_ride_details.getDepartureTime());
+
+                txt_txt_driver_name.setText(bean_ride_details.getCustomerName());
+
+                if (bean_ride_details.getLeavingFrom() != null)
+                {
+                    txt_from.setText(bean_ride_details.getLeavingFrom());
+                }
+                if (bean_ride_details.getLeavingTo() != null)
+                {
+                    txt_to.setText(bean_ride_details.getLeavingTo());
+                }
+
+                if (bean_ride_details.getIsRegulerBasis() != null)
+                {
+                    String is_regular_basis = bean_ride_details.getIsRegulerBasis().equals("false") ? "Ride Type" + "\n" + "One Time" : "Riding Type" + "\n" + "Daily";
+                    txt_vw_ride_type.setText(is_regular_basis);
+
+                    String date_day_str = bean_ride_details.getIsRegulerBasis().equals("false") ? bean_ride_details.getDepartureDate() : bean_ride_details.getRegulerDays();
+                    //      Log.e("date_day_str ","date_day_str  "+date_day_str+"   "+feedItem.getLeaving_date()+"  gggg   "+txt_vw_ride_type.getText().toString().equalsIgnoreCase("Ride Type"+ "\n" +"  One Time") );
+
+                    txt_day.setText(date_day_str + "     " + bean_ride_details.getDepartureTime());
+                }
+
+                txt_car_name.setText("Type : " + bean_ride_details.getVehicleType() + "\n" + "Name : " + bean_ride_details.getVehicleName() + "\n" + "Number : " + bean_ride_details.getVehicleNo());
+
+                int id = bean_ride_details.getVehicleType().equals("Bike") ? R.mipmap.bike : R.mipmap.car;
+                img_vehicle.setBackgroundResource(id);
+
+                ArrayList<HashMap<String, String>> Accept_model_list = bean_ride_details.getRequestAcceptModelList();
+
+                for (int j = 0; j < Accept_model_list.size(); j++)
+                {
+                    if (Accept_model_list.get(j).get("CustomerId").equals(my_customerID))
+                    {
+                        if (Accept_model_list.get(j).get("Flag").equals("1"))
+                        {
+                            txt_flag.setText("Accepted");
+                        }
+                        if (Accept_model_list.get(j).get("Flag").equals("5"))
+                        {
+                            txt_flag.setText("Pending");
+                        }
+                    }
+                }
+
+                img_phn.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (bean_ride_details.getCustomerContactNo() != null)
+                        {
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse("tel:" + bean_ride_details.getCustomerContactNo()));
+                            try
+                            {
+                                startActivity(intent);
+                            }
+                            catch (android.content.ActivityNotFoundException ex)
+                            {
+                                ex.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
+                if (bean_ride_details.getCustomerPhoto() != null)
+                {
+                    Picasso.with(getActivity()).load(bean_ride_details.getCustomerPhoto()).
+                              transform(new CircleTransform()).into(img_driver_img);
+                }
+
+
+                v.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        //                        Bean_Ride_Details bean_ride_details = list_sharan.get(position);
+
+                        //                Intent is = new Intent(getActivity(), Car_owner_Activity.class);
+
+                        sy=scrollView.getScrollY();
+
+                        Log.e("sy",""+sy);
+
+                        Intent is = new Intent(getActivity(), Ride_Details.class);
+
+                        is.putExtra(GlobalConstants.KeyNames.TripId.toString(), bean_ride_details.getTripId());
+                        is.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), bean_ride_details.getCustomerId());
+
+                        startActivity(is);
+                        getActivity().overridePendingTransition(0, R.anim.push_down_out);
+                    }
+                });
+
+                llay_rides.addView(v);
+            }
+
+
+
+        scroll_to_last_location();
+
+    }
+
     //**********************************************************************************************************************
 
+/*
     private class MidPointAdapter extends BaseAdapter
     {
         ArrayList<Bean_Ride_Details> local_list;
@@ -799,10 +960,51 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
         }
 
     }
+*/
 
-    /**
-     @snackbarMethod
-     */
+    //*********************************************** Fetching and sending location ****************************************************
+
+    private void GetLocation()
+    {
+
+        new GiveMeLocationS(getActivity(), new Location_Interface()
+        {
+            @Override
+            public void onTaskCompleted(Location location)
+            {
+                try
+                {
+                    Log.e("Latitude in Find Ride", "" + location.getLatitude());
+                    Log.e("Longitude in Find Ride", "" + location.getLongitude());
+
+                    String lat = String.valueOf(location.getLatitude());
+                    String lon = String.valueOf(location.getLongitude());
+
+                    String address_current = Utills_G.address(getActivity(), location.getLatitude(), location.getLongitude()).trim();
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    if (!address_current.isEmpty())
+                    {
+                        editor.putString("current_city", address_current);
+                    }
+
+                    //                    Log.e("Current city in Find a Ride",""+address_current);
+
+                    editor.putString("current_lat", lat);
+                    editor.putString("current_long", lon);
+                    editor.apply();
+
+                }
+                catch (Exception ex)
+                {
+                    Log.e("Exception is", ex.toString());
+                }
+            }
+        });
+
+    }
+
+    //   snackbarMethod
     private void snackbar_method(String text)
     {
         snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG).setAction("Ok", new View.OnClickListener()
@@ -835,6 +1037,14 @@ public class Find_A_Ride extends FragmentG implements View.OnClickListener, Loca
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    //Hide Keyboard
+
+    public void hide_keyboard(View v)
+    {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
 }

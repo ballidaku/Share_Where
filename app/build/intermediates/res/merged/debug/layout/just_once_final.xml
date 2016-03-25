@@ -52,7 +52,7 @@
                             android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:drawableEnd = "@mipmap/cancel"
                             android:drawableRight = "@mipmap/cancel"
-                            android:hint = "Leaving from"
+                            android:hint = "Leaving From"
                             android:imeOptions = "actionNext"
                             android:inputType = "textCapWords"
                             android:textColor = "@color/white"
@@ -77,7 +77,7 @@
                             android:digits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:drawableRight = "@mipmap/cancel"
                             android:hint = "Leaving To"
-                            android:inputType = "textCapWords"
+                            android:inputType = "textCapSentences"
                             android:imeOptions = "actionNext"
                             android:textColor = "@color/white"
                             android:textColorHint = "@color/white">
@@ -267,7 +267,7 @@
                                         android:layout_width = "wrap_content"
                                         android:layout_height = "wrap_content"
                                         android:padding = "8dp"
-                                        android:src = "@mipmap/calendar"/>
+                                        android:src = "@mipmap/calendar_black"/>
                                     <!--  android:layout_gravity="center"-->
                                 </LinearLayout>
 
@@ -391,7 +391,7 @@
                                         android:layout_height = "wrap_content"
                                         android:layout_gravity = "center"
                                         android:padding = "8dp"
-                                        android:src = "@mipmap/calendar"/>
+                                        android:src = "@mipmap/calendar_black"/>
                                 </LinearLayout>
 
                             </LinearLayout>
@@ -499,7 +499,7 @@
                                     android:layout_height = "match_parent"
                                     android:layout_marginLeft = "10dp"
                                     android:padding = "8dp"
-                                    android:src = "@mipmap/calendar"/>
+                                    android:src = "@mipmap/calendar_black"/>
                             </LinearLayout>
                         </LinearLayout>
 
@@ -875,6 +875,7 @@
                                 android:layout_marginRight = "20dp"
                                 android:background = "@drawable/grey_border"
                                 android:digits = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890 "
+                                android:inputType="textCapCharacters"
                                 android:gravity = "center"
                                 android:imeOptions = "actionDone"
                                 android:maxLength = "10"
@@ -950,7 +951,6 @@
                             <Button
                                 android:id = "@+id/line_cancel"
                                 android:layout_width = "150dp"
-
                                 android:layout_height = "5dp"
                                 android:layout_alignParentBottom = "true"
                                 android:layout_alignParentLeft = "true"

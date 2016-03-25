@@ -17,7 +17,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
-import com.google.android.gcm.GCMRegistrar;
 
 import org.json.JSONObject;
 
@@ -27,13 +26,10 @@ import car.sharewhere.gagan.Chat.Chat_Activity;
 import car.sharewhere.gagan.Chat.Chat_Database;
 import car.sharewhere.gagan.Tabs.Driver_Rides_Tab;
 import car.sharewhere.gagan.Tabs.Rider_Rides_Tab;
-import car.sharewhere.gagan.WebServices.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.MainActivity;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.sharewherecars.Registeration;
 import car.sharewhere.gagan.sharewherecars.Ride_Details;
-import car.sharewhere.gagan.sharewherecars.fragments.My_Rides;
-import car.sharewhere.gagan.sharewherecars.fragments.OfferA_a_Ride;
 
 /**
  Created by ameba on 10/11/15. */
@@ -74,14 +70,13 @@ public class GCMIntentService extends GCMBaseIntentService
     long sender_count = 0;
 
     //Ride Requests
-    long ride_request_count      = 0;
-    long ride_request_trip_count = 0;
+    //    long ride_request_count      = 0;
+    //    long ride_request_trip_count = 0;
 
-    boolean is_myrides_opened = false;
-    boolean is_offerride_opened = false;
+    boolean is_myrides_opened     = false;
+    boolean is_offerride_opened   = false;
     boolean is_ridedetails_opened = false;
-    boolean is_chat_opened = false;
-
+    boolean is_chat_opened        = false;
 
     String other_customer_id;
 
@@ -118,8 +113,8 @@ public class GCMIntentService extends GCMBaseIntentService
         sender_count = 0;
 
         //Ride Request
-        ride_request_count = 0;
-        ride_request_trip_count = 0;
+        //        ride_request_count = 0;
+        //        ride_request_trip_count = 0;
 
         //My Rides
         is_myrides_opened = preferences.getBoolean("is_myride_opened", false);
@@ -130,13 +125,12 @@ public class GCMIntentService extends GCMBaseIntentService
         Log.e("IS Offer Rides Opened In GCM", "" + is_offerride_opened);
 
         //Ride Details
-        is_ridedetails_opened=preferences.getBoolean("is_ridedetails_opened", false);
+        is_ridedetails_opened = preferences.getBoolean("is_ridedetails_opened", false);
         Log.e("IS Ride Details Opened In GCM", "" + is_ridedetails_opened);
 
         // Chat Activity
-        is_chat_opened=preferences.getBoolean("is_chat_opened", false);
+        is_chat_opened = preferences.getBoolean("is_chat_opened", false);
         Log.e("IS Chat Activity Opened In GCM", "" + is_chat_opened);
-
 
         try
         {
@@ -194,15 +188,13 @@ public class GCMIntentService extends GCMBaseIntentService
 
                 other_customer_id = customer_flag.equals("Rider") ? customer_driver_id : customer_rider_id;
 
-                boolean is_chat_open_with_conditions = is_chat_opened
-                          && Chat_Activity.other_user_id.equalsIgnoreCase(other_customer_id)
-                          && Chat_Activity.TripId.equalsIgnoreCase(trip_id);
+                boolean is_chat_open_with_conditions = is_chat_opened && Chat_Activity.other_user_id.equalsIgnoreCase(other_customer_id) && Chat_Activity.TripId.equalsIgnoreCase(trip_id);
 
-                boolean is_ridedetails_open_with_condition=false;
+                boolean is_ridedetails_open_with_condition = false;
                 try
                 {
 
-                    if (is_ridedetails_opened== true)
+                    if (is_ridedetails_opened == true)
                     {
                         is_ridedetails_open_with_condition = Ride_Details.TripID.equalsIgnoreCase(trip_id);
                     }
@@ -244,7 +236,7 @@ public class GCMIntentService extends GCMBaseIntentService
                     }
 
                 }
-                else if(is_offerride_opened) //If Offer Ride is opened
+                else if (is_offerride_opened) //If Offer Ride is opened
                 {
                     map.put("message_status", "UR");
                     database.save_message(map);
@@ -264,7 +256,6 @@ public class GCMIntentService extends GCMBaseIntentService
                 Log.e("Get Trip Count", "" + trip_count);
                 Log.e("Get Sender Count", "" + sender_count);
 
-
                 if (message_count > 1)
                 {
                     customer_message = message_count + " unread messages from " + sender_count + " chats";
@@ -274,64 +265,131 @@ public class GCMIntentService extends GCMBaseIntentService
 
             //***********************************************************************************************************
 
-            // **************************************************New Request*****************************************************************
-
-
-            if (customer_flag.equals("5"))  // New Request
+            // ************************************************** Request*****************************************************************
+            if (customer_flag.matches("1|2|5|6|7"))
             {
 
-                HashMap<String, String> map = new HashMap<>();
-
-                map.put("CustomerId", customer_sender_id);
-                map.put("CustomerMoboleNo", customer_mobile);
-                map.put("CustomerName", customer_name);
-                map.put("CustomerPhoto", customer_pic);
-                map.put("DepartureDate", DepartureDate);
-                map.put("DriverId", customer_driver_id);
-                map.put("Flag", customer_flag);
-                map.put("LeavingFrom", customer_leavingfrom);
-                map.put("LeavingTo", customer_leavingto);
-                map.put("Message", customer_message);
-                map.put("RequestId", customer_requestID);
-                map.put("RiderId", customer_rider_id);
-                map.put("TripId", trip_id);
-                map.put("request_status", "UR");
-
-                database.save_requests(map);
-
-                ride_request_count = database.get_unread_request_count();
-                ride_request_trip_count = database.get_trip_request_count();
-
-                if (ride_request_count > 1)
+                if (customer_flag.equals("5"))  // New Request
                 {
-                    customer_message = ride_request_count + " Ride Requests.";
+
+                    HashMap<String, String> map = new HashMap<>();
+
+                    map.put("CustomerId", customer_sender_id);
+                    map.put("CustomerMoboleNo", customer_mobile);
+                    map.put("CustomerName", customer_name);
+                    map.put("CustomerPhoto", customer_pic);
+                    map.put("DepartureDate", DepartureDate);
+                    map.put("DriverId", customer_driver_id);
+                    map.put("Flag", customer_flag);
+                    map.put("LeavingFrom", customer_leavingfrom);
+                    map.put("LeavingTo", customer_leavingto);
+                    map.put("Message", customer_message);
+                    map.put("RequestId", customer_requestID);
+                    map.put("RiderId", customer_rider_id);
+                    map.put("TripId", trip_id);
+                    map.put("request_status", "UR");
+
+                    database.save_requests(map);
+
+                 /*   ride_request_count = database.get_unread_request_count();
+                    ride_request_trip_count = database.get_trip_request_count();
+
+                    if (ride_request_count > 1)
+                    {
+                        customer_message = ride_request_count + " Ride Requests.";
+                    }
+                    else
+                    {
+                        customer_message = customer_name + " requested to ride along with you.";
+                    }*/
+
+                    if (is_myrides_opened == true && Driver_Rides_Tab.is_drivertab_visible) //If My Rides is opened
+                    {
+                        refresh_Driver_Tab(context);
+
+                    }
+
+                    Log.e("is_offerride_opened in GCMIntent", "" + is_offerride_opened);
+                    if (is_offerride_opened) //If Offer Ride is opened
+                    {
+                        refresh_OfferRide(context);
+                    }
+
                 }
-                else
+
+                boolean is_ridedetails_open_with_condition = false;
+
+                if (is_ridedetails_opened == true) //If Rides Details is opened
                 {
-                    customer_message = customer_name + " requested to ride along with you.";
+                    is_ridedetails_open_with_condition = Ride_Details.TripID.equalsIgnoreCase(trip_id);
                 }
 
-                if (is_myrides_opened == true && Driver_Rides_Tab.is_drivertab_visible) //If My Rides is opened
+                if (is_ridedetails_open_with_condition) //If Rides Details is opened with particular trip ID
                 {
-                    refresh_Driver_Tab(context);
+
+                    refresh_Ride_Details(context);
 
                 }
 
-
-                Log.e("is_offerride_opened in GCMIntent",""+is_offerride_opened);
-                if(is_offerride_opened) //If Offer Ride is opened
+                if (customer_flag.equals("6") || customer_flag.equals("7"))
                 {
-                    refresh_OfferRide(context);
+                    database.delete_chat(trip_id, customer_flag.equals("6") ? customer_rider_id : customer_driver_id);
                 }
+            }
+            else if (customer_flag.equalsIgnoreCase("8")) // If trip is deleted by driver
+            {
+                boolean is_ridedetails_open_with_condition = false;
+
+                if (is_ridedetails_opened == true) //If Rides Details is opened
+                {
+                    is_ridedetails_open_with_condition = Ride_Details.TripID.equalsIgnoreCase(trip_id);
+                }
+
+                other_customer_id=customer_driver_id;
+
+                boolean is_chat_open_with_conditions = is_chat_opened && Chat_Activity.other_user_id.equalsIgnoreCase(other_customer_id) && Chat_Activity.TripId.equalsIgnoreCase(trip_id);
+
+                if (is_ridedetails_open_with_condition || is_chat_open_with_conditions) //If Rides Details & Chat is opened with particular trip ID
+                {
+                    Intent intenti = new Intent(context, MainActivity.class);
+                    intenti.addCategory(Intent.CATEGORY_HOME);
+                    intenti.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                    intenti.putExtra("customer_pic", customer_pic);
+                    intenti.putExtra("customer_name", customer_name);
+
+                    intenti.putExtra(GlobalConstants.KeyNames.TripId.toString(), trip_id);
+
+                    intenti.putExtra("customer_sender_id_gcm", customer_sender_id);
+                    intenti.putExtra("customer_flag", customer_flag);
+                    intenti.putExtra("customer_Message", customer_message);
+                    intenti.putExtra("customer_requestID", customer_requestID);
+                    intenti.putExtra("customer_Latitude", customer_latitude);
+                    intenti.putExtra("customer_Longitude", customer_longitude);
+                    intenti.putExtra("customer_from", customer_leavingfrom);
+                    intenti.putExtra("customer_to", customer_leavingto);
+                    intenti.putExtra("customer_mobile", customer_mobile);
+                    intenti.putExtra(GlobalConstants.KeyNames.Status.toString(), Status);
+                    intenti.putExtra("customer_driver_id", customer_driver_id);
+                    intenti.putExtra("customer_rider_id", customer_rider_id);
+
+
+
+                    startActivity(intenti);
+
+                }
+
+                database.delete_chat(trip_id, customer_driver_id);
+
+                database.delete_trip_request("", trip_id);
 
             }
 
             //******************************************************************************************************************************
 
-
             if (preferences.getBoolean("notification_on_off", true) == true && can_generate_notification)
             {
-                generateNotification(context, customer_message);
+                generateNotificationIntent(context, customer_message);
             }
 
         }
@@ -349,7 +407,7 @@ public class GCMIntentService extends GCMBaseIntentService
     protected void onDeletedMessages(Context context, int total)
     {
 
-        generateNotification(context, customer_message);
+        generateNotificationIntent(context, customer_message);
     }
 
     @Override
@@ -365,71 +423,65 @@ public class GCMIntentService extends GCMBaseIntentService
         return super.onRecoverableError(context, errorId);
     }
 
+    // 1 Accept
+
+    // 2 Decline
+
+    // 5 New Request
+
+    // 6 cancel by rider
+
+    // 7 cancel by driver
+
+    // 8 Trip deleted by driver
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void generateNotification(Context context, String message)
+    private void generateNotificationIntent(Context context, String message)
     {
-        int icon = R.mipmap.ic_launcher;
 
         try
         {
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            String title = "Share Where";
-
-
-
-            // 1 Accept
-
-            // 2 Decline
-
-            // 5 New Request
-
-            // 6 cancel by rider
-
-            // 7 cancel by driver
-
-
-            String get_email_id = preferences.getString("email_id", null);
             Intent notificationIntent = null;
 
             if (customer_flag.matches("1|2|5|6|7"))
             {
-                //                boolean is_ridedetails_opened = preferences.getBoolean("is_ridedetails_opened", false) && Ride_Details.TripID.equalsIgnoreCase(trip_id);
 
-                boolean is_ridedetails_open_with_condition=false;
-
-                if (is_ridedetails_opened == true)
+                if (customer_flag.equals("5"))
                 {
-                    is_ridedetails_open_with_condition = Ride_Details.TripID.equalsIgnoreCase(trip_id);
-                }
+                    long ride_request_count = database.get_unread_request_count();
+                    long ride_request_trip_count = database.get_trip_request_count();
 
-                if (is_ridedetails_open_with_condition) //If Rides Details is opened
-                {
-                    refresh_Ride_Details(context);
-                }
+                    if (ride_request_count > 1)
+                    {
+                        message = ride_request_count + " Ride Requests.";
+                        notificationIntent = new Intent(context, MainActivity.class);
+                    }
+                    else
+                    {
+                        message = customer_name + " requested to ride along with you.";
+                        notificationIntent = new Intent(context, Ride_Details.class);
+                    }
 
-                if (customer_flag.equals("5"))  // 5 New Request
-                {
-                    notificationIntent = new Intent(context, MainActivity.class);
                 }
                 else
                 {
                     notificationIntent = new Intent(context, Ride_Details.class);
                 }
 
-
-                if(customer_flag.equals("6") || customer_flag.equals("7"))
-                {
-                    database.delete_chat(trip_id,customer_flag.equals("6")?customer_rider_id:customer_driver_id);
-                }
-
-                notificationIntent.putExtra(GlobalConstants.KeyNames.TripId.toString(), trip_id);
                 notificationIntent.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), customer_sender_id);
                 notificationIntent.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());
             }
-            else if (Status.equalsIgnoreCase("msg"))
+            else if (customer_flag.equalsIgnoreCase("8")) // If trip is deleted by driver
             {
 
+                notificationIntent = new Intent(context, MainActivity.class);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.CustomerId.toString(), customer_sender_id);
+                notificationIntent.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());
+
+            }
+            else if (Status.equalsIgnoreCase("msg"))
+            {
 
                 if (message_count > 1 && trip_count > 1 && sender_count > 1)
                 {
@@ -449,22 +501,18 @@ public class GCMIntentService extends GCMBaseIntentService
                 notificationIntent.putExtra(GlobalConstants.KeyNames.DriverId.toString(), customer_driver_id);
                 notificationIntent.putExtra(GlobalConstants.KeyNames.RequestId.toString(), customer_requestID);
                 notificationIntent.putExtra(GlobalConstants.KeyNames.CustomerPhoto.toString(), customer_pic);
-                notificationIntent.putExtra(GlobalConstants.KeyNames.TripId.toString(), trip_id);
                 notificationIntent.putExtra(GlobalConstants.KeyNames.fromWhere.toString(), GlobalConstants.KeyNames.Notification.toString());
-            }
-            else if (get_email_id != null)
-            {
-                notificationIntent = new Intent(context, MainActivity.class);
             }
             else
             {
-                notificationIntent = new Intent(context, Registeration.class);
+                notificationIntent = new Intent(context, MainActivity.class);
             }
 
-            notificationIntent.putExtra("gcm_intent", "gcm_intent");
             notificationIntent.putExtra("customer_pic", customer_pic);
             notificationIntent.putExtra("customer_name", customer_name);
-            notificationIntent.putExtra("customer_trip_id_gcm", trip_id);
+
+            notificationIntent.putExtra(GlobalConstants.KeyNames.TripId.toString(), trip_id);
+
             notificationIntent.putExtra("customer_sender_id_gcm", customer_sender_id);
             notificationIntent.putExtra("customer_flag", customer_flag);
             notificationIntent.putExtra("customer_Message", customer_message);
@@ -479,7 +527,32 @@ public class GCMIntentService extends GCMBaseIntentService
             notificationIntent.putExtra("customer_rider_id", customer_rider_id);
 
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            trigger_notification(context, notificationIntent, message, customer_flag, Status);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        catch (Error e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void trigger_notification(Context con, Intent notificationIntent, String message, String Flag, String status)
+    {
+        int    icon  = R.mipmap.ic_app_icon;
+        String title = "Share Where";
+
+        try
+        {
+
+            NotificationManager notificationManager = (NotificationManager) con.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            PendingIntent intent = PendingIntent.getActivity(con, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
@@ -492,7 +565,7 @@ public class GCMIntentService extends GCMBaseIntentService
                 }
             }
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context).
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(con).
                       setContentTitle(title).
                       setContentText(message).
                       setContentIntent(intent).
@@ -513,11 +586,17 @@ public class GCMIntentService extends GCMBaseIntentService
             //            	not.number=count++;
 
             int counter = 0;
-            if (customer_flag.equals("5"))
+            if (Flag.equals("5"))
             {
                 counter = request_noti_id;
             }
-            else if (Status.equalsIgnoreCase("msg"))
+            else if (Flag.equals("8"))
+            {
+                counter = notificatn_counter;
+                cancelNotification(con,request_noti_id);
+
+            }
+            else if (status.equalsIgnoreCase("msg"))
             {
                 counter = message_noti_id;
             }
@@ -527,18 +606,20 @@ public class GCMIntentService extends GCMBaseIntentService
             }
 
             notificationManager.notify(counter, not);
-            //            notificationManager.notify(0, not);
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        catch (Error e)
-        {
-            e.printStackTrace();
-        }
 
+    }
+
+    public static void cancelNotification(Context ctx, int notifyId)
+    {
+        String              ns   = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
     }
 
     private void refresh_Ride_Details(Context context)
@@ -555,7 +636,6 @@ public class GCMIntentService extends GCMBaseIntentService
     {
         Utills_G.refresh_RiderTab_BroadcastReceiver(context);
     }
-
 
     private void refresh_OfferRide(Context context)
     {

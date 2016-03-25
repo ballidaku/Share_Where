@@ -3,6 +3,8 @@ package car.sharewhere.gagan.sharewherecars.Adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import car.sharewhere.gagan.WebServices.GlobalConstants;
+import car.sharewhere.gagan.utills.GlobalConstants;
 import car.sharewhere.gagan.sharewherecars.R;
 import car.sharewhere.gagan.utills.Utills_G;
 
@@ -89,12 +90,12 @@ public class Chat_sharan_Adapter extends BaseAdapter
 
             TextView tvTime = (TextView) row.findViewById(R.id.txtV_MyChatDate);
 
-            FrameLayout imageContainer = (FrameLayout) row.findViewById(R.id.FrameLayoutIMAGE);
+//            FrameLayout imageContainer = (FrameLayout) row.findViewById(R.id.FrameLayoutIMAGE);
 
             util.setRoundImage(con, DP, user_img);
 
             FramemsgLayout.setVisibility(View.VISIBLE);
-            imageContainer.setVisibility(View.GONE);
+//            imageContainer.setVisibility(View.GONE);
             // youVideo.setVisibility(View.GONE);
 
             tvMSG.setText(message);
@@ -115,13 +116,14 @@ public class Chat_sharan_Adapter extends BaseAdapter
 
             TextView tvTime = (TextView) row.findViewById(R.id.txtV_otherChatDate);
 
-            FrameLayout imageContainer = (FrameLayout) row.findViewById(R.id.FrameLayoutIMAGE_Other);
+//            FrameLayout imageContainer = (FrameLayout) row.findViewById(R.id.FrameLayoutIMAGE_Other);
 
             util.setRoundImage(con, DP, my_img);
 
             FramemsgLayout.setVisibility(View.VISIBLE);
-            imageContainer.setVisibility(View.GONE);
+//            imageContainer.setVisibility(View.GONE);
 
+            System.out.println("Chat Data---->" + message);
             tvMSG.setText(message);
 
             tvTime.setText(time);
