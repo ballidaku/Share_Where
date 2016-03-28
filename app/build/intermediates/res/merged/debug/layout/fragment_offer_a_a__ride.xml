@@ -4,7 +4,7 @@
               android:layout_height = "match_parent"
               android:background = "@drawable/offerride_bg"
               android:orientation = "vertical"
-              tools:context = "car.sharewhere.gagan.sharewherecars.fragments.OfferA_a_Ride">
+              tools:context = "car.ameba.ridelele.sharewherecars.fragments.OfferA_a_Ride">
 
     <include layout = "@layout/actionbar_toolbar"/>
 

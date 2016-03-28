@@ -6,7 +6,7 @@
     android:layout_height = "match_parent"
     android:background = "@color/gray_backgroundfb"
     android:orientation = "vertical"
-    tools:context = "car.sharewhere.gagan.sharewherecars.fragments.Find_A_Ride">
+    tools:context = "car.ameba.ridelele.sharewherecars.fragments.Find_A_Ride">
 
     <LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
                   xmlns:tools = "http://schemas.android.com/tools"

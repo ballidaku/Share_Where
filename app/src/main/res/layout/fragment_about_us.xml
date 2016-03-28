@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="car.sharewhere.gagan.sharewherecars.fragments.AboutUs">
+    tools:context="car.ameba.ridelele.sharewherecars.fragments.AboutUs">
 
     <include layout="@layout/actionbar_toolbar" />
 

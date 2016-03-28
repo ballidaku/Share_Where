@@ -25,7 +25,7 @@
     android:padding="16dp">
 
 
-    <car.sharewhere.gagan.utills.RoundedCornersGaganImg
+    <car.ameba.ridelele.utills.RoundedCornersGaganImg
         android:id="@+id/imgProfilePic"
         android:layout_width="70dp"
         android:layout_height="70dp"

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id = "@+id/cardview"
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content">
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:orientation = "vertical"
+        android:padding = "8dp">
+
+        <EditText
+            android:id = "@+id/txt_msg"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:hint = "Enter your message"
+            android:inputType = "textCapSentences|textMultiLine"
+            android:maxLines = "6"
+            android:textSize = "18sp"/>
+
+
+
+        <LinearLayout android:layout_width = "match_parent"
+                      android:layout_height = "wrap_content"
+                      android:orientation = "horizontal">
+
+            <Button android:id = "@+id/btn_dialog_send_where"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_margin = "5dp"
+                    android:layout_weight = "1"
+                    android:background = "@color/yellow_old"
+                    android:text = "Send"/>
+
+
+            <Button android:id = "@+id/btn_dialog_dismiss"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_margin = "5dp"
+                    android:layout_weight = "1"
+                    android:background = "@color/yellow_old"
+                    android:text = "Cancel"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView><!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/layout/car_owner_where_are_u_dialog.xml -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="car.sharewhere.gagan.sharewherecars.test">
+    package="car.ameba.ridelele.test">
 
     <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="23" />
 
@@ -9,8 +9,8 @@
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="car.sharewhere.gagan.sharewherecars"
+                     android:targetPackage="car.ameba.ridelele"
                      android:handleProfiling="false"
                      android:functionalTest="false"
-                     android:label="Tests for car.sharewhere.gagan.sharewherecars"/>
+                     android:label="Tests for car.ameba.ridelele"/>
 </manifest>
