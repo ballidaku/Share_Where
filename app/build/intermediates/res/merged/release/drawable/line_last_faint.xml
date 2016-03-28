@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android = "http://schemas.android.com/apk/res/android">
+
+    <gradient
+       android:startColor="@color/cardview_shadow_end_color"
+       android:centerColor="@color/cardview_shadow_start_color"
+           android:endColor="@color/cardview_shadow_end_color"/>
+
+
+</shape><!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/drawable/line_last_faint.xml -->

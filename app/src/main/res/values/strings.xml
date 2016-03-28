@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <string name = "app_name">Share\nWhere</string>
+    <string name = "app_name">Ride\nLe Le</string>
     <string name = "menu_settings">Settings</string>
     <string name = "title_activity_splash">Splash</string>
     <string name = "title_activity_registeration">Registeration</string>

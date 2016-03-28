@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "car.sharewhere.gagan.sharewherecars"
+        applicationId "car.ameba.ridelele"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1

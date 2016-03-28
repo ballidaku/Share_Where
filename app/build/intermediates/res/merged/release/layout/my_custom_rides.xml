@@ -1,0 +1,55 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/actionbar_toolbar" />
+
+
+
+        <ListView
+            android:layout_width="match_parent"
+            android:id="@+id/list_vw_notify"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:layout_height="match_parent"/>
+
+
+
+
+
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:id="@+id/rel_noti"
+           android:visibility="gone"
+           android:layout_height="match_parent">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:gravity="center"
+               android:id="@+id/txt_no_ride"
+               android:layout_centerInParent="true"
+               android:textColor="@color/black"
+               android:textSize="15sp"
+               android:text="Sorry currently you have no pending notifications"/>
+
+           <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:background="@mipmap/reload"
+               android:id="@+id/img_vw_reload"
+               android:layout_centerInParent="true"
+               android:layout_below="@id/txt_no_ride"
+               android:layout_marginTop="20dp"
+               android:layout_gravity="center_horizontal" />
+       </RelativeLayout>
+
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout><!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/layout/my_custom_rides.xml -->

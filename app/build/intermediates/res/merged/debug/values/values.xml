@@ -661,7 +661,7 @@
     <string name="accept">Accept</string>
     <!-- From: file:/home/sharan/Desktop/Share_Where/app/src/main/res/values/strings.xml -->
     <eat-comment/>
-    <string name="app_name">Share\nWhere</string>
+    <string name="app_name">Ride\nLe Le</string>
     <!-- From: file:/home/sharan/Desktop/Share_Where/app/build/intermediates/exploded-aar/com.android.support/design/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
